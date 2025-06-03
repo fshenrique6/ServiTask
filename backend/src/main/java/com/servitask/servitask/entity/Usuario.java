@@ -60,7 +60,4 @@ public class Usuario {
         this.acesso = acesso;
     }
 
-    
-    
-    
 }
