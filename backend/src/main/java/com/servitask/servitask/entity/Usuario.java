@@ -8,7 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -29,9 +28,9 @@ public class Usuario {
     private Acesso acesso;
 
 
-    public usuario() {
+    public Usuario() {
     }
-    public usuario(String nome, String email, Acesso acesso) {
+    public Usuario(String nome, String email, Acesso acesso) {
         this.nome = nome;
         this.email = email;
         this.acesso = acesso;
@@ -61,7 +60,4 @@ public class Usuario {
         this.acesso = acesso;
     }
 
-    
-    
-    
 }
