@@ -50,6 +50,7 @@ function Sidebar() {
                     margin-bottom: 10px;
                     font-size: 1rem;
                     color: #222;
+                    font-weight: bold;
                 }
                 .quadro-btn {
                     width: 100%;
