@@ -50,6 +50,7 @@ function Sidebar() {
                     margin-bottom: 10px;
                     font-size: 1rem;
                     color: #222;
+                    font-weight: bold;
                 }
                 .quadro-btn {
                     width: 100%;
@@ -78,6 +79,10 @@ function Sidebar() {
                 .add-icon {
                     width: 24px;
                     height: 24px;
+                }
+                button:hover {
+                    background: #1d4ed8;
+                    color: #fff;
                 }
             `}</style>
 
