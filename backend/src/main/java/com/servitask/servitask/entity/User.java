@@ -12,40 +12,40 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "usuario")
-public class Usuario {
+@Table(name = "user")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idUsuario;
-    private String nome;
+    private Long idUser;
+    private String name;
     @Column(unique = true, nullable = false)
     private String email;
 
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Acesso acesso;
+    private Access access;
 
 
-    public Usuario() {
+    public User() {
     }
-    public Usuario(String nome, String email, Acesso acesso) {
-        this.nome = nome;
+    public User(String nome, String email, Access acesso) {
+        this.name = nome;
         this.email = email;
-        this.acesso = acesso;
+        this.access = acesso;
     }
-    public Long getIdUsuario() {
-        return idUsuario;
+    public Long getidUser() {
+        return idUser;
     }
-    public void setIdUsuario(Long idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setidUser(Long idUser) {
+        this.idUser = idUser;
     }
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
     public String getEmail() {
         return email;
@@ -53,11 +53,11 @@ public class Usuario {
     public void setEmail(String email) {
         this.email = email;
     }
-    public Acesso getAcesso() {
-        return acesso;
+    public Access getAccess() {
+        return access;
     }
-    public void setAcesso(Acesso acesso) {
-        this.acesso = acesso;
+    public void setAcesso(Access access) {
+        this.access = access;
     }
 
 }
