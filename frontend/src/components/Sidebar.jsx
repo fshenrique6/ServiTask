@@ -79,6 +79,10 @@ function Sidebar() {
                     width: 24px;
                     height: 24px;
                 }
+                button:hover {
+                    background: #1d4ed8;
+                    color: #fff;
+                }
             `}</style>
 
             <div className="sidebar">
