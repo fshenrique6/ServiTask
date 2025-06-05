@@ -68,7 +68,7 @@ export default function AuthLayout({
 
       {/* Footer */}
       <footer className="login-footer">
-        <p>&copy; 2024 ServiTask. Todos os direitos reservados.</p>
+        <p>&copy; 2025 ServiTask. Todos os direitos reservados.</p>
       </footer>
     </div>
   );
