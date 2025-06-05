@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Kanban from './components/Kanban/Kanban'
 import LandingPage from './pages/LandingPage/LandingPage'
-import Login from './pages/Login/Login'
+import Auth from './pages/Auth/Auth'
 import './App.css'
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
     switch (currentPage) {
       case 'login':
         return (
-          <Login 
+          <Auth 
             onLogin={handleLogin} 
             onBackToLanding={handleBackToLanding}
           />
