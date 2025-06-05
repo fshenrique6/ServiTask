@@ -49,6 +49,10 @@ function Kanban() {
     const [isDeleteColumnModalOpen, setIsDeleteColumnModalOpen] = useState(false);
     const [columnToDelete, setColumnToDelete] = useState(null);
 
+    // Estado para controlar a edição do nome do quadro
+    const [isEditingBoardName, setIsEditingBoardName] = useState(false);
+    const [editBoardName, setEditBoardName] = useState('');
+
     // Função para obter o quadro ativo
     const getActiveBoard = () => {
         return boards.find(board => board.id === activeBoardId);
@@ -385,6 +389,38 @@ function Kanban() {
         }
     };
 
+    // Função para abrir a edição do nome do quadro
+    const openEditBoardName = () => {
+        if (activeBoard) {
+            setEditBoardName(activeBoard.name);
+            setIsEditingBoardName(true);
+        }
+    };
+
+    // Função para cancelar a edição do nome do quadro
+    const cancelEditBoardName = () => {
+        setIsEditingBoardName(false);
+        setEditBoardName('');
+    };
+
+    // Função para salvar o novo nome do quadro
+    const saveBoardName = () => {
+        if (!editBoardName.trim()) {
+            alert('Por favor, digite um nome para o quadro.');
+            return;
+        }
+
+        setBoards(prev => prev.map(board => {
+            if (board.id === activeBoardId) {
+                return { ...board, name: editBoardName };
+            }
+            return board;
+        }));
+
+        setIsEditingBoardName(false);
+        setEditBoardName('');
+    };
+
     const activeBoard = getActiveBoard();
 
     return (
@@ -416,7 +452,16 @@ function Kanban() {
                     </div>
                 ) : (
                     <>
-                        <KanbanHeader boardName={activeBoard.name} onAddColumn={addColumn} />
+                        <KanbanHeader 
+                            boardName={activeBoard.name} 
+                            onAddColumn={addColumn}
+                            onEditBoardName={openEditBoardName}
+                            isEditingBoardName={isEditingBoardName}
+                            editBoardName={editBoardName}
+                            setEditBoardName={setEditBoardName}
+                            onSaveBoardName={saveBoardName}
+                            onCancelEditBoardName={cancelEditBoardName}
+                        />
                         
                         <div className="kanban-board">
                             {activeBoard.columns.map(column => (
