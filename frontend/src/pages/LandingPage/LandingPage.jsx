@@ -82,9 +82,9 @@ export default function LandingPage({ onGetStarted, onGoToKanban }) {
                   </div>
                   <div className="mockup-column">
                     <div className="column-title">Concluído</div>
-                    <div className="mockup-card done">
+                    <div className="mockup-card done alta">
                       <div className="card-title">Planejamento</div>
-                      <div className="done-badge">✓</div>
+                      <div className="priority-badge alta">Alta</div>
                     </div>
                   </div>
                 </div>

@@ -1,4 +1,8 @@
 /* Landing Page Styles */
+html {
+  scroll-behavior: smooth;
+}
+
 .landing-page {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   line-height: 1.6;
@@ -302,6 +306,10 @@
   opacity: 0.8;
 }
 
+.mockup-card.done.alta {
+  border-left-color: #ef4444;
+}
+
 .card-title {
   font-size: 0.8rem;
   font-weight: 600;
@@ -346,6 +354,7 @@
   background: #f8fafc;
   width: 100%;
   margin: 0;
+  scroll-margin-top: 80px;
 }
 
 .section-header {
@@ -413,6 +422,7 @@
   background: white;
   width: 100%;
   margin: 0;
+  scroll-margin-top: 80px;
 }
 
 .about-content {
