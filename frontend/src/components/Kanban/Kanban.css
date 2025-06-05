@@ -408,7 +408,19 @@
 .kanban-card:not(.dragging):hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-left-color: #2563eb;
+}
+
+/* Priority-specific hover colors */
+.kanban-card[data-priority="alta"]:not(.dragging):hover {
+    border-left-color: #ef4444;
+}
+
+.kanban-card[data-priority="media"]:not(.dragging):hover {
+    border-left-color: #f59e0b;
+}
+
+.kanban-card[data-priority="baixa"]:not(.dragging):hover {
+    border-left-color: #10b981;
 }
 
 /* Drag handle cursor */

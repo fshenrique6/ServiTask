@@ -4,6 +4,7 @@ export default function KanbanCard({ card, columnId, onEditCard, onDeleteCard, g
   return (
     <div
       className="kanban-card"
+      data-priority={card.priority}
       draggable
       onDragStart={e => handleDragStart(e, card, columnId)}
       onDragEnd={handleDragEnd}
