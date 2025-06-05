@@ -203,34 +203,7 @@
   justify-content: center;
 }
 
-.demo-access {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
 
-.demo-access p {
-  margin-bottom: 1rem;
-  font-size: 0.95rem;
-}
-
-.demo-btn {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  width: 100%;
-}
-
-.demo-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-}
 
 /* Lado direito - Formulário */
 .login-form-section {

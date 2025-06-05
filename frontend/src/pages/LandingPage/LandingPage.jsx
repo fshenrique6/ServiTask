@@ -1,7 +1,7 @@
 import React from 'react';
 import './LandingPage.css';
 
-export default function LandingPage({ onGetStarted }) {
+export default function LandingPage({ onGetStarted, onGoToKanban }) {
   return (
     <div className="landing-page">
       {/* Header */}
@@ -34,9 +34,6 @@ export default function LandingPage({ onGetStarted }) {
               <div className="hero-buttons">
                 <button className="btn-primary-hero" onClick={onGetStarted}>
                   🚀 Começar Gratuitamente
-                </button>
-                <button className="btn-secondary-hero">
-                  📹 Ver Demo
                 </button>
               </div>
               <div className="hero-features">
@@ -209,6 +206,10 @@ export default function LandingPage({ onGetStarted }) {
             <p className="footer-text">
               Simplificando o gerenciamento de projetos, uma tarefa por vez.
             </p>
+            {/* Botão temporário para acessar Kanban */}
+            <button className="temp-kanban-btn" onClick={onGoToKanban}>
+              🚀 Acesso Temporário ao Kanban
+            </button>
           </div>
         </div>
       </footer>

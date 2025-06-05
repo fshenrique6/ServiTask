@@ -22,16 +22,7 @@ export default function Auth({ onLogin, onBackToLanding }) {
     alert('Conta criada com sucesso! Faça login para continuar.');
   };
 
-  // Configurar callback para demo
-  React.useEffect(() => {
-    window.onDemoAccess = () => {
-      onLogin(); // Vai direto para o Kanban
-    };
 
-    return () => {
-      delete window.onDemoAccess;
-    };
-  }, [onLogin]);
 
   return (
     <AuthLayout

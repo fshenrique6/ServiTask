@@ -19,7 +19,9 @@ function App() {
     setCurrentPage('landing')
   }
 
-
+  const handleGoToKanban = () => {
+    setCurrentPage('kanban')
+  }
 
   const renderPage = () => {
     switch (currentPage) {
@@ -31,21 +33,13 @@ function App() {
           />
         )
       case 'kanban':
-        return (
-          <div>
-            <button 
-              className="back-to-landing-btn" 
-              onClick={handleBackToLanding}
-              title="Voltar para página inicial"
-            >
-              ← Voltar
-            </button>
-            <Kanban />
-          </div>
-        )
+        return <Kanban />
       default:
         return (
-          <LandingPage onGetStarted={handleGetStarted} />
+          <LandingPage 
+            onGetStarted={handleGetStarted} 
+            onGoToKanban={handleGoToKanban}
+          />
         )
     }
   }

@@ -55,14 +55,7 @@ export default function AuthLayout({
                 </div>
               </div>
 
-              {!isSignUp && (
-                <div className="demo-access">
-                  <p>Ou experimente sem cadastro:</p>
-                  <button className="demo-btn" onClick={() => window.onDemoAccess?.()}>
-                    🚀 Acessar Demo
-                  </button>
-                </div>
-              )}
+
             </div>
           </div>
 
