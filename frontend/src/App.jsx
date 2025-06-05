@@ -19,9 +19,7 @@ function App() {
     setCurrentPage('landing')
   }
 
-  const handleBackToLogin = () => {
-    setCurrentPage('login')
-  }
+
 
   const renderPage = () => {
     switch (currentPage) {
