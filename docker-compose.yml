@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # MySQL Database
   mysql:
     image: mysql:8.0
     container_name: servitask-mysql
@@ -23,7 +22,6 @@ services:
       timeout: 20s
       retries: 10
 
-  # Backend Spring Boot
   backend:
     build:
       context: ./backend
@@ -45,7 +43,6 @@ services:
       - servitask-network
     restart: unless-stopped
 
-  # Frontend React/Vite
   frontend:
     build:
       context: ./frontend
