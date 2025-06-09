@@ -20,7 +20,7 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")         
 
 public class BoardController {
-    
+
     private final BoardService boardService;
     private final UserService userService;
 
@@ -30,6 +30,23 @@ public class BoardController {
             User user = userService.getUserFromToken(authHeader);
             List<Board> boards = boardService.getUserBoards(user);
             return ResponseEntity.ok(boards);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @GetMapping("/{boardId}")
+    public ResponseEntity<Board> getBoardById(@PathVariable Long boardId,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            User user = userService.getUserFromToken(authHeader);
+            Optional<Board> board = boardService.getBoardById(boardId, user);
+
+            if (board.isPresent()) {
+                return ResponseEntity.ok(board.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (Exception e) {
             return ResponseEntity.status(401).build();
         }
