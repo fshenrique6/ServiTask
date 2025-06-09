@@ -20,5 +20,18 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")         
 
 public class BoardController {
+    
+    private final BoardService boardService;
+    private final UserService userService;
 
-}
+    @GetMapping
+    public ResponseEntity<List<Board>> getUserBoards(@RequestHeader("Authorization") String authHeader) {
+        try {
+            User user = userService.getUserFromToken(authHeader);
+            List<Board> boards = boardService.getUserBoards(user);
+            return ResponseEntity.ok(boards);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+}   
