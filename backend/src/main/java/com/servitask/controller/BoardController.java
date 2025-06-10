@@ -159,4 +159,104 @@ public class BoardController {
             return ResponseEntity.status(401).build();
         }
     }
-}   
+
+    @PostMapping("/{boardId}/columns/{columnId}/cards")
+    public ResponseEntity<Card> addCard(@PathVariable Long boardId,
+            @PathVariable Long columnId,
+            @RequestBody Map<String, String> request,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            User user = userService.getUserFromToken(authHeader);
+            String title = request.get("title");
+            String description = request.get("description");
+            String priority = request.get("priority");
+
+            if (title == null || title.trim().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Optional<Card> card = boardService.addCard(boardId, columnId, title, description, priority, user);
+
+            if (card.isPresent()) {
+                return ResponseEntity.ok(card.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PutMapping("/{boardId}/columns/{columnId}/cards/{cardId}")
+    public ResponseEntity<Card> updateCard(@PathVariable Long boardId,
+            @PathVariable Long columnId,
+            @PathVariable Long cardId,
+            @RequestBody Map<String, String> request,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            User user = userService.getUserFromToken(authHeader);
+            String title = request.get("title");
+            String description = request.get("description");
+            String priority = request.get("priority");
+
+            if (title == null || title.trim().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Optional<Card> card = boardService.updateCard(boardId, columnId, cardId, title, description, priority,
+                    user);
+
+            if (card.isPresent()) {
+                return ResponseEntity.ok(card.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @DeleteMapping("/{boardId}/columns/{columnId}/cards/{cardId}")
+    public ResponseEntity<Void> removeCard(@PathVariable Long boardId,
+            @PathVariable Long columnId,
+            @PathVariable Long cardId,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            User user = userService.getUserFromToken(authHeader);
+            boolean removed = boardService.removeCard(boardId, columnId, cardId, user);
+
+            if (removed) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PutMapping("/{boardId}/cards/{cardId}/move")
+    public ResponseEntity<Card> moveCard(@PathVariable Long boardId,
+            @PathVariable Long cardId,
+            @RequestBody Map<String, Object> request,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            User user = userService.getUserFromToken(authHeader);
+            
+            Long targetColumnId = Long.valueOf(request.get("targetColumnId").toString());
+            Integer targetPosition = request.get("targetPosition") != null
+                    ? Integer.valueOf(request.get("targetPosition").toString())
+                    : null;
+
+            Optional<Card> card = boardService.moveCard(boardId, cardId, targetColumnId, targetPosition, user);
+
+            if (card.isPresent()) {
+                return ResponseEntity.ok(card.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+}
