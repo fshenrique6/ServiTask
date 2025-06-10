@@ -51,4 +51,6 @@ public class BoardController {
             return ResponseEntity.status(401).build();
         }
     }
+
+    
 }   
