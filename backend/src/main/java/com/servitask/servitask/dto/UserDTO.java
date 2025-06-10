@@ -12,11 +12,6 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    /**
-     * @param id ID único do usuário
-     * @param username Nome de usuário
-     * @param email Email do usuário
-     */
     public UserDTO(Long id, String username, String email) {
         this.id = id;
         this.username = username;

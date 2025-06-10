@@ -28,12 +28,6 @@ public class RegisterRequest {
 
     public RegisterRequest() {}
 
-    /**
-     * @param name
-     * @param email
-     * @param password
-     * @param confirmPassword
-     */
     public RegisterRequest(String name, String email, String password, String confirmPassword) {
         this.name = name;
         this.email = email;
@@ -73,9 +67,6 @@ public class RegisterRequest {
         this.confirmPassword = confirmPassword;
     }
 
-    /**
-     * @return
-     */
     public boolean isPasswordMatching() {
         return password != null && password.equals(confirmPassword);
     }
