@@ -44,11 +44,6 @@ public class User implements UserDetails {
         this.updatedAt = LocalDateTime.now();
     }
 
-    /**
-     * @param name
-     * @param email
-     * @param password
-     */
     public User(String name, String email, String password) {
         this();
         this.name = name;
@@ -56,60 +51,36 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    /**
-     * @param name
-     * @param email
-     * @param password
-     * @param role
-     */
     public User(String name, String email, String password, Role role) {
         this(name, email, password);
         this.role = role;
     }
     
-    /**
-     * @return
-     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
-    /**
-     * @return
-     */
     @Override
     public String getUsername() {
         return email;
     }
 
-    /**
-     * @return
-     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    /**
-     * @return
-     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    /**
-     * @return
-     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    /**
-     * @return
-     */
     @Override
     public boolean isEnabled() {
         return true;
@@ -141,9 +112,6 @@ public class User implements UserDetails {
         this.updatedAt = LocalDateTime.now();
     }
 
-    /**
-     * @return
-     */
     @Override
     public String getPassword() {
         return password;

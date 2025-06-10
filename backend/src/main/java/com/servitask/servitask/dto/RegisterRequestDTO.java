@@ -4,48 +4,25 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
- * DTO (Data Transfer Object) para requisições de registro de novos usuários
- * 
- * Representa os dados que o frontend envia para criar uma nova conta.
- * Contém validações automáticas executadas antes do método do controller.
- * Inclui validação customizada para confirmar se as senhas coincidem.
- */
 public class RegisterRequest {
     
-    // Nome completo do usuário
-    @NotBlank(message = "Nome é obrigatório")                                   // Não pode ser vazio
-    @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")  // Tamanho válido
+    @NotBlank(message = "Nome é obrigatório")
+    @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")
     private String name;
     
-    // Email do usuário - será usado como username único no sistema
-    @NotBlank(message = "Email é obrigatório")              // Não pode ser vazio
-    @Email(message = "Email deve ter um formato válido")    // Formato de email válido
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email deve ter um formato válido")
     private String email;
     
-    // Senha em texto plano (será criptografada com BCrypt antes de salvar)
-    @NotBlank(message = "Senha é obrigatória")                          // Não pode ser vazia
-    @Size(min = 6, message = "Senha deve ter pelo menos 6 caracteres")  // Mínimo de segurança
+    @NotBlank(message = "Senha é obrigatória")
+    @Size(min = 6, message = "Senha deve ter pelo menos 6 caracteres")
     private String password;
     
-    // Confirmação da senha para evitar erros de digitação
-    @NotBlank(message = "Confirmação de senha é obrigatória")   // Não pode ser vazia
+    @NotBlank(message = "Confirmação de senha é obrigatória")
     private String confirmPassword;
 
-    // === CONSTRUTORES ===
-    
-    /**
-     * Construtor padrão (obrigatório para deserialização JSON)
-     */
     public RegisterRequest() {}
 
-    /**
-     * Construtor completo para facilitar criação em testes
-     * @param name Nome completo do usuário
-     * @param email Email do usuário
-     * @param password Senha do usuário
-     * @param confirmPassword Confirmação da senha
-     */
     public RegisterRequest(String name, String email, String password, String confirmPassword) {
         this.name = name;
         this.email = email;
@@ -53,9 +30,6 @@ public class RegisterRequest {
         this.confirmPassword = confirmPassword;
     }
 
-    // === GETTERS E SETTERS ===
-    // Necessários para serialização/deserialização JSON
-    
     public String getName() {
         return name;
     }
@@ -88,14 +62,6 @@ public class RegisterRequest {
         this.confirmPassword = confirmPassword;
     }
 
-    // === MÉTODOS DE VALIDAÇÃO ===
-    
-    /**
-     * Verifica se a senha e confirmação de senha são iguais
-     * Usado pelo UserService antes de criar o usuário
-     * 
-     * @return true se as senhas coincidem, false caso contrário
-     */
     public boolean isPasswordMatching() {
         return password != null && password.equals(confirmPassword);
     }
