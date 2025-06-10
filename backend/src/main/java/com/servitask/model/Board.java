@@ -18,4 +18,10 @@ import java.util.List;
 @ToString(exclude = {"columns"})
 public class Board {
 
+@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(nullable = false)
+    private String name;
 }
