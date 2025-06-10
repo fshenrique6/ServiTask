@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 public class Card {
 
-@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -28,7 +28,7 @@ public class Card {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Priority priority = priority.MEDIA;
+    private Priority priority = Priority.BAIXA;
 
     @Column(nullable = false)
     private Integer position;
@@ -53,5 +53,26 @@ public class Card {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public enum Priority {
+        BAIXA("baixa"),
+        MEDIA("media"),
+        ALTA("alta");
+
+        private final String value;
+
+        Priority(String value) {
+            this.value = value;
+        }
+
+        public static Priority fromString(String text) {
+            for (Priority priority : Priority.values()) {
+                if (priority.value.equalsIgnoreCase(text)) {
+                    return priority;
+                }
+            }
+            return BAIXA;
+        }
     }
 }
