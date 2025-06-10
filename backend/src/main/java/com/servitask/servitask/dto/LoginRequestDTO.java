@@ -1,5 +1,5 @@
 package com.servitask.servitask.dto;
 
-public class AuthResponse {
+public class LoginRequestDTO {
     
 }
