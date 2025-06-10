@@ -1,5 +1,23 @@
 package com.servitask.servitask.repository;
 
-public class UserRepository {
+import com.servitask.servitask.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
     
+    /**
+     * @param email
+     * @return
+     */
+    Optional<User> findByEmail(String email);
+    
+    /**
+     * @param email
+     * @return
+     */
+    boolean existsByEmail(String email);
 }
