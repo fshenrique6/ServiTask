@@ -13,26 +13,12 @@ import java.util.Optional;
 @Repository
 public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> {
 
-    @param
-    @return
-
     List<BoardColumn> findByBoardOrderByPosition(Board board);
-
-    @param
-    @param
-    @return
 
     Optional<BoardColumn> findByIdAndBoard(Long id, Board board);
 
-    @param
-    @return
-
     @Query("SELECT COALESCE(MAX(c.position), 0) + 1 FROM BoardColumn c WHERE c.board = :board")
     Integer findNextPosition(@Param("board") Board board);
-
-    @param
-    @param
-    @return
 
     List<BoardColumn> findByBoardAndPositionGreaterThanOrderByPosition(Board board, Integer position);
 }
