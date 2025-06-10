@@ -39,4 +39,25 @@ public class Board {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+    updatedAt = LocalDateTime.now();
+    }
+    
+    public void addColumn(BoardColumn column) {
+        columns.add(column);
+        column.setBoard(this);
+    }
+
+    public void removeColumn(BoardColumn column) {
+        columns.remove(column);
+        column.setBoard(null);
+    }
 }
