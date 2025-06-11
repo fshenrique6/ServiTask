@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;  
 
-@Service                    //componente de serviço do Spring
-@RequiredArgsConstructor    //gera construtor com todos os campos finais
-@Transactional              //todas as operações deste serviço serão transacionais
+@Service
+@RequiredArgsConstructor
+@Transactional
 public class BoardService {
     private final BoardRepository boardRepository;   
     private final BoardColumnRepository boardColumnRepository;
@@ -85,16 +85,14 @@ public class BoardService {
         if (boardOpt.isPresent()) {
             Board board = boardOpt.get();
             
-            // Calcula a próxima posição disponível
-            Integer nextPosition = columnRepository.findNextPosition(board);
+            Integer nextPosition = boardColumnRepository.findNextPosition(board);
             
-            // Cria a nova coluna
             BoardColumn column = new BoardColumn();
             column.setName(columnName);
             column.setPosition(nextPosition);
             column.setBoard(board);
             
-            return Optional.of(columnRepository.save(column));
+            return Optional.of(boardColumnRepository.save(column));
         }
         return Optional.empty();
     }
@@ -102,11 +100,11 @@ public class BoardService {
     public Optional<BoardColumn> updateColumnName(Long boardId, Long columnId, String newName, User user) {
         Optional<Board> boardOpt = boardRepository.findByIdAndUser(boardId, user);
         if (boardOpt.isPresent()) {
-            Optional<BoardColumn> columnOpt = columnRepository.findByIdAndBoard(columnId, boardOpt.get());
+            Optional<BoardColumn> columnOpt = boardColumnRepository.findByIdAndBoard(columnId, boardOpt.get());
             if (columnOpt.isPresent()) {
                 BoardColumn column = columnOpt.get();
                 column.setName(newName);  // setName já atualiza updatedAt
-                return Optional.of(columnRepository.save(column));
+                return Optional.of(boardColumnRepository.save(column));
             }
         }
         return Optional.empty();
@@ -115,19 +113,19 @@ public class BoardService {
      public boolean removeColumn(Long boardId, Long columnId, User user) {
         Optional<Board> boardOpt = boardRepository.findByIdAndUser(boardId, user);
         if (boardOpt.isPresent()) {
-            Optional<BoardColumn> columnOpt = columnRepository.findByIdAndBoard(columnId, boardOpt.get());
+            Optional<BoardColumn> columnOpt = boardColumnRepository.findByIdAndBoard(columnId, boardOpt.get());
             if (columnOpt.isPresent()) {
                 BoardColumn column = columnOpt.get();
                 
                 // Reordena as colunas que vêm depois (diminui posição em 1)
-                List<BoardColumn> columnsToUpdate = columnRepository
+                List<BoardColumn> columnsToUpdate = boardColumnRepository
                     .findByBoardAndPositionGreaterThanOrderByPosition(boardOpt.get(), column.getPosition());
                 
                 columnsToUpdate.forEach(col -> col.setPosition(col.getPosition() - 1));
-                columnRepository.saveAll(columnsToUpdate);
+                boardColumnRepository.saveAll(columnsToUpdate);
                 
                 // Remove a coluna (cascade remove os cards)
-                columnRepository.delete(column);
+                boardColumnRepository.delete(column);
                 return true;
             }
         }
@@ -137,8 +135,9 @@ public class BoardService {
     //OPERAÇÕES DE CARD
 
     public Optional<Card> addCard(long boardId, Long columnId, String title, String description, String priority, User user){
+        Optional<Board> boardOpt = boardRepository.findByIdAndUser(boardId, user);
         if (boardOpt.isPresent()) {
-            Optional<BoardColumn> columnOpt = columnRepository.findByIdAndBoard(columnId, boardOpt.get());
+            Optional<BoardColumn> columnOpt = boardColumnRepository.findByIdAndBoard(columnId, boardOpt.get());
             if (columnOpt.isPresent()) {
                 BoardColumn column = columnOpt.get();
 
@@ -161,7 +160,7 @@ public class BoardService {
                                    String description, String priority, User user) {
         Optional<Board> boardOpt = boardRepository.findByIdAndUser(boardId, user);
         if (boardOpt.isPresent()) {
-            Optional<BoardColumn> columnOpt = columnRepository.findByIdAndBoard(columnId, boardOpt.get());
+            Optional<BoardColumn> columnOpt = boardColumnRepository.findByIdAndBoard(columnId, boardOpt.get());
             if (columnOpt.isPresent()) {
                 Optional<Card> cardOpt = cardRepository.findByIdAndColumn(cardId, columnOpt.get());
                 if (cardOpt.isPresent()) {
@@ -180,7 +179,7 @@ public class BoardService {
     public boolean removeCard(Long boardId, Long columnId, Long cardId, User user) {
         Optional<Board> boardOpt = boardRepository.findByIdAndUser(boardId, user);
         if (boardOpt.isPresent()) {
-            Optional<BoardColumn> columnOpt = columnRepository.findByIdAndBoard(columnId, boardOpt.get());
+            Optional<BoardColumn> columnOpt = boardColumnRepository.findByIdAndBoard(columnId, boardOpt.get());
             if (columnOpt.isPresent()) {
                 Optional<Card> cardOpt = cardRepository.findByIdAndColumn(cardId, columnOpt.get());
                 if (cardOpt.isPresent()) {
@@ -205,7 +204,7 @@ public class BoardService {
     public Optional<Card> moveCard(Long boardId, Long cardId, Long targetColumnId, Integer targetPosition, User user) {
         Optional<Board> boardOpt = boardRepository.findByIdAndUser(boardId, user);
         if (boardOpt.isPresent()) {
-            Optional<BoardColumn> targetColumnOpt = columnRepository.findByIdAndBoard(targetColumnId, boardOpt.get());
+            Optional<BoardColumn> targetColumnOpt = boardColumnRepository.findByIdAndBoard(targetColumnId, boardOpt.get());
             if (targetColumnOpt.isPresent()) {
                 
                 // Encontra o card em qualquer coluna do board
