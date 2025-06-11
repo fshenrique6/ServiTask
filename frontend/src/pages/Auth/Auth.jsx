@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthLayout from './AuthLayout';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 import './Auth.css';
 
-export default function Auth({ onLogin, onBackToLanding }) {
+export default function Auth() {
   const [isSignUpMode, setIsSignUpMode] = useState(false);
+  const navigate = useNavigate();
 
   const handleToggleMode = () => {
     setIsSignUpMode(!isSignUpMode);
   };
 
   const handleLogin = () => {
-    onLogin();
+    navigate('/kanban');
   };
 
   const handleSignUp = () => {
@@ -22,7 +24,9 @@ export default function Auth({ onLogin, onBackToLanding }) {
     alert('Conta criada com sucesso! Faça login para continuar.');
   };
 
-
+  const handleBackToLanding = () => {
+    navigate('/');
+  };
 
   return (
     <AuthLayout
@@ -31,7 +35,7 @@ export default function Auth({ onLogin, onBackToLanding }) {
         ? "Comece a organizar suas tarefas de forma inteligente" 
         : "Entre para continuar gerenciando suas tarefas"}
       isSignUp={isSignUpMode}
-      onBackToLanding={onBackToLanding}
+      onBackToLanding={handleBackToLanding}
     >
       {isSignUpMode ? (
         <SignUpForm

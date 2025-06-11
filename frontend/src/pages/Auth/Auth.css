@@ -268,7 +268,7 @@
 }
 
 .submit-btn {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: var(--primary-color);
   color: white;
   border: none;
   padding: 1rem;
@@ -276,13 +276,14 @@
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   margin-top: 0.5rem;
+  width: 100%;
 }
 
 .submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+  background: var(--primary-hover);
+  transform: translateY(-1px);
 }
 
 .form-divider {
@@ -347,14 +348,14 @@
 }
 
 .forgot-password a {
-  color: #2563eb;
+  color: var(--primary-color);
   text-decoration: none;
   font-size: 0.9rem;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
 }
 
 .forgot-password a:hover {
-  color: #1d4ed8;
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 
@@ -374,15 +375,15 @@
 .toggle-btn {
   background: none;
   border: none;
-  color: #2563eb;
+  color: var(--primary-color);
   font-weight: 600;
   cursor: pointer;
   margin-left: 0.5rem;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
 }
 
 .toggle-btn:hover {
-  color: #1d4ed8;
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 

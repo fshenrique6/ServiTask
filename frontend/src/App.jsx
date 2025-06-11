@@ -1,52 +1,18 @@
-import { useState } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Kanban from './components/Kanban/Kanban'
 import LandingPage from './pages/LandingPage/LandingPage'
 import Auth from './pages/Auth/Auth'
 import './App.css'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('landing') // 'landing', 'login', 'kanban'
-
-  const handleGetStarted = () => {
-    setCurrentPage('login')
-  }
-
-  const handleLogin = () => {
-    setCurrentPage('kanban')
-  }
-
-  const handleBackToLanding = () => {
-    setCurrentPage('landing')
-  }
-
-  const handleGoToKanban = () => {
-    setCurrentPage('kanban')
-  }
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'login':
-        return (
-          <Auth 
-            onLogin={handleLogin} 
-            onBackToLanding={handleBackToLanding}
-          />
-        )
-      case 'kanban':
-        return <Kanban />
-      default:
-        return (
-          <LandingPage 
-            onGetStarted={handleGetStarted} 
-            onGoToKanban={handleGoToKanban}
-          />
-        )
-    }
-  }
-
   return (
     <div className="app-container">
-      {renderPage()}
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/kanban" element={<Kanban />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </div>
   )
 }
