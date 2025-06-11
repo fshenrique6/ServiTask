@@ -35,6 +35,13 @@ public class HashUtil {
     }
 
     /**
+     * @return
+     */
+    public static PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
+
+    /**
      * @param possibleHash
      * @return
      */
