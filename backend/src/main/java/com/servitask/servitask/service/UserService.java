@@ -111,4 +111,22 @@ public class UserService implements UserDetailsService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    /**
+     * @param authHeader
+     * @return
+     * @throws RuntimeException
+     */
+    public User getUserFromToken(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Token JWT não fornecido ou formato inválido");
+        }
+
+        String token = authHeader.substring(7);
+
+        String email = jwtService.extractUsername(token);
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    }
 }
