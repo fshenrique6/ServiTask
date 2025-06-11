@@ -1,7 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 
-export default function LandingPage({ onGetStarted, onGoToKanban }) {
+export default function LandingPage() {
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    navigate('/auth');
+  };
+
+  const handleGoToKanban = () => {
+    navigate('/kanban');
+  };
+
   return (
     <div className="landing-page">
       {/* Header */}
@@ -14,7 +25,7 @@ export default function LandingPage({ onGetStarted, onGoToKanban }) {
           <nav className="nav">
             <a href="#features">Recursos</a>
             <a href="#about">Sobre</a>
-            <button className="btn-header" onClick={onGetStarted}>
+            <button className="btn-header" onClick={handleGetStarted}>
               Começar Agora
             </button>
           </nav>
@@ -32,7 +43,7 @@ export default function LandingPage({ onGetStarted, onGoToKanban }) {
                 Organize, priorize e acompanhe suas tarefas de forma visual e intuitiva.
               </p>
               <div className="hero-buttons">
-                <button className="btn-primary-hero" onClick={onGetStarted}>
+                <button className="btn-primary-hero" onClick={handleGetStarted}>
                   🚀 Começar Gratuitamente
                 </button>
               </div>
@@ -188,7 +199,7 @@ export default function LandingPage({ onGetStarted, onGoToKanban }) {
           <div className="cta-content">
             <h2>Pronto para aumentar sua produtividade?</h2>
             <p>Comece a usar o ServiTask agora mesmo e transforme a forma como você gerencia seus projetos.</p>
-            <button className="btn-cta" onClick={onGetStarted}>
+            <button className="btn-cta" onClick={handleGetStarted}>
               🚀 Começar Agora - É Grátis!
             </button>
           </div>
@@ -207,7 +218,7 @@ export default function LandingPage({ onGetStarted, onGoToKanban }) {
               Simplificando o gerenciamento de projetos, uma tarefa por vez.
             </p>
             {/* Botão temporário para acessar Kanban */}
-            <button className="temp-kanban-btn" onClick={onGoToKanban}>
+            <button className="temp-kanban-btn" onClick={handleGoToKanban}>
               🚀 Acesso Temporário ao Kanban
             </button>
           </div>
