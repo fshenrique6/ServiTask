@@ -1,8 +1,8 @@
 package com.servitask.servitask.service;
 
-import com.servitask.servitask.dto.AuthResponse;
-import com.servitask.servitask.dto.LoginRequest;
-import com.servitask.servitask.dto.RegisterRequest;
+import com.servitask.servitask.dto.AuthResponseDTO;
+import com.servitask.servitask.dto.LoginRequestDTO;
+import com.servitask.servitask.dto.RegisterRequestDTO;
 import com.servitask.servitask.entity.User;
 import com.servitask.servitask.repository.UserRepository;
 import com.servitask.servitask.util.HashUtil;
@@ -30,93 +30,60 @@ public class UserService implements UserDetailsService {
     @Lazy
     private AuthenticationManager authenticationManager;
 
-    /**
-     * @param username
-     * @return
-     * @throws UsernameNotFoundException
-     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com email: " + username));
     }
 
-    /**
-     * @param loginRequest
-     * @return
-     * @throws UsernameNotFoundExceptions
-     */
-    public AuthResponse login(LoginRequest loginRequest) {
+    public AuthResponseDTO login(LoginRequestDTO loginRequestDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()));
+                        loginRequestDTO.getEmail(),
+                        loginRequestDTO.getPassword()));
 
-        User user = userRepository.findByEmail(loginRequest.getEmail())
+        User user = userRepository.findByEmail(loginRequestDTO.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
         String jwtToken = jwtService.generateToken(user);
 
-        return new AuthResponse(jwtToken, user);
+        return new AuthResponseDTO(jwtToken, user.getUsername(), user.getRole().name());
     }
 
-    /**
-     * @param registerRequest
-     * @return
-     * @throws RuntimeException
-     */
-    public AuthResponse register(RegisterRequest registerRequest) {
-        if (!registerRequest.isPasswordMatching()) {
+    public AuthResponseDTO register(RegisterRequestDTO registerRequestDTO) {
+        if (!registerRequestDTO.isPasswordMatching()) {
             throw new RuntimeException("As senhas não coincidem");
         }
 
-        if (userRepository.existsByEmail(registerRequest.getEmail())) {
+        if (userRepository.existsByEmail(registerRequestDTO.getEmail())) {
             throw new RuntimeException("Email já está em uso");
         }
 
         User user = new User(
-                registerRequest.getName(),
-                registerRequest.getEmail(),
-                HashUtil.hashPassword(registerRequest.getPassword()));
+                registerRequestDTO.getName(),
+                registerRequestDTO.getEmail(),
+                HashUtil.hashPassword(registerRequestDTO.getPassword()));
 
         User savedUser = userRepository.save(user);
 
         String jwtToken = jwtService.generateToken(savedUser);
 
-        return new AuthResponse(jwtToken, savedUser);
+        return new AuthResponseDTO(jwtToken, savedUser.getUsername(), savedUser.getRole().name());
     }
 
-    /**
-     * @param email
-     * @return
-     */
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    /**
-     * @param id
-     * @return
-     * @throws RuntimeException
-     */
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com id: " + id));
     }
 
-    /**
-     * @param email
-     * @return
-     */
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    /**
-     * @param authHeader
-     * @return
-     * @throws RuntimeException
-     */
     public User getUserFromToken(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Token JWT não fornecido ou formato inválido");
