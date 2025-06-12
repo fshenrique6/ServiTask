@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import apiService from '../../services/api';
 
 export default function LoginForm({ onLogin, onToggleMode }) {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -12,18 +15,30 @@ export default function LoginForm({ onLogin, onToggleMode }) {
       ...prev,
       [name]: value
     }));
+    if (error) setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!formData.email.trim() || !formData.password.trim()) {
-      alert('Por favor, preencha todos os campos obrigatórios.');
+      setError('Por favor, preencha todos os campos obrigatórios.');
       return;
     }
 
-    // Simular login bem-sucedido
-    onLogin();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await apiService.login(formData.email, formData.password);
+      console.log('Login bem-sucedido:', response);
+      onLogin();
+    } catch (error) {
+      console.error('Erro no login:', error);
+      setError(error.message || 'Erro ao fazer login. Verifique suas credenciais.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,6 +49,20 @@ export default function LoginForm({ onLogin, onToggleMode }) {
       </div>
 
       <form className="login-form" onSubmit={handleSubmit}>
+        {error && (
+          <div style={{ 
+            background: '#fee2e2', 
+            color: '#dc2626', 
+            padding: '0.75rem', 
+            borderRadius: '8px', 
+            marginBottom: '1rem',
+            fontSize: '0.9rem',
+            border: '1px solid #fecaca'
+          }}>
+            {error}
+          </div>
+        )}
+
         <div className="form-group">
           <label htmlFor="email">E-mail *</label>
           <input
@@ -44,6 +73,7 @@ export default function LoginForm({ onLogin, onToggleMode }) {
             onChange={handleInputChange}
             placeholder="Digite seu e-mail"
             required
+            disabled={loading}
           />
         </div>
 
@@ -57,20 +87,12 @@ export default function LoginForm({ onLogin, onToggleMode }) {
             onChange={handleInputChange}
             placeholder="Digite sua senha"
             required
+            disabled={loading}
           />
         </div>
 
-        <button type="submit" className="submit-btn">
-          🔑 Entrar
-        </button>
-
-        <div className="form-divider">
-          <span>ou</span>
-        </div>
-
-        <button type="button" className="google-btn">
-          <span className="google-icon">G</span>
-          Entrar com Google
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? '🔄 Entrando...' : '🔑 Entrar'}
         </button>
 
         <div className="forgot-password">

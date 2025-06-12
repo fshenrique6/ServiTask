@@ -6,8 +6,9 @@ import SignUpForm from './SignUpForm';
 import './Auth.css';
 
 export default function Auth() {
-  const [isSignUpMode, setIsSignUpMode] = useState(false);
   const navigate = useNavigate();
+  
+  const [isSignUpMode, setIsSignUpMode] = useState(false);
 
   const handleToggleMode = () => {
     setIsSignUpMode(!isSignUpMode);
@@ -18,10 +19,7 @@ export default function Auth() {
   };
 
   const handleSignUp = () => {
-    // Por enquanto, após o cadastro, redireciona para login
-    // Futuramente pode fazer login automático
-    setIsSignUpMode(false);
-    alert('Conta criada com sucesso! Faça login para continuar.');
+    navigate('/kanban');
   };
 
   const handleBackToLanding = () => {

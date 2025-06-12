@@ -11,7 +11,7 @@ export default function KanbanColumn({ column, onEditColumn, onRemoveColumn, onA
     >
       <div className="column-header">
         <div className="column-title-container">
-          <h3>{column.title}</h3>
+          <h3>{column.name}</h3>
           <div className="column-actions">
             <button className="column-btn edit-btn" onClick={() => onEditColumn(column)} title="Editar coluna">✏️</button>
             <button className="column-btn delete-btn" onClick={() => onRemoveColumn(column.id)} title="Excluir coluna">🗑️</button>

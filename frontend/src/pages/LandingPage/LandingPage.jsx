@@ -1,27 +1,91 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 
 export default function LandingPage() {
   const navigate = useNavigate();
 
+  const [mockupCards, setMockupCards] = useState({
+    'a-fazer': [
+      { id: 1, title: 'Design da Interface', priority: 'alta' },
+      { id: 2, title: 'Documentação', priority: 'media' }
+    ],
+    'em-progresso': [
+      { id: 3, title: 'Desenvolvimento Frontend', priority: 'alta' },
+      { id: 5, title: 'Testes de Usabilidade', priority: 'baixa' }
+    ],
+    'concluido': [
+      { id: 4, title: 'Planejamento', priority: 'media' }
+    ]
+  });
+
+  const [draggedCard, setDraggedCard] = useState(null);
+  const [dragOverColumn, setDragOverColumn] = useState(null);
+
   const handleGetStarted = () => {
     navigate('/auth');
-  };
+  }
 
   const handleGoToKanban = () => {
     navigate('/kanban');
+  }
+
+  const handleDragStart = (e, card, sourceColumn) => {
+    console.log('Drag started:', card.title, 'from', sourceColumn);
+    setDraggedCard({ card, sourceColumn });
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, column) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverColumn(column);
+  };
+
+  const handleDragLeave = (e) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setDragOverColumn(null);
+    }
+  };
+
+  const handleDrop = (e, targetColumn) => {
+    e.preventDefault();
+    console.log('Drop on:', targetColumn, 'with card:', draggedCard?.card?.title);
+    setDragOverColumn(null);
+    
+    if (!draggedCard || draggedCard.sourceColumn === targetColumn) {
+      setDraggedCard(null);
+      return;
+    }
+
+    const newCards = { ...mockupCards };
+    
+    newCards[draggedCard.sourceColumn] = newCards[draggedCard.sourceColumn].filter(
+      card => card.id !== draggedCard.card.id
+    );
+    
+    newCards[targetColumn] = [...newCards[targetColumn], draggedCard.card];
+    
+    console.log('Cards updated:', newCards);
+    setMockupCards(newCards);
+    setDraggedCard(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedCard(null);
+    setDragOverColumn(null);
   };
 
   return (
     <div className="landing-page">
-      {/* Header */}
+      
       <header className="landing-header">
         <div className="container constrained">
           <div className="logo">
             <span className="logo-icon">📋</span>
             <span className="logo-text">ServiTask</span>
           </div>
+          
           <nav className="nav">
             <a href="#features">Recursos</a>
             <a href="#about">Sobre</a>
@@ -32,21 +96,23 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="hero">
         <div className="container">
           <div className="hero-content">
+            
             <div className="hero-text">
               <h1>Organize suas tarefas com <span className="highlight">ServiTask</span></h1>
               <p className="hero-description">
                 A ferramenta de gerenciamento de projetos que simplifica sua vida. 
                 Organize, priorize e acompanhe suas tarefas de forma visual e intuitiva.
               </p>
+              
               <div className="hero-buttons">
                 <button className="btn-primary-hero" onClick={handleGetStarted}>
                   🚀 Começar Gratuitamente
                 </button>
               </div>
+              
               <div className="hero-features">
                 <div className="feature-item">
                   <span className="feature-icon">⚡</span>
@@ -62,6 +128,7 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
+            
             <div className="hero-visual">
               <div className="mockup-kanban">
                 <div className="mockup-header">
@@ -72,31 +139,78 @@ export default function LandingPage() {
                     <span></span>
                   </div>
                 </div>
+                <div className="drag-instruction">
+                  ✨ Arraste os cards entre as colunas para testar!
+                </div>
+                
                 <div className="mockup-columns">
-                  <div className="mockup-column">
+                  <div 
+                    className={`mockup-column ${dragOverColumn === 'a-fazer' ? 'drag-over' : ''}`}
+                    onDragOver={(e) => handleDragOver(e, 'a-fazer')}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, 'a-fazer')}
+                  >
                     <div className="column-title">A Fazer</div>
-                    <div className="mockup-card alta">
-                      <div className="card-title">Design da Interface</div>
-                      <div className="priority-badge alta">Alta</div>
-                    </div>
-                    <div className="mockup-card media">
-                      <div className="card-title">Documentação</div>
-                      <div className="priority-badge media">Média</div>
-                    </div>
+                    {mockupCards['a-fazer'].map(card => (
+                      <div 
+                        key={card.id}
+                        className={`mockup-card ${card.priority} ${draggedCard?.card.id === card.id ? 'dragging' : ''}`}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, card, 'a-fazer')}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <div className="card-title">{card.title}</div>
+                        <div className={`priority-badge ${card.priority}`}>
+                          {card.priority === 'alta' ? 'Alta' : card.priority === 'media' ? 'Média' : 'Baixa'}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="mockup-column">
+                  
+                  <div 
+                    className={`mockup-column ${dragOverColumn === 'em-progresso' ? 'drag-over' : ''}`}
+                    onDragOver={(e) => handleDragOver(e, 'em-progresso')}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, 'em-progresso')}
+                  >
                     <div className="column-title">Em Progresso</div>
-                    <div className="mockup-card baixa">
-                      <div className="card-title">Desenvolvimento</div>
-                      <div className="priority-badge baixa">Baixa</div>
-                    </div>
+                    {mockupCards['em-progresso'].map(card => (
+                      <div 
+                        key={card.id}
+                        className={`mockup-card ${card.priority} ${draggedCard?.card.id === card.id ? 'dragging' : ''}`}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, card, 'em-progresso')}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <div className="card-title">{card.title}</div>
+                        <div className={`priority-badge ${card.priority}`}>
+                          {card.priority === 'alta' ? 'Alta' : card.priority === 'media' ? 'Média' : 'Baixa'}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="mockup-column">
+                  
+                  <div 
+                    className={`mockup-column ${dragOverColumn === 'concluido' ? 'drag-over' : ''}`}
+                    onDragOver={(e) => handleDragOver(e, 'concluido')}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, 'concluido')}
+                  >
                     <div className="column-title">Concluído</div>
-                    <div className="mockup-card done alta">
-                      <div className="card-title">Planejamento</div>
-                      <div className="priority-badge alta">Alta</div>
-                    </div>
+                    {mockupCards['concluido'].map(card => (
+                      <div 
+                        key={card.id}
+                        className={`mockup-card done ${card.priority} ${draggedCard?.card.id === card.id ? 'dragging' : ''}`}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, card, 'concluido')}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <div className="card-title">{card.title}</div>
+                        <div className={`priority-badge ${card.priority}`}>
+                          {card.priority === 'alta' ? 'Alta' : card.priority === 'media' ? 'Média' : 'Baixa'}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -105,13 +219,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section id="features" className="features">
         <div className="container constrained">
+          
           <div className="section-header">
             <h2>Recursos Poderosos</h2>
             <p>Tudo que você precisa para gerenciar seus projetos de forma eficiente</p>
           </div>
+          
           <div className="features-grid">
             <div className="feature-card">
               <div className="feature-icon-large">🎨</div>
@@ -147,10 +262,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* About Section */}
       <section id="about" className="about">
         <div className="container constrained">
           <div className="about-content">
+            
             <div className="about-text">
               <h2>Por que escolher o ServiTask?</h2>
               <p>
@@ -158,6 +273,7 @@ export default function LandingPage() {
                 Sabemos que gerenciar projetos pode ser complexo, por isso criamos 
                 uma ferramenta que torna esse processo mais visual e intuitivo.
               </p>
+              
               <div className="about-stats">
                 <div className="stat">
                   <div className="stat-number">🚀</div>
@@ -173,6 +289,7 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
+            
             <div className="about-image">
               <div className="productivity-visual">
                 <div className="productivity-circle">
@@ -193,7 +310,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="cta">
         <div className="container constrained">
           <div className="cta-content">
@@ -206,7 +322,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="footer">
         <div className="container constrained">
           <div className="footer-content">
@@ -217,7 +332,6 @@ export default function LandingPage() {
             <p className="footer-text">
               Simplificando o gerenciamento de projetos, uma tarefa por vez.
             </p>
-            {/* Botão temporário para acessar Kanban */}
             <button className="temp-kanban-btn" onClick={handleGoToKanban}>
               🚀 Acesso Temporário ao Kanban
             </button>
