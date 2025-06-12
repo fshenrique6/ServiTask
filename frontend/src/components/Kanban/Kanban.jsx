@@ -1,65 +1,116 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import './Kanban.css';
-import BoardSidebar from '../BoardSidebar/BoardSidebar';
-import KanbanHeader from '../KanbanHeader/KanbanHeader';
-import KanbanColumn from '../KanbanColumn/KanbanColumn';
-import DeleteModal from '../DeleteModal/DeleteModal';
-import EditColumnModal from '../EditColumnModal/EditColumnModal';
-import EditBoardModal from '../EditBoardModal/EditBoardModal';
+import BoardSidebar from '../BoardSidebar/BoardSidebar';      
+import KanbanHeader from '../KanbanHeader/KanbanHeader';      
+import KanbanColumn from '../KanbanColumn/KanbanColumn';      
+import DeleteModal from '../DeleteModal/DeleteModal';        
+import EditColumnModal from '../EditColumnModal/EditColumnModal';  
+import EditBoardModal from '../EditBoardModal/EditBoardModal';      
 import CardModal from '../CardModal/CardModal';
+import apiService from '../../services/api';
+import { nameToSlug, findBoardBySlug } from '../../utils/urlUtils';
 
 function Kanban() {
-    // Estado para todos os quadros
+    const navigate = useNavigate();
+    const { boardName: boardSlug } = useParams();
+    
     const [boards, setBoards] = useState([]);
     const [activeBoardId, setActiveBoardId] = useState(null);
+    const [activeBoard, setActiveBoard] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Estado para controlar o modal de criar quadro
     const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
     const [boardName, setBoardName] = useState('');
 
-    // Estado para controlar o modal de cartão
     const [isCardModalOpen, setIsCardModalOpen] = useState(false);
     const [selectedColumnId, setSelectedColumnId] = useState(null);
     const [editingCard, setEditingCard] = useState(null);
 
-    // Estado para controlar o modal de confirmação de exclusão de cartão
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [cardToDelete, setCardToDelete] = useState(null);
 
-    // Estado para controlar o modal de confirmação de exclusão de quadro
     const [isDeleteBoardModalOpen, setIsDeleteBoardModalOpen] = useState(false);
     const [boardToDelete, setBoardToDelete] = useState(null);
 
-    // Estados para drag and drop
     const [draggedCard, setDraggedCard] = useState(null);
     const [draggedFromColumn, setDraggedFromColumn] = useState(null);
     const [dragOverColumn, setDragOverColumn] = useState(null);
 
-    // Estado para o formulário de cartão
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         priority: 'media'
     });
 
-    // Estado para controlar o modal de edição de coluna
     const [isColumnModalOpen, setIsColumnModalOpen] = useState(false);
     const [editingColumn, setEditingColumn] = useState(null);
     const [columnName, setColumnName] = useState('');
     const [isDeleteColumnModalOpen, setIsDeleteColumnModalOpen] = useState(false);
     const [columnToDelete, setColumnToDelete] = useState(null);
 
-    // Estado para controlar a edição do nome do quadro
     const [isEditingBoardName, setIsEditingBoardName] = useState(false);
     const [editBoardName, setEditBoardName] = useState('');
 
-    // Função para obter o quadro ativo
-    const getActiveBoard = () => {
-        return boards.find(board => board.id === activeBoardId);
+    useEffect(() => {
+        loadBoards();
+    }, []);
+
+    useEffect(() => {
+        if (boardSlug && boards.length > 0) {
+            const board = findBoardBySlug(boards, boardSlug);
+            if (board) {
+                setActiveBoardId(board.id);
+            } else {
+                if (boards.length > 0) {
+                    const firstBoardSlug = nameToSlug(boards[0].name);
+                    navigate(`/kanban/${firstBoardSlug}`, { replace: true });
+                } else {
+                    navigate('/kanban', { replace: true });
+                }
+            }
+        } else if (!boardSlug && boards.length > 0) {
+            const firstBoardSlug = nameToSlug(boards[0].name);
+            navigate(`/kanban/${firstBoardSlug}`, { replace: true });
+        }
+    }, [boardSlug, boards, navigate]);
+
+    useEffect(() => {
+        if (activeBoardId) {
+            loadActiveBoard();
+        } else {
+            setActiveBoard(null);
+        }
+    }, [activeBoardId]);
+
+    const loadBoards = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const boardsData = await apiService.getBoards();
+            setBoards(boardsData);
+        } catch (err) {
+            console.error('Erro ao carregar boards:', err);
+            setError('Erro ao carregar quadros. Tente novamente.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const loadActiveBoard = async () => {
+        try {
+            setError(null);
+            const boardData = await apiService.getBoard(activeBoardId);
+            setActiveBoard(boardData);
+        } catch (err) {
+            console.error('Erro ao carregar board:', err);
+            setError('Erro ao carregar quadro. Tente novamente.');
+        }
     };
 
     const getPriorityColor = (priority) => {
-        switch (priority) {
+        switch (priority?.toLowerCase()) {
             case 'alta': return '#ef4444';
             case 'media': return '#f59e0b';
             case 'baixa': return '#10b981';
@@ -67,8 +118,12 @@ function Kanban() {
         }
     };
 
-    // Função para criar um novo quadro
-    const createBoard = (e) => {
+    const handleLogout = () => {
+        apiService.logout();
+        navigate('/');
+    };
+
+    const createBoard = async (e) => {
         e.preventDefault();
         
         if (!boardName.trim()) {
@@ -76,101 +131,129 @@ function Kanban() {
             return;
         }
 
-        const newBoard = {
-            id: Date.now(),
-            name: boardName,
-            columns: [
-                { id: 1, title: 'A Fazer', cards: [] },
-                { id: 2, title: 'Em Progresso', cards: [] },
-                { id: 3, title: 'Revisão', cards: [] },
-                { id: 4, title: 'Concluído', cards: [] }
-            ]
-        };
-
-        setBoards(prev => [...prev, newBoard]);
-        setActiveBoardId(newBoard.id);
-        setBoardName('');
-        setIsBoardModalOpen(false);
+        try {
+            const newBoard = await apiService.createBoard(boardName);
+            setBoards(prev => [...prev, newBoard]);
+            
+            setBoardName('');
+            setIsBoardModalOpen(false);
+            
+            const slug = nameToSlug(newBoard.name);
+            navigate(`/kanban/${slug}`);
+        } catch (err) {
+            console.error('Erro ao criar board:', err);
+            alert('Erro ao criar quadro. Tente novamente.');
+        }
     };
 
-    // Função para selecionar um quadro
     const selectBoard = (boardId) => {
-        setActiveBoardId(boardId);
+        const board = boards.find(b => b.id === boardId);
+        if (board) {
+            const slug = nameToSlug(board.name);
+            navigate(`/kanban/${slug}`);
+        }
     };
 
-    // Função para abrir modal de confirmação de exclusão de quadro
     const openDeleteBoardModal = (e, board) => {
-        e.stopPropagation(); // Evita selecionar o quadro ao clicar no botão de excluir
+        e.stopPropagation();
         setBoardToDelete(board);
         setIsDeleteBoardModalOpen(true);
     };
 
-    // Função para fechar modal de confirmação de exclusão de quadro
     const closeDeleteBoardModal = () => {
         setIsDeleteBoardModalOpen(false);
         setBoardToDelete(null);
     };
 
-    // Função para confirmar e executar a exclusão do quadro
-    const confirmDeleteBoard = () => {
-        if (boardToDelete) {
-            // Remove o quadro da lista
-            setBoards(prev => prev.filter(board => board.id !== boardToDelete.id));
-            
-            // Se o quadro excluído era o ativo, seleciona outro ou limpa
-            if (activeBoardId === boardToDelete.id) {
-                const remainingBoards = boards.filter(board => board.id !== boardToDelete.id);
-                if (remainingBoards.length > 0) {
-                    setActiveBoardId(remainingBoards[0].id);
-                } else {
-                    setActiveBoardId(null);
+    const confirmDeleteBoard = async () => {
+        if (!boardToDelete) return;
+
+        try {
+            const success = await apiService.deleteBoard(boardToDelete.id);
+            if (success) {
+                const updatedBoards = boards.filter(board => board.id !== boardToDelete.id);
+                setBoards(updatedBoards);
+                
+                if (activeBoardId === boardToDelete.id) {
+                    if (updatedBoards.length > 0) {
+                        const firstBoardSlug = nameToSlug(updatedBoards[0].name);
+                        navigate(`/kanban/${firstBoardSlug}`, { replace: true });
+                    } else {
+                        navigate('/kanban', { replace: true });
+                    }
                 }
+            } else {
+                alert('Erro ao excluir quadro. Tente novamente.');
             }
+        } catch (err) {
+            console.error('Erro ao excluir board:', err);
+            alert('Erro ao excluir quadro. Tente novamente.');
         }
+
         closeDeleteBoardModal();
     };
 
-    // Função para abrir o modal para adicionar novo cartão
     const openCardModal = (columnId) => {
         setSelectedColumnId(columnId);
         setEditingCard(null);
-        setFormData({ title: '', description: '', priority: 'media' });
+        setFormData({
+            title: '',
+            description: '',
+            priority: 'media'
+        });
         setIsCardModalOpen(true);
     };
 
-    // Função para abrir o modal para editar cartão
     const openEditModal = (columnId, card) => {
         setSelectedColumnId(columnId);
         setEditingCard(card);
         setFormData({
             title: card.title,
-            description: card.description,
-            priority: card.priority
+            description: card.description || '',
+            priority: card.priority?.toLowerCase() || 'media'
         });
         setIsCardModalOpen(true);
     };
 
-    // Função para fechar o modal de cartão
     const closeCardModal = () => {
         setIsCardModalOpen(false);
         setSelectedColumnId(null);
         setEditingCard(null);
-        setFormData({ title: '', description: '', priority: 'media' });
+        setFormData({
+            title: '',
+            description: '',
+            priority: 'media'
+        });
     };
 
-    // Função para abrir modal de confirmação de exclusão
     const openDeleteModal = (columnId, cardId, cardTitle) => {
         setCardToDelete({ columnId, cardId, cardTitle });
         setIsDeleteModalOpen(true);
     };
 
-    // Função para fechar modal de confirmação
     const closeDeleteModal = () => {
         setIsDeleteModalOpen(false);
         setCardToDelete(null);
     };
 
-    // Função para lidar com mudanças no formulário
+    const confirmDelete = async () => {
+        if (!cardToDelete || !activeBoard) return;
+
+        try {
+            const success = await apiService.removeCard(activeBoard.id, cardToDelete.columnId, cardToDelete.cardId);
+            if (success) {
+                await loadActiveBoard();
+            } else {
+                alert('Erro ao excluir cartão. Tente novamente.');
+            }
+        } catch (err) {
+            console.error('Erro ao excluir card:', err);
+            alert('Erro ao excluir cartão. Tente novamente.');
+        }
+
+        closeDeleteModal();
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -179,85 +262,47 @@ function Kanban() {
         }));
     };
 
-    // Função para salvar cartão (criar ou editar)
-    const saveCard = (e) => {
+    const saveCard = async (e) => {
         e.preventDefault();
         
         if (!formData.title.trim()) {
-            alert('Por favor, adicione um título ao cartão.');
+            alert('Por favor, digite um título para o cartão.');
             return;
         }
 
-        setBoards(prev => prev.map(board => {
-            if (board.id === activeBoardId) {
-                const updatedColumns = board.columns.map(column => {
-                    if (column.id === selectedColumnId) {
-                        if (editingCard) {
-                            // Editando cartão existente
-                            const updatedCard = {
-                                ...editingCard,
-                                title: formData.title,
-                                description: formData.description,
-                                priority: formData.priority
-                            };
-                            return {
-                                ...column,
-                                cards: column.cards.map(card => 
-                                    card.id === editingCard.id ? updatedCard : card
-                                )
-                            };
-                        } else {
-                            // Criando novo cartão
-                            const newCard = {
-                                id: Date.now(),
-                                title: formData.title,
-                                description: formData.description,
-                                priority: formData.priority
-                            };
-                            return {
-                                ...column,
-                                cards: [...column.cards, newCard]
-                            };
-                        }
-                    }
-                    return column;
-                });
-                return { ...board, columns: updatedColumns };
+        if (!activeBoard || !selectedColumnId) return;
+
+        try {
+            if (editingCard) {
+                await apiService.updateCard(
+                    activeBoard.id,
+                    selectedColumnId,
+                    editingCard.id,
+                    formData.title,
+                    formData.description,
+                    formData.priority
+                );
+            } else {
+                await apiService.addCard(
+                    activeBoard.id,
+                    selectedColumnId,
+                    formData.title,
+                    formData.description,
+                    formData.priority
+                );
             }
-            return board;
-        }));
 
-        closeCardModal();
-    };
-
-    // Função para confirmar e executar a exclusão
-    const confirmDelete = () => {
-        if (cardToDelete) {
-            setBoards(prev => prev.map(board => {
-                if (board.id === activeBoardId) {
-                    const updatedColumns = board.columns.map(column => {
-                        if (column.id === cardToDelete.columnId) {
-                            return {
-                                ...column,
-                                cards: column.cards.filter(card => card.id !== cardToDelete.cardId)
-                            };
-                        }
-                        return column;
-                    });
-                    return { ...board, columns: updatedColumns };
-                }
-                return board;
-            }));
+            await loadActiveBoard();
+            closeCardModal();
+        } catch (err) {
+            console.error('Erro ao salvar card:', err);
+            alert('Erro ao salvar cartão. Tente novamente.');
         }
-        closeDeleteModal();
     };
 
-    // Funções de Drag and Drop
     const handleDragStart = (e, card, columnId) => {
         setDraggedCard(card);
         setDraggedFromColumn(columnId);
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', e.target.outerHTML);
     };
 
     const handleDragEnd = () => {
@@ -268,81 +313,59 @@ function Kanban() {
 
     const handleDragOver = (e, columnId) => {
         e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
         setDragOverColumn(columnId);
     };
 
     const handleDragLeave = (e) => {
-        if (!e.currentTarget.contains(e.relatedTarget)) {
-            setDragOverColumn(null);
-        }
+        setDragOverColumn(null);
     };
 
-    const handleDrop = (e, targetColumnId) => {
+    const handleDrop = async (e, targetColumnId) => {
         e.preventDefault();
         
-        if (draggedCard && draggedFromColumn !== null && draggedFromColumn !== targetColumnId) {
-            setBoards(prev => prev.map(board => {
-                if (board.id === activeBoardId) {
-                    const updatedColumns = board.columns.map(column => {
-                        if (column.id === draggedFromColumn) {
-                            return {
-                                ...column,
-                                cards: column.cards.filter(card => card.id !== draggedCard.id)
-                            };
-                        } else if (column.id === targetColumnId) {
-                            return {
-                                ...column,
-                                cards: [...column.cards, draggedCard]
-                            };
-                        }
-                        return column;
-                    });
-                    return { ...board, columns: updatedColumns };
-                }
-                return board;
-            }));
+        if (!draggedCard || !activeBoard) return;
+
+        if (draggedFromColumn === targetColumnId) {
+            handleDragEnd();
+            return;
+        }
+
+        try {
+            await apiService.moveCard(activeBoard.id, draggedCard.id, targetColumnId);
+            await loadActiveBoard();
+        } catch (err) {
+            console.error('Erro ao mover card:', err);
+            alert('Erro ao mover cartão. Tente novamente.');
         }
         
         handleDragEnd();
     };
 
-    // Função para adicionar nova coluna
-    const addColumn = () => {
+    const addColumn = async () => {
         if (!activeBoard) return;
 
-        setBoards(prev => prev.map(board => {
-            if (board.id === activeBoardId) {
-                const newColumnId = Math.max(...board.columns.map(col => col.id), 0) + 1;
-                return {
-                    ...board,
-                    columns: [...board.columns, {
-                        id: newColumnId,
-                        title: 'Nova Coluna',
-                        cards: []
-                    }]
-                };
-            }
-            return board;
-        }));
+        try {
+            await apiService.addColumn(activeBoard.id, 'Nova Coluna');
+            await loadActiveBoard();
+        } catch (err) {
+            console.error('Erro ao adicionar coluna:', err);
+            alert('Erro ao adicionar coluna. Tente novamente.');
+        }
     };
 
-    // Função para abrir modal de edição de coluna
     const openEditColumnModal = (column) => {
         setEditingColumn(column);
-        setColumnName(column.title);
+        setColumnName(column.name);
         setIsColumnModalOpen(true);
     };
 
-    // Função para fechar modal de edição de coluna
     const closeColumnModal = () => {
         setIsColumnModalOpen(false);
         setEditingColumn(null);
         setColumnName('');
     };
 
-    // Função para salvar alterações na coluna
-    const saveColumn = (e) => {
+    const saveColumn = async (e) => {
         e.preventDefault();
         
         if (!columnName.trim()) {
@@ -350,46 +373,42 @@ function Kanban() {
             return;
         }
 
-        setBoards(prev => prev.map(board => {
-            if (board.id === activeBoardId) {
-                const updatedColumns = board.columns.map(column => {
-                    if (column.id === editingColumn.id) {
-                        return { ...column, title: columnName };
-                    }
-                    return column;
-                });
-                return { ...board, columns: updatedColumns };
-            }
-            return board;
-        }));
+        if (!activeBoard || !editingColumn) return;
 
-        closeColumnModal();
+        try {
+            await apiService.updateColumn(activeBoard.id, editingColumn.id, columnName);
+            await loadActiveBoard();
+            closeColumnModal();
+        } catch (err) {
+            console.error('Erro ao atualizar coluna:', err);
+            alert('Erro ao atualizar coluna. Tente novamente.');
+        }
     };
 
-    // Função para remover coluna
     const removeColumn = (columnId) => {
         setColumnToDelete(columnId);
         setIsDeleteColumnModalOpen(true);
     };
 
-    const confirmDeleteColumn = () => {
-        if (columnToDelete) {
-            const updatedBoards = boards.map(board => {
-                if (board.id === activeBoardId) {
-                    return {
-                        ...board,
-                        columns: board.columns.filter(col => col.id !== columnToDelete)
-                    };
-                }
-                return board;
-            });
-            setBoards(updatedBoards);
-            setIsDeleteColumnModalOpen(false);
-            setColumnToDelete(null);
+    const confirmDeleteColumn = async () => {
+        if (!columnToDelete || !activeBoard) return;
+
+        try {
+            const success = await apiService.removeColumn(activeBoard.id, columnToDelete);
+            if (success) {
+                await loadActiveBoard();
+            } else {
+                alert('Erro ao excluir coluna. Tente novamente.');
+            }
+        } catch (err) {
+            console.error('Erro ao excluir coluna:', err);
+            alert('Erro ao excluir coluna. Tente novamente.');
         }
+
+        setIsDeleteColumnModalOpen(false);
+        setColumnToDelete(null);
     };
 
-    // Função para abrir a edição do nome do quadro
     const openEditBoardName = () => {
         if (activeBoard) {
             setEditBoardName(activeBoard.name);
@@ -397,35 +416,69 @@ function Kanban() {
         }
     };
 
-    // Função para cancelar a edição do nome do quadro
     const cancelEditBoardName = () => {
         setIsEditingBoardName(false);
         setEditBoardName('');
     };
 
-    // Função para salvar o novo nome do quadro
-    const saveBoardName = () => {
+    const saveBoardName = async () => {
         if (!editBoardName.trim()) {
             alert('Por favor, digite um nome para o quadro.');
             return;
         }
 
-        setBoards(prev => prev.map(board => {
-            if (board.id === activeBoardId) {
-                return { ...board, name: editBoardName };
-            }
-            return board;
-        }));
+        if (!activeBoard) return;
 
-        setIsEditingBoardName(false);
-        setEditBoardName('');
+        try {
+            await apiService.updateBoard(activeBoard.id, editBoardName);
+            await loadActiveBoard();
+            await loadBoards();
+            setIsEditingBoardName(false);
+            setEditBoardName('');
+            
+            const newSlug = nameToSlug(editBoardName);
+            navigate(`/kanban/${newSlug}`, { replace: true });
+        } catch (err) {
+            console.error('Erro ao atualizar nome do board:', err);
+            alert('Erro ao atualizar nome do quadro. Tente novamente.');
+        }
     };
 
-    const activeBoard = getActiveBoard();
+    if (loading) {
+        return (
+            <div className="kanban-container">
+                <div className="loading-state">
+                    <div className="loading-content">
+                        <div className="loading-spinner">⏳</div>
+                        <h2>Carregando seus quadros...</h2>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="kanban-container">
+                <div className="error-state">
+                    <div className="error-content">
+                        <div className="error-icon">❌</div>
+                        <h2>Erro ao carregar dados</h2>
+                        <p>{error}</p>
+                        <button 
+                            className="btn-primary"
+                            onClick={() => window.location.reload()}
+                        >
+                            Tentar Novamente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="kanban-container">
-            {/* Sidebar integrado */}
             <BoardSidebar
                 boards={boards}
                 activeBoardId={activeBoardId}
@@ -434,7 +487,6 @@ function Kanban() {
                 setIsBoardModalOpen={setIsBoardModalOpen}
             />
 
-            {/* Área principal do kanban */}
             <div className="kanban-main">
                 {!activeBoard ? (
                     <div className="empty-state">
@@ -464,7 +516,7 @@ function Kanban() {
                         />
                         
                         <div className="kanban-board">
-                            {activeBoard.columns.map(column => (
+                            {activeBoard.columns && activeBoard.columns.map(column => (
                                 <KanbanColumn
                                     key={column.id}
                                     column={column}
@@ -486,8 +538,6 @@ function Kanban() {
                     </>
                 )}
             </div>
-
-            {/* Modais */}
             <EditBoardModal
                 isOpen={isBoardModalOpen}
                 boardName={boardName}
@@ -509,6 +559,7 @@ function Kanban() {
                 onClose={closeCardModal}
                 onSave={saveCard}
                 editingCard={editingCard}
+                handleInputChange={handleInputChange}
             />
             <DeleteModal
                 isOpen={isDeleteBoardModalOpen && !!boardToDelete}
@@ -525,7 +576,7 @@ function Kanban() {
                 onClose={() => { setIsDeleteColumnModalOpen(false); setColumnToDelete(null); }}
                 onConfirm={confirmDeleteColumn}
                 title="Confirmar Exclusão da Coluna"
-                itemName={activeBoard?.columns.find(col => col.id === columnToDelete)?.title || ''}
+                itemName={activeBoard?.columns?.find(col => col.id === columnToDelete)?.name || ''}
                 warning="Esta ação irá excluir permanentemente a coluna e todos os seus cartões. Esta ação não pode ser desfeita."
                 confirmLabel="Excluir Coluna"
                 icon="🗑️"
