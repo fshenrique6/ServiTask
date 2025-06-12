@@ -11,33 +11,32 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users")  
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
+    private Long id;  
     
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false)  
+    private String name;  
     
-    @Column(unique = true, nullable = false)
-    private String email;
+    @Column(unique = true, nullable = false)  
+    private String email;  
     
-    @JsonIgnore
-    @Column(nullable = false)
-    private String password;
+    @JsonIgnore  
+    @Column(nullable = false)  
+    private String password;  
     
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role = Role.USER;
+    @Enumerated(EnumType.STRING)  
+    @Column(nullable = false)     
+    private Role role = Role.USER;  
     
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "created_at")  
+    private LocalDateTime createdAt;  
     
     @Column(name = "updated_at")  
-    private LocalDateTime updatedAt;
-
+    private LocalDateTime updatedAt;  
 
     public User() {
         this.createdAt = LocalDateTime.now();
@@ -45,25 +44,26 @@ public class User implements UserDetails {
     }
 
     public User(String name, String email, String password) {
-        this();
+        this();  
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
     public User(String name, String email, String password, Role role) {
-        this(name, email, password);
+        this(name, email, password);  
         this.role = role;
     }
-    
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return email;  
     }
 
     @Override
@@ -85,7 +85,7 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -100,7 +100,7 @@ public class User implements UserDetails {
 
     public void setName(String name) {
         this.name = name;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();  
     }
 
     public String getEmail() {
@@ -109,7 +109,7 @@ public class User implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();  
     }
 
     @Override
@@ -119,7 +119,7 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();  
     }
 
     public Role getRole() {
@@ -128,7 +128,7 @@ public class User implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();  
     }
 
     public LocalDateTime getCreatedAt() {
@@ -148,7 +148,7 @@ public class User implements UserDetails {
     }
 
     public enum Role {
-        USER,
-        ADMIN
+        USER,   
+        ADMIN   
     }
 }

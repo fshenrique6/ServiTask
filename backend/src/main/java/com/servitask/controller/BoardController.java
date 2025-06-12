@@ -14,23 +14,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/api/boards")
-@RequiredArgsConstructor
+@RestController                     
+@RequestMapping("/api/boards")      
+@RequiredArgsConstructor            
 @CrossOrigin(origins = "*")         
-
 public class BoardController {
 
-    private final BoardService boardService;
-    private final UserService userService;
+    private final BoardService boardService;   
+    private final UserService userService;     
 
     @GetMapping
     public ResponseEntity<List<Board>> getUserBoards(@RequestHeader("Authorization") String authHeader) {
         try {
+            
             User user = userService.getUserFromToken(authHeader);
+
             List<Board> boards = boardService.getUserBoards(user);
+            
             return ResponseEntity.ok(boards);
         } catch (Exception e) {
+            
             return ResponseEntity.status(401).build();
         }
     }
@@ -39,14 +42,35 @@ public class BoardController {
     public ResponseEntity<Board> getBoardById(@PathVariable Long boardId,
             @RequestHeader("Authorization") String authHeader) {
         try {
+            
             User user = userService.getUserFromToken(authHeader);
+
             Optional<Board> board = boardService.getBoardById(boardId, user);
 
             if (board.isPresent()) {
                 return ResponseEntity.ok(board.get());
             } else {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.notFound().build();  
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build();  
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Board> createBoard(@RequestBody Map<String, String> request,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            
+            User user = userService.getUserFromToken(authHeader);
+            String name = request.get("name");
+
+            if (name == null || name.trim().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Board board = boardService.createBoard(name, user);
+            return ResponseEntity.ok(board);
         } catch (Exception e) {
             return ResponseEntity.status(401).build();
         }
@@ -110,7 +134,7 @@ public class BoardController {
             if (column.isPresent()) {
                 return ResponseEntity.ok(column.get());
             } else {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.notFound().build();  
             }
         } catch (Exception e) {
             return ResponseEntity.status(401).build();
@@ -180,7 +204,7 @@ public class BoardController {
             if (card.isPresent()) {
                 return ResponseEntity.ok(card.get());
             } else {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.notFound().build();  
             }
         } catch (Exception e) {
             return ResponseEntity.status(401).build();
@@ -242,11 +266,11 @@ public class BoardController {
             @RequestHeader("Authorization") String authHeader) {
         try {
             User user = userService.getUserFromToken(authHeader);
-            
+
             Long targetColumnId = Long.valueOf(request.get("targetColumnId").toString());
             Integer targetPosition = request.get("targetPosition") != null
                     ? Integer.valueOf(request.get("targetPosition").toString())
-                    : null;
+                    : null;  
 
             Optional<Card> card = boardService.moveCard(boardId, cardId, targetColumnId, targetPosition, user);
 

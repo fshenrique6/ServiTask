@@ -1,8 +1,8 @@
 package com.servitask.servitask.service;
 
-import com.servitask.servitask.dto.AuthResponseDTO;
-import com.servitask.servitask.dto.LoginRequestDTO;
-import com.servitask.servitask.dto.RegisterRequestDTO;
+import com.servitask.servitask.dto.AuthResponse;
+import com.servitask.servitask.dto.LoginRequest;
+import com.servitask.servitask.dto.RegisterRequest;
 import com.servitask.servitask.entity.User;
 import com.servitask.servitask.repository.UserRepository;
 import com.servitask.servitask.util.HashUtil;
@@ -22,7 +22,6 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private JwtService jwtService;
 
@@ -36,39 +35,41 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com email: " + username));
     }
 
-    public AuthResponseDTO login(LoginRequestDTO loginRequestDTO) {
+    public AuthResponse login(LoginRequest loginRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequestDTO.getEmail(),
-                        loginRequestDTO.getPassword()));
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
 
-        User user = userRepository.findByEmail(loginRequestDTO.getEmail())
+        User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-
         String jwtToken = jwtService.generateToken(user);
 
-        return new AuthResponseDTO(jwtToken, user.getUsername(), user.getRole().name());
+        return new AuthResponse(jwtToken, user);
     }
 
-    public AuthResponseDTO register(RegisterRequestDTO registerRequestDTO) {
-        if (!registerRequestDTO.isPasswordMatching()) {
+    public AuthResponse register(RegisterRequest registerRequest) {
+        if (!registerRequest.isPasswordMatching()) {
             throw new RuntimeException("As senhas não coincidem");
         }
 
-        if (userRepository.existsByEmail(registerRequestDTO.getEmail())) {
+        if (userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new RuntimeException("Email já está em uso");
         }
 
         User user = new User(
-                registerRequestDTO.getName(),
-                registerRequestDTO.getEmail(),
-                HashUtil.hashPassword(registerRequestDTO.getPassword()));
+                registerRequest.getName(),
+                registerRequest.getEmail(),
+                HashUtil.hashPassword(registerRequest.getPassword())
+        );
 
         User savedUser = userRepository.save(user);
-
+        
         String jwtToken = jwtService.generateToken(savedUser);
-
-        return new AuthResponseDTO(jwtToken, savedUser.getUsername(), savedUser.getRole().name());
+        
+        return new AuthResponse(jwtToken, savedUser);
     }
 
     public Optional<User> findByEmail(String email) {

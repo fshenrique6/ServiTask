@@ -27,6 +27,7 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+
     @Autowired
     private JwtAuthenticationFilter jwtAuthFilter;
 
@@ -37,24 +38,24 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-
+                
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
+                
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("OPTIONS", "/**").permitAll()      
-                        .requestMatchers("/api/auth/**").permitAll()        
-                        .requestMatchers("/h2-console/**").permitAll()      
-                        .requestMatchers("/actuator/**").permitAll()        
-                        .requestMatchers("/error").permitAll()             
-                        .anyRequest().authenticated()                       
+                        .requestMatchers("OPTIONS", "/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .anyRequest().authenticated()
                 )
-
+                
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
+                
                 .authenticationProvider(authenticationProvider())
-
+                
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 
                 .headers(headers -> headers
@@ -64,28 +65,23 @@ public class SecurityConfig {
         return http.build();
     }
 
-     @Bean
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
         configuration.setAllowedOriginPatterns(List.of(
-            "http://localhost:3307",   
-            "http://localhost:3000",   
-            "http://127.0.0.1:3307",    
-            "http://127.0.0.1:3000",    
-            "*"                         
+            "http://localhost:3307",
+            "http://localhost:3000",
+            "http://127.0.0.1:3307",
+            "http://127.0.0.1:3000",
+            "*"
         ));
-
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));
-
         configuration.setAllowedHeaders(List.of("*"));
-
         configuration.setAllowCredentials(true);
-
         configuration.setMaxAge(3600L);
-
         configuration.setExposedHeaders(List.of("Authorization", "X-Total-Count"));
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -94,9 +90,8 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
+        
         authProvider.setUserDetailsService(userService);
-
         authProvider.setPasswordEncoder(passwordEncoder());
         
         return authProvider;
@@ -112,4 +107,3 @@ public class SecurityConfig {
         return HashUtil.getPasswordEncoder();
     }
 } 
-

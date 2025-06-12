@@ -1,8 +1,8 @@
 package com.servitask.servitask.controller;
 
-import com.servitask.servitask.dto.AuthResponseDTO;
-import com.servitask.servitask.dto.LoginRequestDTO;
-import com.servitask.servitask.dto.RegisterRequestDTO;
+import com.servitask.servitask.dto.AuthResponse;
+import com.servitask.servitask.dto.LoginRequest;
+import com.servitask.servitask.dto.RegisterRequest;
 import com.servitask.servitask.entity.User;
 import com.servitask.servitask.service.UserService;
 import jakarta.validation.Valid;
@@ -15,20 +15,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth") 
+@RequestMapping("/api/auth")  
+
 @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
 public class AuthController {
-     @Autowired
+
+    @Autowired
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
 
-            AuthResponseDTO authResponseDTO = userService.login(loginRequestDTO);
-            return ResponseEntity.ok(authResponseDTO);
+            AuthResponse authResponse = userService.login(loginRequest);
+            return ResponseEntity.ok(authResponse);
         } catch (Exception e) {
-
+            
             Map<String, String> error = new HashMap<>();
             error.put("message", "Credenciais inválidas");
             error.put("error", e.getMessage());
@@ -37,13 +39,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         try {
 
-            AuthResponseDTO authResponseDTO = userService.register(registerRequestDTO);
-            return ResponseEntity.ok(authResponseDTO);
+            AuthResponse authResponse = userService.register(registerRequest);
+            return ResponseEntity.ok(authResponse);
         } catch (Exception e) {
-
+            
             Map<String, String> error = new HashMap<>();
             error.put("message", "Erro ao cadastrar usuário");
             error.put("error", e.getMessage());
@@ -54,7 +56,7 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         try {
-
+            
             String email = authentication.getName();
 
             User user = userService.findByEmail(email)
@@ -69,7 +71,7 @@ public class AuthController {
             
             return ResponseEntity.ok(userInfo);
         } catch (Exception e) {
-
+            
             Map<String, String> error = new HashMap<>();
             error.put("message", "Erro ao obter informações do usuário");
             error.put("error", e.getMessage());
@@ -79,7 +81,7 @@ public class AuthController {
 
     @PostMapping("/check-email")
     public ResponseEntity<?> checkEmail(@RequestBody Map<String, String> request) {
-
+        
         String email = request.get("email");
 
         boolean exists = userService.existsByEmail(email);
@@ -113,4 +115,4 @@ public class AuthController {
                 .header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
                 .build();
     }
-}
+} 
