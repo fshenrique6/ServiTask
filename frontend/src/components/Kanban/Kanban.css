@@ -1718,20 +1718,28 @@
 }
 
 .btn-edit-title {
-    background: none;
-    border: none;
+    background: rgba(37, 99, 235, 0.1);
+    border: 1px solid rgba(37, 99, 235, 0.2);
     padding: 8px;
     cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    opacity: 0.7;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    opacity: 0.8;
     font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    backdrop-filter: blur(10px);
 }
 
 .btn-edit-title:hover {
-    background: rgba(37, 99, 235, 0.1);
+    background: rgba(37, 99, 235, 0.2);
+    border-color: rgba(37, 99, 235, 0.4);
     opacity: 1;
-    transform: scale(1.1);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
 .board-title-edit {
@@ -1762,32 +1770,45 @@
 
 .btn-save-title,
 .btn-cancel-title {
-    background: none;
-    border: none;
-    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 8px;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 1.1rem;
     font-weight: bold;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .btn-save-title {
     color: #10b981;
+    border-color: rgba(16, 185, 129, 0.3);
 }
 
 .btn-save-title:hover {
     background: rgba(16, 185, 129, 0.1);
-    transform: scale(1.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
 .btn-cancel-title {
     color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
 }
 
 .btn-cancel-title:hover {
     background: rgba(239, 68, 68, 0.1);
-    transform: scale(1.2);
+    border-color: rgba(239, 68, 68, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 /* Responsive Board Title */
@@ -1804,10 +1825,19 @@
     .btn-edit-title {
         font-size: 1rem;
         padding: 6px;
+        width: 32px;
+        height: 32px;
     }
     
     .edit-actions {
         gap: 6px;
+    }
+    
+    .btn-save-title,
+    .btn-cancel-title {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
     }
 }
 
@@ -1828,12 +1858,15 @@
     
     .btn-edit-title {
         font-size: 0.9rem;
+        width: 28px;
+        height: 28px;
     }
     
     .btn-save-title,
     .btn-cancel-title {
-        font-size: 1rem;
-        padding: 4px 6px;
+        font-size: 0.9rem;
+        width: 26px;
+        height: 26px;
     }
 }
 
