@@ -8,41 +8,40 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "cards")
-@Data
-@EqualsAndHashCode(exclude = { "column" })
-@ToString(exclude = { "column" })
-
+@Entity                                 
+@Table(name = "cards")                  
+@Data                                   
+@EqualsAndHashCode(exclude = {"column"}) 
+@ToString(exclude = {"column"})         
 public class Card {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
+    private Long id;  
+    
+    @Column(nullable = false)  
+    private String title;  
+    
+    @Column(columnDefinition = "TEXT")  
+    private String description;  
+    
+    @Enumerated(EnumType.STRING)  
+    @Column(nullable = false)     
+    private Priority priority = Priority.MEDIA;  
+    
+    @Column(nullable = false)  
+    private Integer position;  
 
-    @Column(nullable = false)
-    private String title;
-
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Priority priority = Priority.BAIXA;
-
-    @Column(nullable = false)
-    private Integer position;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "column_id", nullable = false)
-    @JsonBackReference
-    private BoardColumn column;
+    @ManyToOne(fetch = FetchType.LAZY)  
+    @JoinColumn(name = "column_id", nullable = false)  
+    @JsonBackReference  
+    private BoardColumn column;  
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
+    private LocalDateTime createdAt;  
+    
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;  
 
     @PrePersist
     protected void onCreate() {
@@ -56,14 +55,18 @@ public class Card {
     }
 
     public enum Priority {
-        BAIXA("baixa"),
-        MEDIA("media"),
-        ALTA("alta");
-
-        private final String value;
+        BAIXA("baixa"),   
+        MEDIA("media"),   
+        ALTA("alta");     
+        
+        private final String value;  
 
         Priority(String value) {
             this.value = value;
+        }
+
+        public String getValue() {
+            return value;
         }
 
         public static Priority fromString(String text) {
@@ -72,7 +75,7 @@ public class Card {
                     return priority;
                 }
             }
-            return BAIXA;
+            return MEDIA; 
         }
     }
-}
+} 

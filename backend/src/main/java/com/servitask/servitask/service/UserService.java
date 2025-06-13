@@ -22,7 +22,6 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private JwtService jwtService;
 
@@ -30,41 +29,27 @@ public class UserService implements UserDetailsService {
     @Lazy
     private AuthenticationManager authenticationManager;
 
-    /**
-     * @param username
-     * @return
-     * @throws UsernameNotFoundException
-     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com email: " + username));
     }
 
-    /**
-     * @param loginRequest
-     * @return
-     * @throws UsernameNotFoundExceptions
-     */
     public AuthResponse login(LoginRequest loginRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
-                        loginRequest.getPassword()));
+                        loginRequest.getPassword()
+                )
+        );
 
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-
         String jwtToken = jwtService.generateToken(user);
 
         return new AuthResponse(jwtToken, user);
     }
 
-    /**
-     * @param registerRequest
-     * @return
-     * @throws RuntimeException
-     */
     public AuthResponse register(RegisterRequest registerRequest) {
         if (!registerRequest.isPasswordMatching()) {
             throw new RuntimeException("As senhas não coincidem");
@@ -77,46 +62,29 @@ public class UserService implements UserDetailsService {
         User user = new User(
                 registerRequest.getName(),
                 registerRequest.getEmail(),
-                HashUtil.hashPassword(registerRequest.getPassword()));
+                HashUtil.hashPassword(registerRequest.getPassword())
+        );
 
         User savedUser = userRepository.save(user);
-
+        
         String jwtToken = jwtService.generateToken(savedUser);
-
+        
         return new AuthResponse(jwtToken, savedUser);
     }
 
-    /**
-     * @param email
-     * @return
-     */
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    /**
-     * @param id
-     * @return
-     * @throws RuntimeException
-     */
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com id: " + id));
     }
 
-    /**
-     * @param email
-     * @return
-     */
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    /**
-     * @param authHeader
-     * @return
-     * @throws RuntimeException
-     */
     public User getUserFromToken(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Token JWT não fornecido ou formato inválido");

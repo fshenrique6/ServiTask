@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Repository  
 public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> {
 
     List<BoardColumn> findByBoardOrderByPosition(Board board);
@@ -21,4 +21,4 @@ public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> 
     Integer findNextPosition(@Param("board") Board board);
 
     List<BoardColumn> findByBoardAndPositionGreaterThanOrderByPosition(Board board, Integer position);
-}
+} 
