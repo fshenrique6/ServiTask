@@ -485,6 +485,9 @@
     user-select: none;
     position: relative;
     overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 120px;
 }
 
 .kanban-card::before {
@@ -591,6 +594,8 @@
     margin-bottom: 12px;
     position: relative;
     z-index: 1;
+    gap: 8px;
+    width: 100%;
 }
 
 .card-header h4 {
@@ -603,14 +608,19 @@
     letter-spacing: -0.01em;
     position: relative;
     z-index: 2;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: calc(100% - 20px);
 }
 
 .priority-indicator {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    margin-left: 8px;
     margin-top: 4px;
+    flex-shrink: 0;
 }
 
 .card-description {
@@ -620,6 +630,11 @@
     margin: 0 0 16px 0;
     position: relative;
     z-index: 1;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    white-space: pre-wrap;
 }
 
 .card-footer {
