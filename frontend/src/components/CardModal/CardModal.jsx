@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from '../../utils/iconMapping';
 
 function getPriorityIcon(priority) {
   let color = '#10b981', letter = 'B';
@@ -13,16 +14,27 @@ function getPriorityIcon(priority) {
 
 export default function CardModal({ isOpen, formData, setFormData, onClose, onSave, editingCard }) {
   if (!isOpen) return null;
+  
+  const isEditing = !!editingCard;
+  
   return (
     <div className="modal-overlay">
       <div className="modal-card-form spaced">
         <div className="modal-header-row">
-          <h2>Adicionar Novo Cartão</h2>
-          <button className="modal-close-btn" onClick={onClose}>&times;</button>
+          <h2>
+            <Icon emoji={isEditing ? "✏️" : "➕"} size={20} />
+            {isEditing ? 'Editar Cartão' : 'Adicionar Novo Cartão'}
+          </h2>
+          <button className="modal-close-btn" onClick={onClose}>
+            <Icon emoji="❌" size={16} />
+          </button>
         </div>
         <form className="styled-form" onSubmit={e => { e.preventDefault(); onSave(e); }}>
           <div className="form-group">
-            <label htmlFor="title">Título *</label>
+            <label htmlFor="title">
+              <Icon emoji="📝" size={16} />
+              Título *
+            </label>
             <input
               id="title"
               type="text"
@@ -35,7 +47,10 @@ export default function CardModal({ isOpen, formData, setFormData, onClose, onSa
             />
           </div>
           <div className="form-group">
-            <label htmlFor="description">Descrição</label>
+            <label htmlFor="description">
+              <Icon emoji="📄" size={16} />
+              Descrição
+            </label>
             <textarea
               id="description"
               name="description"
@@ -46,7 +61,10 @@ export default function CardModal({ isOpen, formData, setFormData, onClose, onSa
             />
           </div>
           <div className="form-group priority-group">
-            <label htmlFor="priority">Prioridade</label>
+            <label htmlFor="priority">
+              <Icon emoji="🎯" size={16} />
+              Prioridade
+            </label>
             <div className="priority-select-wrapper">
               <select
                 id="priority"
@@ -63,8 +81,14 @@ export default function CardModal({ isOpen, formData, setFormData, onClose, onSa
             </div>
           </div>
           <div className="modal-actions-row spaced">
-            <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
-            <button type="submit" className="btn-blue">Adicionar Cartão</button>
+            <button type="button" className="btn-cancel" onClick={onClose}>
+              <Icon emoji="❌" size={16} />
+              Cancelar
+            </button>
+            <button type="submit" className="btn-blue">
+              <Icon emoji={isEditing ? "✔️" : "➕"} size={16} />
+              {isEditing ? 'Salvar Alterações' : 'Adicionar Cartão'}
+            </button>
           </div>
         </form>
       </div>

@@ -50,7 +50,9 @@ import {
   FaHourglassHalf,
   FaTrash,
   FaPencilAlt,
-  FaKey
+  FaKey,
+  FaSave,
+  FaCheckCircle
 } from 'react-icons/fa';
 
 import { 
@@ -125,7 +127,9 @@ export const iconMap = {
   '⏳': FaHourglassHalf,
   '🗑️': FaTrash,
   '✏️': FaPencilAlt,
-  '🔑': FaKey
+  '🔑': FaKey,
+  '💾': FaSave,
+  '✔️': FaCheckCircle
 };
 
 // Função helper para obter o ícone

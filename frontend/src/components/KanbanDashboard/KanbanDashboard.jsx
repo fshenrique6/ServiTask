@@ -168,8 +168,8 @@ export default function KanbanDashboard() {
           </div>
           <div className="user-dropdown-container">
             <button className="user-profile-btn" onClick={toggleUserDropdown}>
-              <div className="user-avatar">
-                <span><Icon emoji="👤" /></span>
+              <div style={{ fontSize: '32px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icon emoji="👤" size={32} color="white" />
               </div>
             </button>
             
