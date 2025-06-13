@@ -10,11 +10,11 @@ docker-compose up -d --build
 ```
 
 ### 2. Acessar a aplicação
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8080
+- **Frontend**: http://localhost:3310
+- **Backend API**: http://localhost:8083
 
 ### 3. Criar sua conta
-1. Acesse http://localhost:3000
+1. Acesse http://localhost:3310
 2. Clique em "Criar conta"
 3. Preencha seus dados
 4. Faça login automaticamente
@@ -38,7 +38,7 @@ Para mais detalhes sobre a API de autenticação, consulte [AUTENTICACAO.md](./A
 
 ## 🛠️ Tecnologias
 
-- **Backend**: Spring Boot, Spring Security, JWT, MySQL
+- **Backend**: Spring Boot, Spring Security, JWT, Java
 - **Frontend**: React, JavaScript
 - **Banco**: MySQL
-- **Deploy**: Docker Compose 
+- **Deploy**: Docker Compose
