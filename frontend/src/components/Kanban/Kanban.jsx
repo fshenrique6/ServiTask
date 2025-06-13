@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Icon from '../../utils/iconMapping.jsx';
 import './Kanban.css';
 import BoardSidebar from '../BoardSidebar/BoardSidebar';      
 import KanbanHeader from '../KanbanHeader/KanbanHeader';      
@@ -449,7 +450,7 @@ function Kanban() {
             <div className="kanban-container">
                 <div className="loading-state">
                     <div className="loading-content">
-                        <div className="loading-spinner">⏳</div>
+                        <div className="loading-spinner"><Icon emoji="⏳" size={32} /></div>
                         <h2>Carregando seus quadros...</h2>
                     </div>
                 </div>
@@ -462,7 +463,7 @@ function Kanban() {
             <div className="kanban-container">
                 <div className="error-state">
                     <div className="error-content">
-                        <div className="error-icon">❌</div>
+                        <div className="error-icon"><Icon emoji="❌" size={32} /></div>
                         <h2>Erro ao carregar dados</h2>
                         <p>{error}</p>
                         <button 
@@ -491,7 +492,7 @@ function Kanban() {
                 {!activeBoard ? (
                     <div className="empty-state">
                         <div className="empty-content">
-                            <div className="empty-icon">📋</div>
+                            <div className="empty-icon"><Icon emoji="📋" size={48} /></div>
                             <h2>Bem-vindo ao ServiTask!</h2>
                             <p>Crie seu primeiro quadro para começar a organizar suas tarefas.</p>
                             <button 

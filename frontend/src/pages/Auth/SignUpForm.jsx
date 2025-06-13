@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Icon from '../../utils/iconMapping.jsx';
 import apiService from '../../services/api';
 
 export default function SignUpForm({ onSignUp, onToggleMode }) {
@@ -137,7 +138,7 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
         </div>
 
         <button type="submit" className="submit-btn" disabled={loading}>
-          {loading ? '🔄 Criando conta...' : '🚀 Criar Conta'}
+          {loading ? <><Icon emoji="🔄" /> Criando conta...</> : <><Icon emoji="🚀" /> Criar Conta</>}
         </button>
 
         <div className="toggle-mode">

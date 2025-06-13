@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Icon from '../../utils/iconMapping.jsx';
 import apiService from '../../services/api';
 import { nameToSlug } from '../../utils/urlUtils';
 import '../Kanban/Kanban.css';
@@ -129,7 +130,7 @@ export default function KanbanDashboard() {
       <div className="kanban-container">
         <div className="loading-state">
           <div className="loading-content">
-            <div className="loading-spinner">⏳</div>
+            <div className="loading-spinner"><Icon emoji="⏳" size={32} /></div>
             <h2>Carregando dashboard...</h2>
           </div>
         </div>
@@ -142,7 +143,7 @@ export default function KanbanDashboard() {
       <div className="kanban-container">
         <div className="error-state">
           <div className="error-content">
-            <div className="error-icon">❌</div>
+            <div className="error-icon"><Icon emoji="❌" size={32} /></div>
             <h2>Erro ao carregar dados</h2>
             <p>{error}</p>
             <button 
@@ -162,25 +163,25 @@ export default function KanbanDashboard() {
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-info">
-            <h1>📊 Dashboard</h1>
+            <h1><Icon emoji="📊" /> Dashboard</h1>
             <p>Visão geral dos seus quadros e tarefas</p>
           </div>
           <div className="user-dropdown-container">
             <button className="user-profile-btn" onClick={toggleUserDropdown}>
               <div className="user-avatar">
-                <span>👤</span>
+                <span><Icon emoji="👤" /></span>
               </div>
             </button>
             
             {isUserDropdownOpen && (
               <div className="user-dropdown-menu">
                 <div className="dropdown-item" onClick={handleMyAccount}>
-                  <span className="item-icon">⚙️</span>
+                  <span className="item-icon"><Icon emoji="⚙️" /></span>
                   <span>Minha Conta</span>
                 </div>
                 <div className="dropdown-separator"></div>
                 <div className="dropdown-item logout-item" onClick={handleLogout}>
-                  <span className="item-icon">🚪</span>
+                  <span className="item-icon"><Icon emoji="🚪" /></span>
                   <span>Sair</span>
                 </div>
               </div>
@@ -192,31 +193,31 @@ export default function KanbanDashboard() {
       <main className="dashboard-main">
         
         <section className="stats-section">
-          <h2>📈 Estatísticas</h2>
+          <h2><Icon emoji="📈" /> Estatísticas</h2>
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-icon">📋</div>
+              <div className="stat-icon"><Icon emoji="📋" size={24} /></div>
               <div className="stat-info">
                 <div className="stat-number">{stats.totalBoards}</div>
                 <div className="stat-label">Quadros</div>
               </div>
             </div>
             <div className="stat-card">
-              <div className="stat-icon">📝</div>
+              <div className="stat-icon"><Icon emoji="📝" size={24} /></div>
               <div className="stat-info">
                 <div className="stat-number">{stats.totalTasks}</div>
                 <div className="stat-label">Total de Tarefas</div>
               </div>
             </div>
             <div className="stat-card">
-              <div className="stat-icon">✅</div>
+              <div className="stat-icon"><Icon emoji="✅" size={24} /></div>
               <div className="stat-info">
                 <div className="stat-number">{stats.completedTasks}</div>
                 <div className="stat-label">Concluídas</div>
               </div>
             </div>
             <div className="stat-card">
-              <div className="stat-icon">⏳</div>
+              <div className="stat-icon"><Icon emoji="⏳" size={24} /></div>
               <div className="stat-info">
                 <div className="stat-number">{stats.pendingTasks}</div>
                 <div className="stat-label">Pendentes</div>
@@ -227,12 +228,12 @@ export default function KanbanDashboard() {
 
         <section className="boards-section">
           <div className="section-header">
-            <h2>📋 Meus Quadros</h2>
+            <h2><Icon emoji="📋" /> Meus Quadros</h2>
             <button 
               className="btn-create-board"
               onClick={() => setIsCreatingBoard(true)}
             >
-              <span>➕</span> Novo Quadro
+              <span><Icon emoji="➕" /></span> Novo Quadro
             </button>
           </div>
 
@@ -265,14 +266,14 @@ export default function KanbanDashboard() {
 
           {boards.length === 0 ? (
             <div className="empty-boards">
-              <div className="empty-icon">📋</div>
+              <div className="empty-icon"><Icon emoji="📋" size={48} /></div>
               <h3>Nenhum quadro criado</h3>
               <p>Crie seu primeiro quadro para começar a organizar suas tarefas!</p>
               <button 
                 className="btn-primary"
                 onClick={() => setIsCreatingBoard(true)}
               >
-                ➕ Criar Primeiro Quadro
+                <Icon emoji="➕" /> Criar Primeiro Quadro
               </button>
             </div>
           ) : (
@@ -309,7 +310,7 @@ export default function KanbanDashboard() {
                   )}
                   
                   <div className="board-footer">
-                    <span className="board-action">🔗 Abrir quadro</span>
+                    <span className="board-action"><Icon emoji="🔗" /> Abrir quadro</span>
                   </div>
                 </div>
               ))}

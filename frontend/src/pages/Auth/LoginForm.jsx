@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Icon from '../../utils/iconMapping.jsx';
 import apiService from '../../services/api';
 
 export default function LoginForm({ onLogin, onToggleMode }) {
@@ -92,7 +93,7 @@ export default function LoginForm({ onLogin, onToggleMode }) {
         </div>
 
         <button type="submit" className="submit-btn" disabled={loading}>
-          {loading ? '🔄 Entrando...' : '🔑 Entrar'}
+          {loading ? <><Icon emoji="🔄" /> Entrando...</> : <><Icon emoji="🔑" /> Entrar</>}
         </button>
 
         <div className="forgot-password">

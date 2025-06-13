@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from '../../utils/iconMapping.jsx';
 import KanbanCard from '../KanbanCard/KanbanCard';
 
 export default function KanbanColumn({ column, onEditColumn, onRemoveColumn, onAddCard, onEditCard, onDeleteCard, onDragOver, onDragLeave, onDrop, dragOverColumn, getPriorityColor, handleDragStart, handleDragEnd }) {
@@ -13,8 +14,8 @@ export default function KanbanColumn({ column, onEditColumn, onRemoveColumn, onA
         <div className="column-title-container">
           <h3>{column.name}</h3>
           <div className="column-actions">
-            <button className="column-btn edit-btn" onClick={() => onEditColumn(column)} title="Editar coluna">✏️</button>
-            <button className="column-btn delete-btn" onClick={() => onRemoveColumn(column.id)} title="Excluir coluna">🗑️</button>
+            <button className="column-btn edit-btn" onClick={() => onEditColumn(column)} title="Editar coluna"><Icon emoji="✏️" /></button>
+            <button className="column-btn delete-btn" onClick={() => onRemoveColumn(column.id)} title="Excluir coluna"><Icon emoji="🗑️" /></button>
           </div>
         </div>
       </div>

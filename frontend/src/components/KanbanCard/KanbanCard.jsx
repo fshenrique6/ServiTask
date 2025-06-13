@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from '../../utils/iconMapping.jsx';
 
 export default function KanbanCard({ card, columnId, onEditCard, onDeleteCard, getPriorityColor, handleDragStart, handleDragEnd }) {
   return (
@@ -19,8 +20,8 @@ export default function KanbanCard({ card, columnId, onEditCard, onDeleteCard, g
           {card.priority.charAt(0).toUpperCase() + card.priority.slice(1)}
         </span>
         <div className="card-actions">
-          <button className="card-btn edit-btn" onClick={e => { e.stopPropagation(); onEditCard(columnId, card); }} title="Editar cartão">✏️</button>
-          <button className="card-btn delete-btn" onClick={e => { e.stopPropagation(); onDeleteCard(columnId, card.id, card.title); }} title="Excluir cartão">🗑️</button>
+          <button className="card-btn edit-btn" onClick={e => { e.stopPropagation(); onEditCard(columnId, card); }} title="Editar cartão"><Icon emoji="✏️" /></button>
+          <button className="card-btn delete-btn" onClick={e => { e.stopPropagation(); onDeleteCard(columnId, card.id, card.title); }} title="Excluir cartão"><Icon emoji="🗑️" /></button>
         </div>
       </div>
     </div>

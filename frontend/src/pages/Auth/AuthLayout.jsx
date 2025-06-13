@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from '../../utils/iconMapping.jsx';
 
 export default function AuthLayout({ 
   children, 
@@ -17,7 +18,7 @@ export default function AuthLayout({
 
       <header className="login-header">
         <div className="login-logo" onClick={onBackToLanding}>
-          <span className="logo-icon">📋</span>
+          <span className="logo-icon"><Icon emoji="📋" /></span>
           <span className="logo-text">ServiTask</span>
         </div>
         <button className="back-btn" onClick={onBackToLanding}>
@@ -34,19 +35,19 @@ export default function AuthLayout({
               
               <div className="features-list">
                 <div className="feature-item">
-                  <span className="feature-icon">⚡</span>
+                  <span className="feature-icon"><Icon emoji="⚡" /></span>
                   <span>Organize tarefas rapidamente</span>
                 </div>
                 <div className="feature-item">
-                  <span className="feature-icon">🎯</span>
+                  <span className="feature-icon"><Icon emoji="🎯" /></span>
                   <span>Acompanhe o progresso visualmente</span>
                 </div>
                 <div className="feature-item">
-                  <span className="feature-icon">📊</span>
+                  <span className="feature-icon"><Icon emoji="📊" /></span>
                   <span>Gerencie múltiplos projetos</span>
                 </div>
                 <div className="feature-item">
-                  <span className="feature-icon">🔄</span>
+                  <span className="feature-icon"><Icon emoji="🔄" /></span>
                   <span>Sincronize em todos os dispositivos</span>
                 </div>
               </div>
