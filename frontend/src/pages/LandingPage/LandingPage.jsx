@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Icon from '../../utils/iconMapping.jsx';
 import './LandingPage.css';
 
 export default function LandingPage() {
@@ -82,7 +83,7 @@ export default function LandingPage() {
       <header className="landing-header">
         <div className="container constrained">
           <div className="logo">
-            <span className="logo-icon">📋</span>
+            <span className="logo-icon"><Icon emoji="📋" /></span>
             <span className="logo-text">ServiTask</span>
           </div>
           
@@ -109,21 +110,21 @@ export default function LandingPage() {
               
               <div className="hero-buttons">
                 <button className="btn-primary-hero" onClick={handleGetStarted}>
-                  🚀 Começar Gratuitamente
+                  <Icon emoji="🚀" /> Começar Gratuitamente
                 </button>
               </div>
               
               <div className="hero-features">
                 <div className="feature-item">
-                  <span className="feature-icon">⚡</span>
+                  <span className="feature-icon"><Icon emoji="⚡" /></span>
                   <span>Rápido e Intuitivo</span>
                 </div>
                 <div className="feature-item">
-                  <span className="feature-icon">🎯</span>
+                  <span className="feature-icon"><Icon emoji="🎯" /></span>
                   <span>Foco na Produtividade</span>
                 </div>
                 <div className="feature-item">
-                  <span className="feature-icon">📱</span>
+                  <span className="feature-icon"><Icon emoji="📱" /></span>
                   <span>Responsivo</span>
                 </div>
               </div>
@@ -140,7 +141,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="drag-instruction">
-                  ✨ Arraste os cards entre as colunas para testar!
+                  <Icon emoji="🌟" /> Arraste os cards entre as colunas para testar!
                 </div>
                 
                 <div className="mockup-columns">
@@ -229,32 +230,32 @@ export default function LandingPage() {
           
           <div className="features-grid">
             <div className="feature-card">
-              <div className="feature-icon-large">🎨</div>
+              <div className="feature-icon-large"><Icon emoji="🎨" size={48} /></div>
               <h3>Interface Intuitiva</h3>
               <p>Design limpo e moderno que facilita o uso diário. Visualize suas tarefas de forma clara e organizada.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon-large">🔥</div>
+              <div className="feature-icon-large"><Icon emoji="🔥" size={48} /></div>
               <h3>Priorização Inteligente</h3>
               <p>Sistema de prioridades com cores para identificar rapidamente as tarefas mais importantes.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon-large">📊</div>
+              <div className="feature-icon-large"><Icon emoji="📊" size={48} /></div>
               <h3>Quadros Kanban</h3>
               <p>Metodologia visual para acompanhar o progresso das tarefas em tempo real.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon-large">⚡</div>
+              <div className="feature-icon-large"><Icon emoji="⚡" size={48} /></div>
               <h3>Drag & Drop</h3>
               <p>Mova cartões entre colunas de forma simples e rápida, apenas arrastando e soltando.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon-large">🎯</div>
+              <div className="feature-icon-large"><Icon emoji="🎯" size={48} /></div>
               <h3>Múltiplos Projetos</h3>
               <p>Gerencie vários projetos simultaneamente com quadros independentes para cada um.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon-large">📱</div>
+              <div className="feature-icon-large"><Icon emoji="📱" size={48} /></div>
               <h3>Totalmente Responsivo</h3>
               <p>Acesse de qualquer dispositivo - desktop, tablet ou smartphone com a mesma experiência.</p>
             </div>
@@ -276,15 +277,15 @@ export default function LandingPage() {
               
               <div className="about-stats">
                 <div className="stat">
-                  <div className="stat-number">🚀</div>
+                  <div className="stat-number"><Icon emoji="🚀" size={32} /></div>
                   <div className="stat-label">Produtividade Aumentada</div>
                 </div>
                 <div className="stat">
-                  <div className="stat-number">⏱️</div>
+                  <div className="stat-number"><Icon emoji="⏰" size={32} /></div>
                   <div className="stat-label">Economia de Tempo</div>
                 </div>
                 <div className="stat">
-                  <div className="stat-number">✨</div>
+                  <div className="stat-number"><Icon emoji="🌟" size={32} /></div>
                   <div className="stat-label">Interface Moderna</div>
                 </div>
               </div>
@@ -299,10 +300,10 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="productivity-items">
-                  <div className="productivity-item">📝 Tarefas Claras</div>
-                  <div className="productivity-item">🎯 Objetivos Definidos</div>
-                  <div className="productivity-item">📈 Progresso Visível</div>
-                  <div className="productivity-item">✅ Resultados Alcançados</div>
+                  <div className="productivity-item"><Icon emoji="📝" /> Tarefas Claras</div>
+                  <div className="productivity-item"><Icon emoji="🎯" /> Objetivos Definidos</div>
+                  <div className="productivity-item"><Icon emoji="📈" /> Progresso Visível</div>
+                  <div className="productivity-item"><Icon emoji="✅" /> Resultados Alcançados</div>
                 </div>
               </div>
             </div>
@@ -316,7 +317,7 @@ export default function LandingPage() {
             <h2>Pronto para aumentar sua produtividade?</h2>
             <p>Comece a usar o ServiTask agora mesmo e transforme a forma como você gerencia seus projetos.</p>
             <button className="btn-cta" onClick={handleGetStarted}>
-              🚀 Começar Agora - É Grátis!
+              <Icon emoji="🚀" /> Começar Agora - É Grátis!
             </button>
           </div>
         </div>
@@ -326,14 +327,14 @@ export default function LandingPage() {
         <div className="container constrained">
           <div className="footer-content">
             <div className="footer-logo">
-              <span className="logo-icon">📋</span>
+              <span className="logo-icon"><Icon emoji="📋" /></span>
               <span className="logo-text">ServiTask</span>
             </div>
             <p className="footer-text">
               Simplificando o gerenciamento de projetos, uma tarefa por vez.
             </p>
             <button className="temp-kanban-btn" onClick={handleGoToKanban}>
-              🚀 Acesso Temporário ao Kanban
+              <Icon emoji="🚀" /> Acesso Temporário ao Kanban
             </button>
           </div>
         </div>

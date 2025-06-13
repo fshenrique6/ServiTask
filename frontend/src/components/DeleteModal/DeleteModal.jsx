@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from '../../utils/iconMapping.jsx';
 
 export default function DeleteModal({ isOpen, onClose, onConfirm, title, itemName, warning, confirmLabel = 'Excluir', icon = '🗑️' }) {
   if (!isOpen) return null;
@@ -6,7 +7,7 @@ export default function DeleteModal({ isOpen, onClose, onConfirm, title, itemNam
     <div className="modal-overlay" onClick={onClose}>
       <div className="delete-modal-content" onClick={e => e.stopPropagation()}>
         <div className="delete-modal-header">
-          <div className="delete-icon">{icon}</div>
+          <div className="delete-icon"><Icon emoji={icon} size={32} /></div>
           <h2>{title}</h2>
         </div>
         <div className="delete-modal-body">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Icon from '../../utils/iconMapping.jsx';
 import BoardListItem from '../BoardListItem/BoardListItem';
 import AddBoardButton from '../AddBoardButton/AddBoardButton';
 
@@ -37,7 +38,7 @@ export default function BoardSidebar({ boards, activeBoardId, selectBoard, openD
       
       {/* Botão para voltar ao dashboard */}
       <button className="back-dashboard-btn" onClick={handleBackToDashboard}>
-        <span>📊</span> Dashboard
+        <span><Icon emoji="📊" /></span> Dashboard
       </button>
     </div>
   );

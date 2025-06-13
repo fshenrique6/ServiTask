@@ -1,4 +1,5 @@
 import React from "react";
+import Icon from '../../utils/iconMapping.jsx';
 
 export default function BoardListItem({ board, active, selectBoard, openDeleteBoardModal }) {
   return (
@@ -14,7 +15,7 @@ export default function BoardListItem({ board, active, selectBoard, openDeleteBo
         onClick={e => openDeleteBoardModal(e, board)}
         title="Excluir quadro"
       >
-        🗑️
+        <Icon emoji="🗑️" />
       </button>
     </div>
   );
