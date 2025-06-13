@@ -1,4 +1,4 @@
-# ServiTask - Sistema de Autenticação
+# ServiTask - Sistema de Kanban
 
 Sistema de gerenciamento de tarefas com autenticação completa usando banco de dados.
 
