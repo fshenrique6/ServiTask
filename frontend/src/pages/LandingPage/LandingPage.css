@@ -684,6 +684,7 @@ html {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .stat {
@@ -696,6 +697,11 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
 }
 
 .stat::before {
@@ -714,27 +720,31 @@ html {
 }
 
 .stat:hover {
-  transform: translateY(-6px) scale(1.05);
+  transform: translateY(-6px) scale(1.02);
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(167, 139, 250, 0.3);
   box-shadow: 0 12px 32px rgba(167, 139, 250, 0.2);
 }
 
 .stat-number {
-  font-size: 3rem;
-  display: block;
-  margin-bottom: 0.8rem;
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
   font-weight: 900;
   background: linear-gradient(135deg, #a78bfa, #06b6d4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  height: 48px;
 }
 
 .stat-label {
   font-size: 1rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
 }
 
 .productivity-visual {
@@ -797,28 +807,40 @@ html {
 .productivity-items {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  max-width: 300px;
+  gap: 1.5rem;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .productivity-item {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(10px);
-  padding: 1.2rem;
-  border-radius: 12px;
-  font-size: 1rem;
+  padding: 1.5rem 1.2rem;
+  border-radius: 16px;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.13);
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 80px;
+  box-shadow: 0 2px 12px rgba(167, 139, 250, 0.08);
+  gap: 0.5rem;
+}
+
+.productivity-item .icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .productivity-item:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-2px);
-  border-color: rgba(167, 139, 250, 0.3);
-  color: #0369a1;
-  text-align: center;
+  background: rgba(255, 255, 255, 0.13);
+  transform: translateY(-2px) scale(1.03);
+  border-color: rgba(167, 139, 250, 0.25);
+  color: #06b6d4;
 }
 
 .cta {
@@ -995,6 +1017,21 @@ html {
     max-height: 400px;
     padding: 0.6rem;
   }
+  
+  .about-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  
+  .stat {
+    padding: 1.5rem;
+    min-height: 140px;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1026,11 +1063,34 @@ html {
   }
   
   .about-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .stat {
+    padding: 1.2rem;
+    min-height: 130px;
+  }
+  
+  .stat-number {
+    font-size: 1.8rem;
+    margin-bottom: 0.6rem;
+  }
+  
+  .stat-label {
+    font-size: 0.9rem;
   }
   
   .productivity-items {
     grid-template-columns: 1fr;
+    gap: 1rem;
+    max-width: 300px;
+  }
+  
+  .productivity-item {
+    font-size: 1rem;
+    padding: 1.1rem 1rem;
+    min-height: 60px;
   }
   
   .section-header h2,
@@ -1111,5 +1171,15 @@ html {
     font-size: 0.55rem;
     padding: 0.2rem 0.4rem;
     border-radius: 8px;
+  }
+  
+  .about-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .stat {
+    padding: 1.5rem;
+    min-height: 120px;
   }
 } 
