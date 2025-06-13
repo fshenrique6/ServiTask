@@ -32,10 +32,6 @@ docker-compose up -d --build
 - ✅ **Validações completas** no frontend e backend
 - ✅ **Tratamento de erros** com mensagens claras
 
-## 📚 Documentação
-
-Para mais detalhes sobre a API de autenticação, consulte [AUTENTICACAO.md](./AUTENTICACAO.md).
-
 ## 🛠️ Tecnologias
 
 - **Backend**: Spring Boot, Spring Security, JWT, Java
