@@ -817,7 +817,7 @@ html {
   backdrop-filter: blur(10px);
   padding: 1.5rem 1.2rem;
   border-radius: 16px;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.13);
@@ -832,8 +832,8 @@ html {
 }
 
 .productivity-item .icon {
-  font-size: 1.5rem;
-  margin-bottom: 0.3rem;
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
 }
 
 .productivity-item:hover {
@@ -1088,7 +1088,7 @@ html {
   }
   
   .productivity-item {
-    font-size: 1rem;
+    font-size: 1.1rem;
     padding: 1.1rem 1rem;
     min-height: 60px;
   }
@@ -1128,6 +1128,10 @@ html {
   .drag-instruction {
     font-size: 0.75rem;
     padding: 0.4rem;
+  }
+  
+  .productivity-item .icon {
+    font-size: 1.5rem;
   }
 }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import AddColumnButton from '../AddColumnButton/AddColumnButton';
+import Icon from '../../utils/iconMapping.jsx';
 
 export default function KanbanHeader({ 
     boardName, 
@@ -38,14 +39,14 @@ export default function KanbanHeader({
                 onClick={onSaveBoardName}
                 title="Salvar"
               >
-                ✓
+                <Icon emoji="✅" />
               </button>
               <button 
                 className="btn-cancel-title" 
                 onClick={onCancelEditBoardName}
                 title="Cancelar"
               >
-                ✕
+                <Icon emoji="❌" />
               </button>
             </div>
           </div>
@@ -57,7 +58,7 @@ export default function KanbanHeader({
               onClick={onEditBoardName}
               title="Editar nome do quadro"
             >
-              ✏️
+              <Icon emoji="✏️" />
             </button>
           </div>
         )}
