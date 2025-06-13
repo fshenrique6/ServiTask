@@ -50,13 +50,15 @@ html {
   box-shadow: 0 4px 32px rgba(0, 0, 0, 0.2);
 }
 
-.landing-header .container.constrained {
+.landing-header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1.2rem 40px;
   position: relative;
   z-index: 2;
+  max-width: 100%;
+  margin: 0;
 }
 
 .logo {

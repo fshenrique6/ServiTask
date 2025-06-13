@@ -81,7 +81,7 @@ export default function LandingPage() {
     <div className="landing-page">
       
       <header className="landing-header">
-        <div className="container constrained">
+        <div className="container">
           <div className="logo">
             <span className="logo-icon"><Icon emoji="📋" /></span>
             <span className="logo-text">ServiTask</span>
