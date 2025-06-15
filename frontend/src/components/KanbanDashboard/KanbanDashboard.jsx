@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import Icon from '../../utils/iconMapping.jsx';
 import apiService from '../../services/api';
 import { nameToSlug } from '../../utils/urlUtils';
@@ -15,6 +16,12 @@ export default function KanbanDashboard() {
     totalTasks: 0,
     completedTasks: 0,
     pendingTasks: 0
+  });
+
+  const [priorityStats, setPriorityStats] = useState({
+    alta: { count: 0, percentage: 0 },
+    media: { count: 0, percentage: 0 },
+    baixa: { count: 0, percentage: 0 }
   });
 
   const [isCreatingBoard, setIsCreatingBoard] = useState(false);
@@ -45,12 +52,24 @@ export default function KanbanDashboard() {
   const calculateStats = (boardsData) => {
     let totalTasks = 0;
     let completedTasks = 0;
+    let priorityCounts = { alta: 0, media: 0, baixa: 0 };
 
     boardsData.forEach(board => {
       if (board.columns) {
         board.columns.forEach(column => {
           if (column.cards) {
             totalTasks += column.cards.length;
+            
+            // Contabilizar prioridades
+            column.cards.forEach(card => {
+              const priority = card.priority?.toLowerCase() || 'media';
+              if (priorityCounts.hasOwnProperty(priority)) {
+                priorityCounts[priority]++;
+              } else {
+                priorityCounts.media++; // Default para prioridade média
+              }
+            });
+            
             if (column.name.toLowerCase().includes('concluído') || 
                 column.name.toLowerCase().includes('concluido') ||
                 column.name.toLowerCase().includes('done') ||
@@ -62,12 +81,23 @@ export default function KanbanDashboard() {
       }
     });
 
+    // Calcular percentuais das prioridades
+    const priorityStatsData = {};
+    Object.keys(priorityCounts).forEach(priority => {
+      priorityStatsData[priority] = {
+        count: priorityCounts[priority],
+        percentage: totalTasks > 0 ? Math.round((priorityCounts[priority] / totalTasks) * 100) : 0
+      };
+    });
+
     setStats({
       totalBoards: boardsData.length,
       totalTasks,
       completedTasks,
       pendingTasks: totalTasks - completedTasks
     });
+
+    setPriorityStats(priorityStatsData);
   };
 
   const goToBoard = (board) => {
@@ -146,12 +176,20 @@ export default function KanbanDashboard() {
             <div className="error-icon"><Icon emoji="❌" size={32} /></div>
             <h2>Erro ao carregar dados</h2>
             <p>{error}</p>
-            <button 
-              className="btn-primary"
-              onClick={loadDashboardData}
-            >
-              Tentar Novamente
-            </button>
+            <div className="error-actions">
+              <button 
+                className="btn-secondary"
+                onClick={() => navigate('/')}
+              >
+                <Icon emoji="🏠" size={16} /> Voltar ao Início
+              </button>
+              <button 
+                className="btn-primary"
+                onClick={loadDashboardData}
+              >
+                <Icon emoji="🔄" size={16} /> Tentar Novamente
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -225,6 +263,138 @@ export default function KanbanDashboard() {
             </div>
           </div>
         </section>
+
+        {stats.totalTasks > 0 && (
+          <section className="priority-section">
+            <h2><Icon emoji="🎯" /> Prioridades das Tarefas</h2>
+            
+            <div className="priority-content">
+              <div className="priority-stats-grid">
+                <div className="priority-stat-card alta">
+                  <div className="priority-stat-icon"><Icon emoji="🔴" size={24} /></div>
+                  <div className="priority-stat-info">
+                    <div className="priority-stat-number">{priorityStats.alta.count}</div>
+                    <div className="priority-stat-percentage">{priorityStats.alta.percentage}%</div>
+                    <div className="priority-stat-label">Alta Prioridade</div>
+                  </div>
+                </div>
+                
+                <div className="priority-stat-card media">
+                  <div className="priority-stat-icon"><Icon emoji="🟡" size={24} /></div>
+                  <div className="priority-stat-info">
+                    <div className="priority-stat-number">{priorityStats.media.count}</div>
+                    <div className="priority-stat-percentage">{priorityStats.media.percentage}%</div>
+                    <div className="priority-stat-label">Média Prioridade</div>
+                  </div>
+                </div>
+                
+                <div className="priority-stat-card baixa">
+                  <div className="priority-stat-icon"><Icon emoji="🟢" size={24} /></div>
+                  <div className="priority-stat-info">
+                    <div className="priority-stat-number">{priorityStats.baixa.count}</div>
+                    <div className="priority-stat-percentage">{priorityStats.baixa.percentage}%</div>
+                    <div className="priority-stat-label">Baixa Prioridade</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="priority-charts-container">
+                <div className="chart-container">
+                  <h3>Distribuição por Prioridade</h3>
+                  <div className="chart-wrapper">
+                    <ResponsiveContainer width="100%" height={250}>
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'Alta', value: priorityStats.alta.count, color: '#ef4444' },
+                            { name: 'Média', value: priorityStats.media.count, color: '#f59e0b' },
+                            { name: 'Baixa', value: priorityStats.baixa.count, color: '#10b981' }
+                          ].filter(item => item.value > 0)}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={80}
+                          innerRadius={40}
+                          dataKey="value"
+                          startAngle={90}
+                          endAngle={450}
+                        >
+                          {[
+                            { name: 'Alta', value: priorityStats.alta.count, color: '#ef4444' },
+                            { name: 'Média', value: priorityStats.media.count, color: '#f59e0b' },
+                            { name: 'Baixa', value: priorityStats.baixa.count, color: '#10b981' }
+                          ].filter(item => item.value > 0).map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          formatter={(value, name) => [
+                            `${value} tarefa${value !== 1 ? 's' : ''}`,
+                            `${name} Prioridade`
+                          ]}
+                          labelStyle={{ color: '#333' }}
+                          contentStyle={{ 
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                            border: '1px solid #ccc',
+                            borderRadius: '8px' 
+                          }}
+                        />
+                        <Legend 
+                          verticalAlign="bottom" 
+                          height={36}
+                          formatter={(value) => `${value} Prioridade`}
+                          wrapperStyle={{ color: '#fff' }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="chart-container">
+                  <h3>Comparativo de Tarefas</h3>
+                  <div className="chart-wrapper">
+                    <ResponsiveContainer width="100%" height={250}>
+                      <BarChart
+                        data={[
+                          { name: 'Alta', value: priorityStats.alta.count, fill: '#ef4444' },
+                          { name: 'Média', value: priorityStats.media.count, fill: '#f59e0b' },
+                          { name: 'Baixa', value: priorityStats.baixa.count, fill: '#10b981' }
+                        ]}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+                        <XAxis 
+                          dataKey="name" 
+                          tick={{ fill: '#fff', fontSize: 12 }}
+                          axisLine={{ stroke: 'rgba(255, 255, 255, 0.3)' }}
+                          tickLine={{ stroke: 'rgba(255, 255, 255, 0.3)' }}
+                        />
+                        <YAxis 
+                          tick={{ fill: '#fff', fontSize: 12 }}
+                          axisLine={{ stroke: 'rgba(255, 255, 255, 0.3)' }}
+                          tickLine={{ stroke: 'rgba(255, 255, 255, 0.3)' }}
+                        />
+                        <Tooltip 
+                          formatter={(value, name) => [
+                            `${value} tarefa${value !== 1 ? 's' : ''}`,
+                            `${name} Prioridade`
+                          ]}
+                          labelFormatter={(label) => `${label} Prioridade`}
+                          contentStyle={{ 
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                            border: '1px solid #ccc',
+                            borderRadius: '8px',
+                            color: '#333'
+                          }}
+                        />
+                        <Bar dataKey="value" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
         <section className="boards-section">
           <div className="section-header">
