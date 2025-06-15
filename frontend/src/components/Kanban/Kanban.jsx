@@ -466,12 +466,20 @@ function Kanban() {
                         <div className="error-icon"><Icon emoji="❌" size={32} /></div>
                         <h2>Erro ao carregar dados</h2>
                         <p>{error}</p>
-                        <button 
-                            className="btn-primary"
-                            onClick={() => window.location.reload()}
-                        >
-                            Tentar Novamente
-                        </button>
+                        <div className="error-actions">
+                            <button 
+                                className="btn-secondary"
+                                onClick={() => navigate('/dashboard')}
+                            >
+                                <Icon emoji="📊" size={16} /> Voltar ao Dashboard
+                            </button>
+                            <button 
+                                className="btn-primary"
+                                onClick={() => window.location.reload()}
+                            >
+                                <Icon emoji="🔄" size={16} /> Tentar Novamente
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

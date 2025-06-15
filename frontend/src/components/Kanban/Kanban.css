@@ -3062,3 +3062,437 @@
         font-size: 1rem;
     }
 }
+
+/* Estilos para mensagem de erro */
+.error-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 100%);
+    z-index: 2;
+}
+
+.error-state::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(239, 68, 68, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.error-content {
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 24px;
+    padding: 48px 40px;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.error-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(239, 68, 68, 0.5) 20%, 
+        rgba(239, 68, 68, 0.8) 50%, 
+        rgba(239, 68, 68, 0.5) 80%, 
+        transparent 100%);
+    animation: errorGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes errorGlow {
+    0% {
+        opacity: 0.5;
+        transform: scaleX(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+.error-icon {
+    margin-bottom: 24px;
+    font-size: 48px;
+    animation: errorPulse 2s ease-in-out infinite;
+}
+
+@keyframes errorPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.error-content h2 {
+    color: #ef4444;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.error-content p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 32px;
+    font-weight: 400;
+}
+
+.error-content .btn-primary {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 14px 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: none;
+    box-shadow: 
+        0 4px 16px rgba(239, 68, 68, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.error-content .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.error-content .btn-primary:hover::before {
+    left: 100%;
+}
+
+.error-content .btn-primary:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 24px rgba(239, 68, 68, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.error-content .btn-primary:active {
+    transform: translateY(-1px);
+    box-shadow: 
+        0 4px 12px rgba(239, 68, 68, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Container para os botões de ação na mensagem de erro */
+.error-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Botão secundário para voltar */
+.error-content .btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.error-content .btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.error-content .btn-secondary:hover::before {
+    left: 100%;
+}
+
+.error-content .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.error-content .btn-secondary:active {
+    transform: translateY(-1px);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Ajustar o botão primário para trabalhar com o secundário */
+.error-content .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Responsividade para mensagem de erro */
+@media (max-width: 768px) {
+    .error-content {
+        padding: 32px 24px;
+        margin: 0 16px;
+        border-radius: 16px;
+    }
+    
+    .error-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+    }
+    
+    .error-content p {
+        font-size: 1rem;
+        margin-bottom: 24px;
+    }
+    
+    .error-icon {
+        font-size: 40px;
+        margin-bottom: 20px;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .error-content .btn-primary,
+    .error-content .btn-secondary {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .error-state {
+        padding: 20px 16px;
+    }
+    
+    .error-content {
+        padding: 24px 20px;
+        border-radius: 12px;
+    }
+    
+    .error-content h2 {
+        font-size: 1.25rem;
+    }
+    
+    .error-content p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    .error-icon {
+        font-size: 36px;
+        margin-bottom: 16px;
+    }
+}
+
+/* Estilos para estado de carregamento */
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 100%);
+    z-index: 2;
+}
+
+.loading-state::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(167, 139, 250, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(167, 139, 250, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.loading-content {
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(167, 139, 250, 0.2);
+    border-radius: 24px;
+    padding: 48px 40px;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(167, 139, 250, 0.5) 20%, 
+        rgba(167, 139, 250, 0.8) 50%, 
+        rgba(167, 139, 250, 0.5) 80%, 
+        transparent 100%);
+    animation: loadingGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes loadingGlow {
+    0% {
+        opacity: 0.5;
+        transform: scaleX(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+.loading-spinner {
+    margin-bottom: 24px;
+    font-size: 48px;
+    animation: loadingSpin 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingSpin {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+.loading-content h2 {
+    color: #a78bfa;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Responsividade para estado de loading */
+@media (max-width: 768px) {
+    .loading-content {
+        padding: 32px 24px;
+        margin: 0 16px;
+        border-radius: 16px;
+    }
+    
+    .loading-content h2 {
+        font-size: 1.25rem;
+    }
+    
+    .loading-spinner {
+        font-size: 40px;
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .loading-state {
+        padding: 20px 16px;
+    }
+    
+    .loading-content {
+        padding: 24px 20px;
+        border-radius: 12px;
+    }
+    
+    .loading-content h2 {
+        font-size: 1.1rem;
+    }
+    
+    .loading-spinner {
+        font-size: 36px;
+        margin-bottom: 16px;
+    }
+}

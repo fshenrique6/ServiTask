@@ -176,12 +176,20 @@ export default function KanbanDashboard() {
             <div className="error-icon"><Icon emoji="❌" size={32} /></div>
             <h2>Erro ao carregar dados</h2>
             <p>{error}</p>
-            <button 
-              className="btn-primary"
-              onClick={loadDashboardData}
-            >
-              Tentar Novamente
-            </button>
+            <div className="error-actions">
+              <button 
+                className="btn-secondary"
+                onClick={() => navigate('/')}
+              >
+                <Icon emoji="🏠" size={16} /> Voltar ao Início
+              </button>
+              <button 
+                className="btn-primary"
+                onClick={loadDashboardData}
+              >
+                <Icon emoji="🔄" size={16} /> Tentar Novamente
+              </button>
+            </div>
           </div>
         </div>
       </div>
