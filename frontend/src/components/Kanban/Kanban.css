@@ -480,7 +480,7 @@
     padding: 18px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     cursor: grab;
-    transition: all 0.3s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
     border-left: 3px solid transparent;
     user-select: none;
     position: relative;
@@ -497,13 +497,13 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s ease;
-    z-index: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transition: left 0.6s ease;
+    z-index: 1;
     pointer-events: none;
 }
 
-.kanban-card:hover::before {
+.kanban-card:not(.dragging):hover::before {
     left: 100%;
 }
 
@@ -531,22 +531,26 @@
 
 /* Enhanced card hover when not dragging */
 .kanban-card:not(.dragging):hover {
-    transform: translateY(-4px) scale(1.02);
+    transform: translateY(-2px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.12);
 }
 
 /* Priority-specific hover colors */
 .kanban-card[data-priority="alta"]:not(.dragging):hover {
     border-left-color: #ef4444;
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.2);
 }
 
 .kanban-card[data-priority="media"]:not(.dragging):hover {
     border-left-color: #f59e0b;
+    box-shadow: 0 8px 32px rgba(245, 158, 11, 0.2);
 }
 
 .kanban-card[data-priority="baixa"]:not(.dragging):hover {
     border-left-color: #10b981;
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.2);
 }
 
 /* Drag handle cursor */
@@ -559,21 +563,20 @@
 }
 
 /* Prevent text selection during drag */
-.kanban-card * {
+.kanban-card.dragging * {
     pointer-events: none;
 }
 
 .kanban-card .card-btn {
     pointer-events: auto;
     position: relative;
-    z-index: 4;
+    z-index: 12;
 }
 
-.kanban-card .card-header,
-.kanban-card .card-description,
-.kanban-card .card-footer,
 .kanban-card .card-actions {
     pointer-events: auto;
+    position: relative;
+    z-index: 11;
 }
 
 /* Drop zone animation */
@@ -593,7 +596,7 @@
     align-items: flex-start;
     margin-bottom: 12px;
     position: relative;
-    z-index: 1;
+    z-index: 5;
     gap: 8px;
     width: 100%;
 }
@@ -607,7 +610,7 @@
     flex: 1;
     letter-spacing: -0.01em;
     position: relative;
-    z-index: 2;
+    z-index: 6;
     word-wrap: break-word;
     word-break: break-word;
     overflow-wrap: break-word;
@@ -629,7 +632,7 @@
     line-height: 1.5;
     margin: 0 0 16px 0;
     position: relative;
-    z-index: 1;
+    z-index: 3;
     word-wrap: break-word;
     word-break: break-word;
     overflow-wrap: break-word;
@@ -643,7 +646,7 @@
     align-items: center;
     margin-top: auto;
     position: relative;
-    z-index: 1;
+    z-index: 4;
 }
 
 .priority-tag {
@@ -655,11 +658,11 @@
 
 .card-actions {
     display: flex;
-    gap: 4px;
+    gap: 6px;
     opacity: 0;
     transition: opacity 0.3s ease;
     position: relative;
-    z-index: 3;
+    z-index: 10;
 }
 
 .kanban-card:hover .card-actions {
@@ -667,32 +670,39 @@
 }
 
 .card-btn {
-    background: none;
-    border: none;
-    padding: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 6px;
     cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    border-radius: 6px;
+    transition: all 0.2s ease;
     font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
 }
 
 .card-btn:hover {
-    background: #f8f9fa;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
 }
 
 /* Specific styles for edit and delete buttons */
 .edit-btn:hover {
-    background: #e3f2fd !important;
-    transform: scale(1.1);
+    background: rgba(33, 150, 243, 0.2) !important;
+    border-color: rgba(33, 150, 243, 0.4) !important;
+    color: #2196f3 !important;
 }
 
 .delete-btn:hover {
-    background: #ffebee !important;
-    transform: scale(1.1);
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: #ef4444 !important;
 }
 
 .card-btn:active {
-    transform: scale(0.95);
+    transform: translateY(0) scale(0.95);
 }
 
 .add-card-btn {
