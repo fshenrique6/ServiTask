@@ -11,6 +11,40 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [passwordValidation, setPasswordValidation] = useState({
+    minLength: false,
+    hasNumber: false,
+    hasUppercase: false,
+    hasLowercase: false,
+    hasSpecialChar: false
+  });
+
+  const validatePassword = (password) => {
+    const validation = {
+      minLength: password.length >= 8,
+      hasNumber: /\d/.test(password),
+      hasUppercase: /[A-Z]/.test(password),
+      hasLowercase: /[a-z]/.test(password),
+      hasSpecialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    };
+    
+    setPasswordValidation(validation);
+    return Object.values(validation).every(Boolean);
+  };
+
+  const getPasswordValidationMessage = () => {
+    const requirements = [];
+    if (!passwordValidation.minLength) requirements.push('mínimo 8 caracteres');
+    if (!passwordValidation.hasNumber) requirements.push('1 número');
+    if (!passwordValidation.hasUppercase) requirements.push('1 letra maiúscula');
+    if (!passwordValidation.hasLowercase) requirements.push('1 letra minúscula');
+    if (!passwordValidation.hasSpecialChar) requirements.push('1 caractere especial (!@#$%^&*...)');
+    
+    if (requirements.length > 0) {
+      return `A senha deve conter: ${requirements.join(', ')}.`;
+    }
+    return '';
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,16 +52,16 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
       ...prev,
       [name]: value
     }));
+    
+    if (name === 'password') {
+      validatePassword(value);
+    }
+    
     if (error) setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (formData.password !== formData.confirmPassword) {
-      setError('As senhas não coincidem!');
-      return;
-    }
     
     if (!formData.name.trim()) {
       setError('Por favor, digite seu nome.');
@@ -36,6 +70,16 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
     
     if (!formData.email.trim() || !formData.password.trim()) {
       setError('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    if (!validatePassword(formData.password)) {
+      setError(getPasswordValidationMessage());
+      return;
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError('As senhas não coincidem!');
       return;
     }
 
@@ -121,6 +165,65 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
             required
             disabled={loading}
           />
+          {formData.password && (
+            <div style={{ 
+              marginTop: '0.5rem', 
+              fontSize: '0.8rem',
+              padding: '0.5rem',
+              backgroundColor: '#f8fafc',
+              borderRadius: '6px',
+              border: '1px solid #e2e8f0'
+            }}>
+              <div style={{ marginBottom: '0.25rem', fontWeight: '600', color: '#374151' }}>
+                Requisitos da senha:
+              </div>
+              <div style={{ 
+                color: passwordValidation.minLength ? '#10b981' : '#ef4444',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}>
+                <span>{passwordValidation.minLength ? '✓' : '✗'}</span>
+                Mínimo 8 caracteres
+              </div>
+              <div style={{ 
+                color: passwordValidation.hasNumber ? '#10b981' : '#ef4444',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}>
+                <span>{passwordValidation.hasNumber ? '✓' : '✗'}</span>
+                Pelo menos 1 número
+              </div>
+              <div style={{ 
+                color: passwordValidation.hasUppercase ? '#10b981' : '#ef4444',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}>
+                <span>{passwordValidation.hasUppercase ? '✓' : '✗'}</span>
+                Pelo menos 1 letra maiúscula
+              </div>
+                             <div style={{ 
+                 color: passwordValidation.hasLowercase ? '#10b981' : '#ef4444',
+                 display: 'flex',
+                 alignItems: 'center',
+                 gap: '0.25rem'
+               }}>
+                 <span>{passwordValidation.hasLowercase ? '✓' : '✗'}</span>
+                 Pelo menos 1 letra minúscula
+               </div>
+               <div style={{ 
+                 color: passwordValidation.hasSpecialChar ? '#10b981' : '#ef4444',
+                 display: 'flex',
+                 alignItems: 'center',
+                 gap: '0.25rem'
+               }}>
+                 <span>{passwordValidation.hasSpecialChar ? '✓' : '✗'}</span>
+                 Pelo menos 1 caractere especial (!@#$%^&*...)
+               </div>
+             </div>
+           )}
         </div>
 
         <div className="form-group">
