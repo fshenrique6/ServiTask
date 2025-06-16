@@ -106,8 +106,8 @@
   transform: scale(1.05);
 }
 
-.logo-icon {
-  font-size: 2rem;
+.logoauth{
+  width: 25vh;
 }
 
 .back-btn {

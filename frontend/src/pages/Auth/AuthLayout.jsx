@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '../../utils/iconMapping.jsx';
+import Logo from '../../assets/logobranca.png';
 
 export default function AuthLayout({ 
   children, 
@@ -18,8 +19,7 @@ export default function AuthLayout({
 
       <header className="login-header">
         <div className="login-logo" onClick={onBackToLanding}>
-          <span className="logo-icon"><Icon emoji="📋" /></span>
-          <span className="logo-text">ServiTask</span>
+          <img src={Logo} className='logoauth' alt="" />
         </div>
         <button className="back-btn" onClick={onBackToLanding}>
           ← Voltar
