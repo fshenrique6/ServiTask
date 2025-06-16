@@ -19,7 +19,7 @@ export default function AuthLayout({
 
       <header className="login-header">
         <div className="login-logo" onClick={onBackToLanding}>
-          <img src={Logo} alt="" />
+          <img src={Logo} className='logoauth' alt="" />
         </div>
         <button className="back-btn" onClick={onBackToLanding}>
           ← Voltar

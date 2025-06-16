@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../utils/iconMapping.jsx';
 import './LandingPage.css';
+import Logo from '../../assets/logodegrade.png';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -83,8 +84,7 @@ export default function LandingPage() {
       <header className="landing-header">
         <div className="container">
           <div className="logo">
-            <span className="logo-icon"><Icon emoji="📋" /></span>
-            <span className="logo-text">ServiTask</span>
+            <img src={Logo} className='imglogo' alt="" />
           </div>
           
           <nav className="nav">
