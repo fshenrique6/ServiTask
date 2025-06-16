@@ -22,16 +22,35 @@ class ApiService {
       if (data.token) {
         localStorage.setItem('authToken', data.token);
         
+        // Preservar foto existente se houver - buscar na chave separada
+        let existingPhoto = null;
+        try {
+          // Primeiro, tentar obter da chave separada (persiste após logout)
+          existingPhoto = localStorage.getItem('userPhoto');
+          
+          // Se não encontrar na chave separada, tentar no user atual
+          if (!existingPhoto) {
+            const existingUserString = localStorage.getItem('user');
+            if (existingUserString && existingUserString !== 'null' && existingUserString !== 'undefined') {
+              const existingUser = JSON.parse(existingUserString);
+              existingPhoto = existingUser?.photo || null;
+            }
+          }
+        } catch (error) {
+          console.warn('Erro ao obter foto existente:', error);
+          existingPhoto = null;
+        }
+        
         // O backend retorna os dados do usuário diretamente no AuthResponse
         const userData = {
           id: data.userId,
           name: data.name,
           email: data.email,
-          role: data.role
+          role: data.role,
+          photo: data.photo || existingPhoto // Preservar foto existente
         };
         
         localStorage.setItem('user', JSON.stringify(userData));
-        console.log('Dados do usuário salvos no login:', userData);
       }
 
       return data;
@@ -66,12 +85,20 @@ class ApiService {
       if (data.token) {
         localStorage.setItem('authToken', data.token);
         
+        // Preservar foto existente se houver (caso raro, mas por segurança)
+        let existingPhoto = localStorage.getItem('userPhoto');
+        if (!existingPhoto) {
+          const existingUser = this.getUser();
+          existingPhoto = existingUser?.photo || null;
+        }
+        
         // O backend retorna os dados do usuário diretamente no AuthResponse
         const userData = {
           id: data.userId,
           name: data.name,
           email: data.email,
-          role: data.role
+          role: data.role,
+          photo: data.photo || existingPhoto // Preservar foto existente
         };
         
         localStorage.setItem('user', JSON.stringify(userData));
@@ -92,34 +119,25 @@ class ApiService {
         throw new Error('Token não encontrado');
       }
 
-      const response = await fetch(`${API_BASE_URL}/auth/me`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        let errorMessage = 'Erro ao obter dados do usuário';
-        try {
-          const error = await response.json();
-          errorMessage = error.message || errorMessage;
-        } catch (parseError) {
-          // Se não conseguir fazer parse do JSON de erro, usa mensagem padrão
-          errorMessage = `Erro ${response.status}: ${response.statusText}`;
-        }
-        throw new Error(errorMessage);
+      // Como o endpoint /auth/me não existe, usar apenas dados locais
+      const localUser = this.getUser();
+      if (!localUser) {
+        throw new Error('Nenhum dado de usuário disponível');
       }
-
-      const userData = await response.json();
       
-      // Atualizar dados no localStorage se obtidos com sucesso
-      localStorage.setItem('user', JSON.stringify(userData));
+      // Garantir que a foto local está incluída
+      let existingPhoto = localStorage.getItem('userPhoto');
+      if (!existingPhoto) {
+        existingPhoto = localUser.photo || null;
+      }
       
-      return userData;
+      const mergedUserData = {
+        ...localUser,
+        photo: localUser.photo || existingPhoto || null
+      };
+      
+      return mergedUserData;
     } catch (error) {
-      console.error('Erro ao obter usuário atual:', error);
       throw error;
     }
   }
@@ -146,8 +164,21 @@ class ApiService {
   }
 
   logout() {
+    // Limpar URLs de objeto antes de fazer logout para evitar vazamentos de memória
+    const user = this.getUser();
+    
+    if (user && user.photo && user.photo.startsWith('blob:')) {
+      URL.revokeObjectURL(user.photo);
+    }
+    
+    // Preservar foto do perfil antes de limpar dados do usuário
+    if (user && user.photo && !user.photo.startsWith('blob:')) {
+      localStorage.setItem('userPhoto', user.photo);
+    }
+    
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+    // NÃO remover 'userPhoto' - ela deve persistir
   }
 
   // Método para limpar dados corrompidos
@@ -236,6 +267,34 @@ class ApiService {
       // Limpar dados corrompidos
       localStorage.removeItem('user');
       return null;
+    }
+  }
+
+  // Método utilitário para mesclar dados do usuário preservando a foto
+  mergeUserData(newUserData, preservePhoto = true) {
+    if (!preservePhoto) {
+      return newUserData;
+    }
+
+    let existingPhoto = localStorage.getItem('userPhoto');
+    if (!existingPhoto) {
+      const existingUser = this.getUser();
+      existingPhoto = existingUser?.photo || null;
+    }
+    
+    return {
+      ...newUserData,
+      photo: newUserData.photo || existingPhoto
+    };
+  }
+
+  // Método para limpar foto do perfil (se necessário)
+  clearUserPhoto() {
+    localStorage.removeItem('userPhoto');
+    const currentUser = this.getUser();
+    if (currentUser) {
+      const updatedUser = { ...currentUser, photo: null };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
     }
   }
 
@@ -646,19 +705,33 @@ class ApiService {
 
         return result;
       } catch (fetchError) {
-        // Fallback: criar URL local para preview da foto
-        console.warn('Endpoint não disponível, criando preview local:', fetchError);
+        // Fallback: converter imagem para Base64 e armazenar localmente
         
-        const photoUrl = URL.createObjectURL(file);
-        
-        // Atualizar dados do usuário no localStorage
-        const currentUser = this.getUser();
-        if (currentUser) {
-          const updatedUser = { ...currentUser, photo: photoUrl };
-          localStorage.setItem('user', JSON.stringify(updatedUser));
-        }
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const photoUrl = e.target.result; // Base64 string
+            
+            // Atualizar dados do usuário no localStorage
+            const currentUser = this.getUser();
+            
+            if (currentUser) {
+              const updatedUser = { ...currentUser, photo: photoUrl };
+              localStorage.setItem('user', JSON.stringify(updatedUser));
+              
+              // NOVA LÓGICA: Salvar foto separadamente para persistir após logout
+              localStorage.setItem('userPhoto', photoUrl);
+              
 
-        return { photoUrl, success: true };
+                          }
+
+              resolve({ photoUrl, success: true });
+            };
+            reader.onerror = () => {
+              reject(new Error('Erro ao processar a imagem'));
+            };
+          reader.readAsDataURL(file);
+        });
       }
     } catch (error) {
       console.error('Erro ao fazer upload da foto:', error);

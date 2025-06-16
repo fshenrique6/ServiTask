@@ -94,10 +94,15 @@ export default function Profile() {
       // Depois, tenta atualizar com dados do servidor
       try {
         const userData = await apiService.getCurrentUser();
-        setUser(userData);
+        // Preservar foto local se o servidor não retornar uma foto
+        const mergedUserData = {
+          ...userData,
+          photo: userData.photo || localUser.photo || null
+        };
+        setUser(mergedUserData);
         setFormData(prev => ({
           ...prev,
-          name: userData.name || ''
+          name: mergedUserData.name || ''
         }));
       } catch (serverErr) {
         console.warn('Não foi possível obter dados atualizados do servidor:', serverErr);
@@ -160,7 +165,13 @@ export default function Profile() {
       
       // Usar o método do apiService
       const result = await apiService.uploadPhoto(file);
+      
+      // Atualizar o estado do usuário com a nova foto
       setUser(prev => ({ ...prev, photo: result.photoUrl }));
+      
+      // Limpar o preview temporário
+      setPhotoPreview(null);
+      
       setSuccess('Foto atualizada com sucesso!');
       setTimeout(() => setSuccess(null), 3000);
       
