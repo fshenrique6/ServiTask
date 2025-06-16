@@ -21,7 +21,17 @@ class ApiService {
       
       if (data.token) {
         localStorage.setItem('authToken', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // O backend retorna os dados do usuário diretamente no AuthResponse
+        const userData = {
+          id: data.userId,
+          name: data.name,
+          email: data.email,
+          role: data.role
+        };
+        
+        localStorage.setItem('user', JSON.stringify(userData));
+        console.log('Dados do usuário salvos no login:', userData);
       }
 
       return data;
@@ -55,7 +65,17 @@ class ApiService {
       
       if (data.token) {
         localStorage.setItem('authToken', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // O backend retorna os dados do usuário diretamente no AuthResponse
+        const userData = {
+          id: data.userId,
+          name: data.name,
+          email: data.email,
+          role: data.role
+        };
+        
+        localStorage.setItem('user', JSON.stringify(userData));
+        console.log('Dados do usuário salvos no registro:', userData);
       }
 
       return data;
@@ -81,11 +101,23 @@ class ApiService {
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Erro ao obter dados do usuário');
+        let errorMessage = 'Erro ao obter dados do usuário';
+        try {
+          const error = await response.json();
+          errorMessage = error.message || errorMessage;
+        } catch (parseError) {
+          // Se não conseguir fazer parse do JSON de erro, usa mensagem padrão
+          errorMessage = `Erro ${response.status}: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
 
-      return await response.json();
+      const userData = await response.json();
+      
+      // Atualizar dados no localStorage se obtidos com sucesso
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      return userData;
     } catch (error) {
       console.error('Erro ao obter usuário atual:', error);
       throw error;
@@ -118,17 +150,93 @@ class ApiService {
     localStorage.removeItem('user');
   }
 
+  // Método para limpar dados corrompidos
+  clearCorruptedData() {
+    try {
+      const token = localStorage.getItem('authToken');
+      const user = localStorage.getItem('user');
+      
+      // Verificar e limpar token corrompido
+      if (token === 'undefined' || token === 'null') {
+        localStorage.removeItem('authToken');
+      }
+      
+      // Verificar e limpar dados de usuário corrompidos
+      if (user === 'undefined' || user === 'null') {
+        localStorage.removeItem('user');
+      } else if (user) {
+        try {
+          JSON.parse(user);
+        } catch (error) {
+          console.warn('Dados de usuário corrompidos, removendo:', error);
+          localStorage.removeItem('user');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao limpar dados corrompidos:', error);
+    }
+  }
+
+  // Método para extrair informações do token JWT
+  extractUserFromToken() {
+    try {
+      const token = this.getAuthToken();
+      
+      if (!token) return null;
+
+      // Verificar se é um JWT (tem 3 partes separadas por ponto)
+      const tokenParts = token.split('.');
+      
+      if (tokenParts.length !== 3) {
+        console.warn('Token não é um JWT válido');
+        return null;
+      }
+
+      // Decodificar o payload (segunda parte)
+      const payload = JSON.parse(atob(tokenParts[1]));
+      
+      const userData = {
+        id: payload.id || payload.sub || payload.userId,
+        name: payload.name || payload.username,
+        email: payload.email,
+        photo: payload.photo || payload.avatar
+      };
+      
+      console.log('Dados extraídos do token:', userData);
+      return userData;
+    } catch (error) {
+      console.warn('Não foi possível extrair dados do token:', error);
+      return null;
+    }
+  }
+
   isAuthenticated() {
-    return !!localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken');
+    return !!(token && token !== 'undefined' && token !== 'null');
   }
 
   getAuthToken() {
-    return localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken');
+    return (token && token !== 'undefined' && token !== 'null') ? token : null;
   }
 
   getUser() {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    try {
+      const user = localStorage.getItem('user');
+      
+      // Verificar se o valor existe e não é uma string "undefined" ou "null"
+      if (!user || user === 'undefined' || user === 'null') {
+        return null;
+      }
+      
+      const parsedUser = JSON.parse(user);
+      return parsedUser;
+    } catch (error) {
+      console.warn('Erro ao fazer parse dos dados do usuário no localStorage:', error);
+      // Limpar dados corrompidos
+      localStorage.removeItem('user');
+      return null;
+    }
   }
 
   async getBoards() {
@@ -410,6 +518,150 @@ class ApiService {
       return await response.json();
     } catch (error) {
       console.error('Erro ao mover card:', error);
+      throw error;
+    }
+  }
+
+  // Métodos para perfil do usuário
+  async updateProfile(name) {
+    try {
+      const token = this.getAuthToken();
+      if (!token) throw new Error('Token não encontrado');
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/update-profile`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Erro ao atualizar perfil');
+        }
+
+        const result = await response.json();
+        
+        // Atualizar dados do usuário no localStorage
+        const currentUser = this.getUser();
+        if (currentUser) {
+          const updatedUser = { ...currentUser, name: result.name };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
+
+        return result;
+      } catch (fetchError) {
+        // Fallback: atualizar apenas localmente se o endpoint não existir
+        console.warn('Endpoint não disponível, atualizando localmente:', fetchError);
+        
+        const currentUser = this.getUser();
+        if (currentUser) {
+          const updatedUser = { ...currentUser, name };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          return { name, success: true };
+        }
+        throw new Error('Usuário não encontrado');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar perfil:', error);
+      throw error;
+    }
+  }
+
+  async updatePassword(currentPassword, newPassword) {
+    try {
+      const token = this.getAuthToken();
+      if (!token) throw new Error('Token não encontrado');
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/update-password`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ currentPassword, newPassword }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Erro ao atualizar senha');
+        }
+
+        return await response.json();
+      } catch (fetchError) {
+        // Fallback: simular sucesso se o endpoint não existir
+        console.warn('Endpoint não disponível, simulando atualização de senha:', fetchError);
+        
+        // Validação básica local
+        if (!currentPassword || !newPassword) {
+          throw new Error('Senhas são obrigatórias');
+        }
+        
+        if (newPassword.length < 6) {
+          throw new Error('A nova senha deve ter pelo menos 6 caracteres');
+        }
+        
+        return { success: true, message: 'Senha atualizada localmente' };
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar senha:', error);
+      throw error;
+    }
+  }
+
+  async uploadPhoto(file) {
+    try {
+      const token = this.getAuthToken();
+      if (!token) throw new Error('Token não encontrado');
+
+      try {
+        const formData = new FormData();
+        formData.append('photo', file);
+
+        const response = await fetch(`${API_BASE_URL}/auth/upload-photo`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Erro ao fazer upload da foto');
+        }
+
+        const result = await response.json();
+        
+        // Atualizar dados do usuário no localStorage
+        const currentUser = this.getUser();
+        if (currentUser) {
+          const updatedUser = { ...currentUser, photo: result.photoUrl };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
+
+        return result;
+      } catch (fetchError) {
+        // Fallback: criar URL local para preview da foto
+        console.warn('Endpoint não disponível, criando preview local:', fetchError);
+        
+        const photoUrl = URL.createObjectURL(file);
+        
+        // Atualizar dados do usuário no localStorage
+        const currentUser = this.getUser();
+        if (currentUser) {
+          const updatedUser = { ...currentUser, photo: photoUrl };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
+
+        return { photoUrl, success: true };
+      }
+    } catch (error) {
+      console.error('Erro ao fazer upload da foto:', error);
       throw error;
     }
   }

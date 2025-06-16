@@ -134,7 +134,7 @@ export default function KanbanDashboard() {
 
   const handleMyAccount = () => {
     setIsUserDropdownOpen(false);
-    alert('Funcionalidade "Minha Conta" será implementada em breve!');
+    navigate('/profile');
   };
 
   const toggleUserDropdown = () => {

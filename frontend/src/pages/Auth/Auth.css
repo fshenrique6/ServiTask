@@ -262,8 +262,51 @@
 
 .form-group label {
   font-weight: 600;
-  color: #374151;
+  color: #374151 !important;
   font-size: 0.9rem;
+}
+
+/* Garantir que os labels sejam visíveis - sobrescrever estilos globais */
+.login-page .form-group label,
+.login-form .form-group label,
+.login-form-section .form-group label {
+  color: #1f2937 !important;
+  font-weight: 600;
+}
+
+/* Garantir que todos os textos da página de login tenham cor adequada */
+.login-page {
+  color: #1f2937;
+}
+
+/* Manter cores específicas para elementos que devem ser brancos */
+.login-info,
+.login-info *,
+.login-header,
+.login-header *,
+.login-footer,
+.login-footer * {
+  color: white !important;
+}
+
+/* Garantir cor escura para o formulário */
+.login-form-section,
+.login-form-section * {
+  color: #1f2937 !important;
+}
+
+/* Exceções para elementos que têm cores específicas */
+.submit-btn,
+.submit-btn * {
+  color: white !important;
+}
+
+.toggle-btn {
+  color: #a78bfa !important;
+}
+
+.forgot-password a {
+  color: #a78bfa !important;
 }
 
 .form-group input {
