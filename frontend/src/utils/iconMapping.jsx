@@ -136,7 +136,6 @@ export const iconMap = {
 export const getIcon = (emoji, props = {}) => {
   const IconComponent = iconMap[emoji];
   if (!IconComponent) {
-    console.warn(`Ícone não encontrado para emoji: ${emoji}`);
     return null;
   }
   return <IconComponent {...props} />;
@@ -147,8 +146,7 @@ export const Icon = ({ emoji, className, size, color, ...props }) => {
   const IconComponent = iconMap[emoji];
   
   if (!IconComponent) {
-    console.warn(`Ícone não encontrado para emoji: ${emoji}`);
-    return <span>{emoji}</span>; // Fallback para o emoji original
+    return <span>{emoji}</span>; // Fallback silencioso para o emoji original
   }
   
   return (
