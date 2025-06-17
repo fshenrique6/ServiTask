@@ -81,10 +81,6 @@ export default function CardModal({ isOpen, formData, setFormData, onClose, onSa
             </div>
           </div>
           <div className="modal-actions-row spaced">
-            <button type="button" className="btn-cancel" onClick={onClose}>
-              <Icon emoji="❌" size={16} />
-              Cancelar
-            </button>
             <button type="submit" className="btn-blue">
               <Icon emoji={isEditing ? "✔️" : "➕"} size={16} />
               {isEditing ? 'Salvar Alterações' : 'Adicionar Cartão'}
