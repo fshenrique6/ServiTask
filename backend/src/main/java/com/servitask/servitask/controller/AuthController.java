@@ -3,6 +3,8 @@ package com.servitask.servitask.controller;
 import com.servitask.servitask.dto.AuthResponse;
 import com.servitask.servitask.dto.LoginRequest;
 import com.servitask.servitask.dto.RegisterRequest;
+import com.servitask.servitask.dto.UpdatePasswordRequest;
+import com.servitask.servitask.dto.UpdateProfileRequest;
 import com.servitask.servitask.entity.User;
 import com.servitask.servitask.service.UserService;
 import jakarta.validation.Valid;
@@ -105,6 +107,57 @@ public class AuthController {
     @RequestMapping(value = "/login", method = RequestMethod.OPTIONS)
     public ResponseEntity<Void> loginOptions() {
         return ResponseEntity.ok().build();
+    }
+    
+    @RequestMapping(value = "/update-profile", method = RequestMethod.OPTIONS)
+    public ResponseEntity<Void> updateProfileOptions() {
+        return ResponseEntity.ok().build();
+    }
+    
+    @RequestMapping(value = "/update-password", method = RequestMethod.OPTIONS)
+    public ResponseEntity<Void> updatePasswordOptions() {
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update-profile")
+    public ResponseEntity<?> updateProfile(@Valid @RequestBody UpdateProfileRequest updateProfileRequest, Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            
+            User updatedUser = userService.updateProfile(email, updateProfileRequest.getName());
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Perfil atualizado com sucesso");
+            response.put("name", updatedUser.getName());
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            // Usar a mensagem específica da exceção em vez de uma mensagem genérica
+            error.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+    
+    @PutMapping("/update-password")
+    public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordRequest updatePasswordRequest, Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            
+            userService.updatePassword(email, updatePasswordRequest.getCurrentPassword(), updatePasswordRequest.getNewPassword());
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Senha atualizada com sucesso");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            // Usar a mensagem específica da exceção em vez de uma mensagem genérica
+            error.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 
     @RequestMapping(method = RequestMethod.OPTIONS)

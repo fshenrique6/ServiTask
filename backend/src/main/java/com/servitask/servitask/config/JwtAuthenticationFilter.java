@@ -36,7 +36,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String requestPath = request.getRequestURI();
-        if (requestPath.startsWith("/api/auth/") ||          
+        // Permitir apenas endpoints públicos específicos, não toda a rota /api/auth/
+        if (requestPath.equals("/api/auth/login") ||
+            requestPath.equals("/api/auth/register") ||
+            requestPath.equals("/api/auth/check-email") ||
+            requestPath.equals("/api/auth/test") ||
             requestPath.startsWith("/h2-console/") ||        
             requestPath.startsWith("/actuator/") ||          
             requestPath.equals("/error") ||                  

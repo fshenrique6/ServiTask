@@ -22,32 +22,13 @@ class ApiService {
       if (data.token) {
         localStorage.setItem('authToken', data.token);
         
-        // Preservar foto existente se houver - buscar na chave separada
-        let existingPhoto = null;
-        try {
-          // Primeiro, tentar obter da chave separada (persiste após logout)
-          existingPhoto = localStorage.getItem('userPhoto');
-          
-          // Se não encontrar na chave separada, tentar no user atual
-          if (!existingPhoto) {
-            const existingUserString = localStorage.getItem('user');
-            if (existingUserString && existingUserString !== 'null' && existingUserString !== 'undefined') {
-              const existingUser = JSON.parse(existingUserString);
-              existingPhoto = existingUser?.photo || null;
-            }
-          }
-        } catch (error) {
-          console.warn('Erro ao obter foto existente:', error);
-          existingPhoto = null;
-        }
-        
         // O backend retorna os dados do usuário diretamente no AuthResponse
         const userData = {
           id: data.userId,
           name: data.name,
           email: data.email,
           role: data.role,
-          photo: data.photo || existingPhoto // Preservar foto existente
+          photo: data.photo
         };
         
         localStorage.setItem('user', JSON.stringify(userData));
@@ -85,20 +66,13 @@ class ApiService {
       if (data.token) {
         localStorage.setItem('authToken', data.token);
         
-        // Preservar foto existente se houver (caso raro, mas por segurança)
-        let existingPhoto = localStorage.getItem('userPhoto');
-        if (!existingPhoto) {
-          const existingUser = this.getUser();
-          existingPhoto = existingUser?.photo || null;
-        }
-        
         // O backend retorna os dados do usuário diretamente no AuthResponse
         const userData = {
           id: data.userId,
           name: data.name,
           email: data.email,
           role: data.role,
-          photo: data.photo || existingPhoto // Preservar foto existente
+          photo: data.photo
         };
         
         localStorage.setItem('user', JSON.stringify(userData));
@@ -119,24 +93,37 @@ class ApiService {
         throw new Error('Token não encontrado');
       }
 
-      // Como o endpoint /auth/me não existe, usar apenas dados locais
-      const localUser = this.getUser();
-      if (!localUser) {
-        throw new Error('Nenhum dado de usuário disponível');
+      try {
+        // Tentar obter dados atualizados do servidor
+        const response = await fetch(`${API_BASE_URL}/users/profile`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao obter dados do servidor');
+        }
+
+        const userData = await response.json();
+        
+        // Atualizar dados locais com os dados do servidor
+        localStorage.setItem('user', JSON.stringify(userData));
+        
+        return userData;
+      } catch (serverError) {
+        // Fallback: usar dados locais se o servidor não estiver disponível
+        console.warn('Não foi possível obter dados do servidor, usando dados locais:', serverError);
+        
+        const localUser = this.getUser();
+        if (!localUser) {
+          throw new Error('Nenhum dado de usuário disponível');
+        }
+        
+        return localUser;
       }
-      
-      // Garantir que a foto local está incluída
-      let existingPhoto = localStorage.getItem('userPhoto');
-      if (!existingPhoto) {
-        existingPhoto = localUser.photo || null;
-      }
-      
-      const mergedUserData = {
-        ...localUser,
-        photo: localUser.photo || existingPhoto || null
-      };
-      
-      return mergedUserData;
     } catch (error) {
       throw error;
     }
@@ -171,14 +158,8 @@ class ApiService {
       URL.revokeObjectURL(user.photo);
     }
     
-    // Preservar foto do perfil antes de limpar dados do usuário
-    if (user && user.photo && !user.photo.startsWith('blob:')) {
-      localStorage.setItem('userPhoto', user.photo);
-    }
-    
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
-    // NÃO remover 'userPhoto' - ela deve persistir
   }
 
   // Método para limpar dados corrompidos
@@ -270,32 +251,19 @@ class ApiService {
     }
   }
 
-  // Método utilitário para mesclar dados do usuário preservando a foto
+  // Método utilitário para mesclar dados do usuário
   mergeUserData(newUserData, preservePhoto = true) {
     if (!preservePhoto) {
       return newUserData;
     }
 
-    let existingPhoto = localStorage.getItem('userPhoto');
-    if (!existingPhoto) {
-      const existingUser = this.getUser();
-      existingPhoto = existingUser?.photo || null;
-    }
+    const existingUser = this.getUser();
+    const existingPhoto = existingUser?.photo || null;
     
     return {
       ...newUserData,
       photo: newUserData.photo || existingPhoto
     };
-  }
-
-  // Método para limpar foto do perfil (se necessário)
-  clearUserPhoto() {
-    localStorage.removeItem('userPhoto');
-    const currentUser = this.getUser();
-    if (currentUser) {
-      const updatedUser = { ...currentUser, photo: null };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-    }
   }
 
   async getBoards() {
@@ -491,6 +459,11 @@ class ApiService {
       const token = this.getAuthToken();
       if (!token) throw new Error('Token não encontrado');
 
+      // Validação local
+      if (description && description.length > 100) {
+        throw new Error('Descrição deve ter no máximo 100 caracteres');
+      }
+
       const response = await fetch(`${API_BASE_URL}/boards/${boardId}/columns/${columnId}/cards`, {
         method: 'POST',
         headers: {
@@ -501,6 +474,10 @@ class ApiService {
       });
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        if (errorData && errorData.message) {
+          throw new Error(errorData.message);
+        }
         throw new Error('Erro ao adicionar card');
       }
 
@@ -516,6 +493,11 @@ class ApiService {
       const token = this.getAuthToken();
       if (!token) throw new Error('Token não encontrado');
 
+      // Validação local
+      if (description && description.length > 100) {
+        throw new Error('Descrição deve ter no máximo 100 caracteres');
+      }
+
       const response = await fetch(`${API_BASE_URL}/boards/${boardId}/columns/${columnId}/cards/${cardId}`, {
         method: 'PUT',
         headers: {
@@ -526,6 +508,10 @@ class ApiService {
       });
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        if (errorData && errorData.message) {
+          throw new Error(errorData.message);
+        }
         throw new Error('Erro ao atualizar card');
       }
 
@@ -635,37 +621,21 @@ class ApiService {
       const token = this.getAuthToken();
       if (!token) throw new Error('Token não encontrado');
 
-      try {
-        const response = await fetch(`${API_BASE_URL}/auth/update-password`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ currentPassword, newPassword }),
-        });
+      const response = await fetch(`${API_BASE_URL}/auth/update-password`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
 
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || 'Erro ao atualizar senha');
-        }
-
-        return await response.json();
-      } catch (fetchError) {
-        // Fallback: simular sucesso se o endpoint não existir
-        console.warn('Endpoint não disponível, simulando atualização de senha:', fetchError);
-        
-        // Validação básica local
-        if (!currentPassword || !newPassword) {
-          throw new Error('Senhas são obrigatórias');
-        }
-        
-        if (newPassword.length < 6) {
-          throw new Error('A nova senha deve ter pelo menos 6 caracteres');
-        }
-        
-        return { success: true, message: 'Senha atualizada localmente' };
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Erro ao atualizar senha');
       }
+
+      return await response.json();
     } catch (error) {
       console.error('Erro ao atualizar senha:', error);
       throw error;
@@ -677,62 +647,32 @@ class ApiService {
       const token = this.getAuthToken();
       if (!token) throw new Error('Token não encontrado');
 
-      try {
-        const formData = new FormData();
-        formData.append('photo', file);
+      const formData = new FormData();
+      formData.append('photo', file);
 
-        const response = await fetch(`${API_BASE_URL}/auth/upload-photo`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-          body: formData,
-        });
+      const response = await fetch(`${API_BASE_URL}/users/upload-photo`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || 'Erro ao fazer upload da foto');
-        }
-
-        const result = await response.json();
-        
-        // Atualizar dados do usuário no localStorage
-        const currentUser = this.getUser();
-        if (currentUser) {
-          const updatedUser = { ...currentUser, photo: result.photoUrl };
-          localStorage.setItem('user', JSON.stringify(updatedUser));
-        }
-
-        return result;
-      } catch (fetchError) {
-        // Fallback: converter imagem para Base64 e armazenar localmente
-        
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const photoUrl = e.target.result; // Base64 string
-            
-            // Atualizar dados do usuário no localStorage
-            const currentUser = this.getUser();
-            
-            if (currentUser) {
-              const updatedUser = { ...currentUser, photo: photoUrl };
-              localStorage.setItem('user', JSON.stringify(updatedUser));
-              
-              // NOVA LÓGICA: Salvar foto separadamente para persistir após logout
-              localStorage.setItem('userPhoto', photoUrl);
-              
-
-                          }
-
-              resolve({ photoUrl, success: true });
-            };
-            reader.onerror = () => {
-              reject(new Error('Erro ao processar a imagem'));
-            };
-          reader.readAsDataURL(file);
-        });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Erro ao fazer upload da foto');
       }
+
+      const result = await response.json();
+      
+      // Atualizar dados do usuário no localStorage
+      const currentUser = this.getUser();
+      if (currentUser) {
+        const updatedUser = { ...currentUser, photo: result.photoUrl };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+
+      return result;
     } catch (error) {
       console.error('Erro ao fazer upload da foto:', error);
       throw error;

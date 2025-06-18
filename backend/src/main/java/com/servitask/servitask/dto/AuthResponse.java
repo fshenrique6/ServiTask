@@ -12,6 +12,7 @@ public class AuthResponse {
     private String name;        
     private String email;       
     private String role;        
+    private String photo;
 
     public AuthResponse() {}
 
@@ -21,6 +22,7 @@ public class AuthResponse {
         this.name = user.getName();
         this.email = user.getEmail();
         this.role = user.getRole().name();  
+        this.photo = user.getPhoto();
     }
 
     public String getToken() {
@@ -69,5 +71,13 @@ public class AuthResponse {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 } 

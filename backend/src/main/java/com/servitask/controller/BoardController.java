@@ -6,10 +6,16 @@ import com.servitask.model.Card;
 import com.servitask.servitask.entity.User;
 import com.servitask.service.BoardService;
 import com.servitask.servitask.service.UserService;
+import com.servitask.servitask.dto.CreateCardRequest;
+import com.servitask.servitask.dto.UpdateCardRequest;
+import com.servitask.servitask.exception.UserException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -185,56 +191,73 @@ public class BoardController {
     }
 
     @PostMapping("/{boardId}/columns/{columnId}/cards")
-    public ResponseEntity<Card> addCard(@PathVariable Long boardId,
+    public ResponseEntity<?> addCard(@PathVariable Long boardId,
             @PathVariable Long columnId,
-            @RequestBody Map<String, String> request,
+            @Valid @RequestBody CreateCardRequest request,
             @RequestHeader("Authorization") String authHeader) {
         try {
             User user = userService.getUserFromToken(authHeader);
-            String title = request.get("title");
-            String description = request.get("description");
-            String priority = request.get("priority");
-
-            if (title == null || title.trim().isEmpty()) {
-                return ResponseEntity.badRequest().build();
+            
+            // Validação adicional de descrição
+            if (request.getDescription() != null && request.getDescription().length() > 100) {
+                Map<String, Object> error = new HashMap<>();
+                error.put("success", false);
+                error.put("message", "Descrição deve ter no máximo 100 caracteres");
+                error.put("timestamp", LocalDateTime.now());
+                return ResponseEntity.badRequest().body(error);
             }
 
-            Optional<Card> card = boardService.addCard(boardId, columnId, title, description, priority, user);
+            Optional<Card> card = boardService.addCard(boardId, columnId, 
+                request.getTitle(), request.getDescription(), request.getPriority(), user);
 
             if (card.isPresent()) {
                 return ResponseEntity.ok(card.get());
             } else {
                 return ResponseEntity.notFound().build();  
             }
+        } catch (UserException e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("success", false);
+            error.put("message", e.getMessage());
+            error.put("timestamp", LocalDateTime.now());
+            return ResponseEntity.status(e.getHttpStatus()).body(error);
         } catch (Exception e) {
             return ResponseEntity.status(401).build();
         }
     }
 
     @PutMapping("/{boardId}/columns/{columnId}/cards/{cardId}")
-    public ResponseEntity<Card> updateCard(@PathVariable Long boardId,
+    public ResponseEntity<?> updateCard(@PathVariable Long boardId,
             @PathVariable Long columnId,
             @PathVariable Long cardId,
-            @RequestBody Map<String, String> request,
+            @Valid @RequestBody UpdateCardRequest request,
             @RequestHeader("Authorization") String authHeader) {
         try {
             User user = userService.getUserFromToken(authHeader);
-            String title = request.get("title");
-            String description = request.get("description");
-            String priority = request.get("priority");
-
-            if (title == null || title.trim().isEmpty()) {
-                return ResponseEntity.badRequest().build();
+            
+            // Validação adicional de descrição
+            if (request.getDescription() != null && request.getDescription().length() > 100) {
+                Map<String, Object> error = new HashMap<>();
+                error.put("success", false);
+                error.put("message", "Descrição deve ter no máximo 100 caracteres");
+                error.put("timestamp", LocalDateTime.now());
+                return ResponseEntity.badRequest().body(error);
             }
 
-            Optional<Card> card = boardService.updateCard(boardId, columnId, cardId, title, description, priority,
-                    user);
+            Optional<Card> card = boardService.updateCard(boardId, columnId, cardId, 
+                request.getTitle(), request.getDescription(), request.getPriority(), user);
 
             if (card.isPresent()) {
                 return ResponseEntity.ok(card.get());
             } else {
                 return ResponseEntity.notFound().build();
             }
+        } catch (UserException e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("success", false);
+            error.put("message", e.getMessage());
+            error.put("timestamp", LocalDateTime.now());
+            return ResponseEntity.status(e.getHttpStatus()).body(error);
         } catch (Exception e) {
             return ResponseEntity.status(401).build();
         }

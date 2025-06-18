@@ -16,6 +16,9 @@ export default function CardModal({ isOpen, formData, setFormData, onClose, onSa
   if (!isOpen) return null;
   
   const isEditing = !!editingCard;
+  const maxDescriptionLength = 100;
+  const currentDescriptionLength = formData.description ? formData.description.length : 0;
+  const isDescriptionOverLimit = currentDescriptionLength > maxDescriptionLength;
   
   return (
     <div className="modal-overlay">
@@ -29,7 +32,13 @@ export default function CardModal({ isOpen, formData, setFormData, onClose, onSa
             <Icon emoji="❌" size={16} />
           </button>
         </div>
-        <form className="styled-form" onSubmit={e => { e.preventDefault(); onSave(e); }}>
+        <form className="styled-form" onSubmit={e => { 
+          e.preventDefault(); 
+          if (isDescriptionOverLimit) {
+            return; // Previne envio se descrição exceder limite
+          }
+          onSave(e); 
+        }}>
           <div className="form-group">
             <label htmlFor="title">
               <Icon emoji="📝" size={16} />
@@ -51,14 +60,25 @@ export default function CardModal({ isOpen, formData, setFormData, onClose, onSa
               <Icon emoji="📄" size={16} />
               Descrição
             </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Digite a descrição do cartão"
-              className="styled-input"
-            />
+            <div className="textarea-container">
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Digite a descrição do cartão"
+                className="styled-input"
+                maxLength={maxDescriptionLength + 20} // Permite digitar um pouco mais para mostrar erro
+              />
+              <div className="char-counter-bottom">
+                {currentDescriptionLength} / {maxDescriptionLength}
+              </div>
+            </div>
+            {isDescriptionOverLimit && (
+              <div className="simple-error">
+                Descrição deve ter no máximo {maxDescriptionLength} caracteres
+              </div>
+            )}
           </div>
           <div className="form-group priority-group">
             <label htmlFor="priority">
@@ -81,7 +101,11 @@ export default function CardModal({ isOpen, formData, setFormData, onClose, onSa
             </div>
           </div>
           <div className="modal-actions-row spaced">
-            <button type="submit" className="btn-blue">
+            <button 
+              type="submit" 
+              className="btn-blue"
+              disabled={isDescriptionOverLimit}
+            >
               <Icon emoji={isEditing ? "✔️" : "➕"} size={16} />
               {isEditing ? 'Salvar Alterações' : 'Adicionar Cartão'}
             </button>

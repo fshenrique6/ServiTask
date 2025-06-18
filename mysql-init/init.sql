@@ -14,9 +14,13 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
+    photo LONGTEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- Adicionar coluna photo se ela não existir (para bancos existentes)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS photo LONGTEXT;
 
 SELECT 'Database servitask created successfully!' as message;
 SHOW DATABASES LIKE 'servitask'; 

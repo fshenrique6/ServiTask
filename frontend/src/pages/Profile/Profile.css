@@ -511,4 +511,64 @@
         padding: 12px 16px;
         font-size: 0.9rem;
     }
+}
+
+/* Validação de senha */
+.password-requirements {
+    margin-top: 12px;
+    padding: 16px;
+    background: rgba(15, 15, 35, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.requirements-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+.requirements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.requirement {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.requirement.valid {
+    color: #6ee7b7;
+}
+
+.requirement.invalid {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.requirement span {
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .password-requirements {
+        padding: 12px;
+    }
+    
+    .requirements-title {
+        font-size: 0.85rem;
+    }
+    
+    .requirement {
+        font-size: 0.8rem;
+    }
 } 

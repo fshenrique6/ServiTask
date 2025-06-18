@@ -11,6 +11,7 @@ export default function KanbanDashboard() {
   const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
   const [stats, setStats] = useState({
     totalBoards: 0,
     totalTasks: 0,
@@ -31,7 +32,22 @@ export default function KanbanDashboard() {
 
   useEffect(() => {
     loadDashboardData();
+    loadUserData();
   }, []);
+
+  const loadUserData = async () => {
+    try {
+      const userData = await apiService.getCurrentUser();
+      setUser(userData);
+    } catch (err) {
+      console.error('Erro ao carregar dados do usuário:', err);
+      // Se não conseguir carregar do servidor, usar dados locais
+      const localUser = apiService.getUser();
+      if (localUser) {
+        setUser(localUser);
+      }
+    }
+  };
 
   const loadDashboardData = async () => {
     try {
@@ -205,10 +221,24 @@ export default function KanbanDashboard() {
             <p>Visão geral dos seus quadros e tarefas</p>
           </div>
           <div className="user-dropdown-container">
-            <button className="user-profile-btn" onClick={toggleUserDropdown}>
-              <div style={{ fontSize: '32px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Icon emoji="👤" size={32} color="white" />
-              </div>
+            <button className={`user-profile-btn ${user?.photo ? 'has-photo' : ''}`} onClick={toggleUserDropdown}>
+              {user?.photo ? (
+                <img 
+                  src={user.photo} 
+                  alt="Foto do perfil" 
+                  style={{ 
+                    width: '52px', 
+                    height: '52px', 
+                    borderRadius: '50%', 
+                    objectFit: 'cover',
+                    border: '2px solid rgba(255, 255, 255, 0.2)'
+                  }}
+                />
+              ) : (
+                <div style={{ fontSize: '32px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon emoji="👤" size={32} color="white" />
+                </div>
+              )}
             </button>
             
             {isUserDropdownOpen && (
