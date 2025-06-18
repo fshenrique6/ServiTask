@@ -118,8 +118,6 @@ Para informações detalhadas sobre o sistema, consulte a documentação complet
 | 🔄 **Fluxos e Processos** | Diagramas e fluxos de trabalho do sistema | [`Docs/FLUXOS_E_PROCESSOS.md`](./Docs/FLUXOS_E_PROCESSOS.md) |
 | 📋 **Regras de Negócio** | Especificações detalhadas das funcionalidades | [`Docs/REGRAS_DE_NEGOCIO.md`](./Docs/REGRAS_DE_NEGOCIO.md) |
 | 🚀 **API Documentation** | Endpoints, requests, responses e exemplos | [`Docs/API_DOCUMENTATION.md`](./Docs/API_DOCUMENTATION.md) |
-| 📸 **Implementação de Foto** | Detalhes da funcionalidade de foto de perfil | [`Docs/IMPLEMENTACAO_FOTO_PERFIL.md`](./Docs/IMPLEMENTACAO_FOTO_PERFIL.md) |
-| 🔐 **Validação de Senha** | Sistema completo de validação robusta de senhas | [`Docs/VALIDACAO_SENHA.md`](./Docs/VALIDACAO_SENHA.md) |
 
 ### 🎯 **Leitura Recomendada**
 
