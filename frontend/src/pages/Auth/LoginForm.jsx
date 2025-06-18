@@ -59,13 +59,17 @@ export default function LoginForm({ onLogin, onToggleMode }) {
     } catch (error) {
       console.error('Erro no login:', error);
       
-      // Tratamento específico de erros
-      if (error.message.includes('Credenciais inválidas') || error.message.includes('incorret')) {
-        setError('Email ou senha incorretos. Verifique suas credenciais e tente novamente.');
-      } else if (error.message.includes('não encontrado')) {
-        setError('Usuário não encontrado. Verifique seu email ou crie uma conta.');
+      // Tratamento específico de erros baseado na mensagem do backend
+      const errorMessage = error.message || '';
+      
+      if (errorMessage.includes('Credenciais inválidas') || errorMessage.includes('Bad credentials')) {
+        setError('🔒 Email ou senha incorretos. Verifique suas credenciais e tente novamente.');
+      } else if (errorMessage.includes('Usuário não encontrado') || errorMessage.includes('not found')) {
+        setError('👤 Usuário não encontrado. Verifique seu email ou crie uma conta.');
+      } else if (errorMessage.includes('Email ou senha incorretos')) {
+        setError('🔐 Email ou senha incorretos. Verifique suas credenciais e tente novamente.');
       } else {
-        setError(error.message || 'Erro ao fazer login. Tente novamente em alguns instantes.');
+        setError('❌ ' + (errorMessage || 'Erro ao fazer login. Tente novamente em alguns instantes.'));
       }
     } finally {
       setLoading(false);

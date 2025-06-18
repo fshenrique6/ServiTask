@@ -126,13 +126,25 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
     } catch (error) {
       console.error('Erro no cadastro:', error);
       
-      // Tratamento específico de erros
-      if (error.message.includes('email já está em uso')) {
-        setError('Este email já está cadastrado. Tente fazer login ou use outro email.');
-      } else if (error.message.includes('senha')) {
-        setError('Erro na senha: ' + error.message);
+      // Tratamento específico de erros baseado na mensagem do backend
+      const errorMessage = error.message || '';
+      
+      if (errorMessage.includes('Este email já está em uso')) {
+        setError(<><Icon emoji="📧" /> Este email já está cadastrado. Tente fazer login ou use outro email.</>);
+      } else if (errorMessage.includes('As senhas não coincidem')) {
+        setError(<><Icon emoji="🔒" /> As senhas não coincidem. Verifique e tente novamente.</>);
+      } else if (errorMessage.includes('Nome deve ter pelo menos')) {
+        setError(<><Icon emoji="👤" /> Nome deve ter pelo menos 2 caracteres.</>);
+      } else if (errorMessage.includes('Senha deve conter pelo menos')) {
+        setError(<><Icon emoji="🔒" /> {errorMessage}</>);
+      } else if (errorMessage.includes('Dados inválidos')) {
+        setError(<><Icon emoji="⚠️" /> Verifique se todos os campos estão preenchidos corretamente.</>);
+      } else if (errorMessage.includes('senha')) {
+        setError(<><Icon emoji="🔒" /> Erro na senha: {errorMessage}</>);
+      } else if (errorMessage.includes('email')) {
+        setError(<><Icon emoji="📧" /> Erro no email: {errorMessage}</>);
       } else {
-        setError(error.message || 'Erro ao criar conta. Verifique os dados e tente novamente.');
+        setError(<><Icon emoji="❌" /> {errorMessage || 'Erro ao criar conta. Verifique os dados e tente novamente.'}</>);
       }
     } finally {
       setLoading(false);

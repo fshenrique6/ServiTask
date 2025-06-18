@@ -49,7 +49,7 @@ public class AuthController {
         } catch (Exception e) {
             
             Map<String, String> error = new HashMap<>();
-            error.put("message", "Erro ao cadastrar usuário");
+            error.put("message", e.getMessage());
             error.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(error);
         }
