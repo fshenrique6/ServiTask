@@ -132,17 +132,18 @@ public class UserService implements UserDetailsService {
         
         // Verificar se a senha atual está correta
         if (!HashUtil.verifyPassword(currentPassword, user.getPassword())) {
-            throw new UserException("Senha atual incorreta", HttpStatus.UNAUTHORIZED);
+            throw new UserException("A senha atual não confere. Verifique e tente novamente.", HttpStatus.UNAUTHORIZED);
         }
         
         // Verificar se a nova senha é diferente da atual
         if (HashUtil.verifyPassword(newPassword, user.getPassword())) {
-            throw new UserException("A nova senha deve ser diferente da senha atual", HttpStatus.BAD_REQUEST);
+            throw new UserException("A nova senha deve ser diferente da senha atual.", HttpStatus.BAD_REQUEST);
         }
         
-        // Validar nova senha
-        if (!isValidPassword(newPassword)) {
-            throw new UserException("Nova senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial", HttpStatus.BAD_REQUEST);
+        // Validar nova senha com mensagem específica
+        String passwordValidationError = getPasswordValidationError(newPassword);
+        if (passwordValidationError != null) {
+            throw new UserException(passwordValidationError, HttpStatus.BAD_REQUEST);
         }
         
         // Criptografar e salvar a nova senha
@@ -171,6 +172,49 @@ public class UserService implements UserDetailsService {
         }
         
         return hasLower && hasUpper && hasDigit && hasSpecial;
+    }
+    
+    /**
+     * Retorna uma mensagem específica sobre o que está faltando na senha
+     */
+    private String getPasswordValidationError(String password) {
+        if (password == null) {
+            return "A nova senha é obrigatória.";
+        }
+        
+        if (password.length() < 8) {
+            return "A nova senha deve ter pelo menos 8 caracteres.";
+        }
+        
+        boolean hasLower = false;
+        boolean hasUpper = false;
+        boolean hasDigit = false;
+        boolean hasSpecial = false;
+        
+        for (char c : password.toCharArray()) {
+            if (Character.isLowerCase(c)) hasLower = true;
+            else if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isDigit(c)) hasDigit = true;
+            else if (!Character.isLetterOrDigit(c)) hasSpecial = true;
+        }
+        
+        if (!hasLower) {
+            return "A nova senha deve conter pelo menos uma letra minúscula (a-z).";
+        }
+        
+        if (!hasUpper) {
+            return "A nova senha deve conter pelo menos uma letra maiúscula (A-Z).";
+        }
+        
+        if (!hasDigit) {
+            return "A nova senha deve conter pelo menos um número (0-9).";
+        }
+        
+        if (!hasSpecial) {
+            return "A nova senha deve conter pelo menos um caractere especial (!@#$%^&*).";
+        }
+        
+        return null; // Senha válida
     }
 
     @Transactional
