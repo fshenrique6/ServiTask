@@ -25,7 +25,6 @@
     z-index: 1;
 }
 
-/* Sidebar integrado */
 .kanban-sidebar {
     width: 280px;
     background: rgba(15, 15, 35, 0.95);
@@ -190,7 +189,6 @@
     transform: translateY(-1px);
 }
 
-/* Área principal do kanban */
 .kanban-main {
     flex: 1;
     display: flex;
@@ -198,7 +196,6 @@
     overflow: hidden;
 }
 
-/* Estado vazio */
 .empty-state {
     flex: 1;
     display: flex;
@@ -254,7 +251,6 @@
     transform: translateY(0);
 }
 
-/* Header do kanban quando há board ativo */
 .kanban-header {
     display: flex;
     justify-content: space-between;
@@ -282,7 +278,7 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Board do kanban */
+
 .kanban-board {
     flex: 1;
     display: flex;
@@ -293,7 +289,6 @@
     position: relative;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
     .kanban-container {
         flex-direction: column;
@@ -469,7 +464,9 @@
     gap: 12px;
     flex: 1;
     overflow-y: auto;
-    padding-right: 4px; /* Espaço para a scrollbar */
+    padding-right: 4px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 .kanban-card {
@@ -529,15 +526,16 @@
     border-radius: 8px;
 }
 
-/* Enhanced card hover when not dragging */
+
 .kanban-card:not(.dragging):hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     border-color: rgba(255, 255, 255, 0.2);
     background: rgba(255, 255, 255, 0.12);
+    z-index: 10;
 }
 
-/* Priority-specific hover colors */
+
 .kanban-card[data-priority="alta"]:not(.dragging):hover {
     border-left-color: #ef4444;
     box-shadow: 0 8px 32px rgba(239, 68, 68, 0.2);
@@ -553,7 +551,7 @@
     box-shadow: 0 8px 32px rgba(16, 185, 129, 0.2);
 }
 
-/* Drag handle cursor */
+
 .kanban-card .card-header h4 {
     cursor: grab;
 }
@@ -562,7 +560,7 @@
     cursor: grabbing;
 }
 
-/* Prevent text selection during drag */
+
 .kanban-card.dragging * {
     pointer-events: none;
 }
@@ -579,7 +577,7 @@
     z-index: 11;
 }
 
-/* Drop zone animation */
+
 @keyframes dropZonePulse {
     0% { background: #e3f2fd; }
     50% { background: #bbdefb; }
