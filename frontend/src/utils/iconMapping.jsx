@@ -52,7 +52,8 @@ import {
   FaPencilAlt,
   FaKey,
   FaSave,
-  FaCheckCircle
+  FaCheckCircle,
+  FaExclamationTriangle
 } from 'react-icons/fa';
 
 import { 
@@ -129,7 +130,8 @@ export const iconMap = {
   '✏️': FaPencilAlt,
   '🔑': FaKey,
   '💾': FaSave,
-  '✔️': FaCheckCircle
+  '✔️': FaCheckCircle,
+  '⚠️': FaExclamationTriangle
 };
 
 // Função helper para obter o ícone
