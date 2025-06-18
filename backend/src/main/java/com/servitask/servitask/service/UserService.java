@@ -17,8 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.servitask.servitask.exception.UserException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
+import java.util.Base64;
+import java.io.IOException;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -155,15 +158,34 @@ public class UserService implements UserDetailsService {
             return false;
         }
         
-        // Pelo menos uma letra minúscula
-        boolean hasLowercase = password.matches(".*[a-z].*");
-        // Pelo menos uma letra maiúscula
-        boolean hasUppercase = password.matches(".*[A-Z].*");
-        // Pelo menos um número
-        boolean hasNumber = password.matches(".*\\d.*");
-        // Pelo menos um caractere especial
-        boolean hasSpecialChar = password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*");
+        boolean hasLower = false;
+        boolean hasUpper = false;
+        boolean hasDigit = false;
+        boolean hasSpecial = false;
         
-        return hasLowercase && hasUppercase && hasNumber && hasSpecialChar;
+        for (char c : password.toCharArray()) {
+            if (Character.isLowerCase(c)) hasLower = true;
+            else if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isDigit(c)) hasDigit = true;
+            else if (!Character.isLetterOrDigit(c)) hasSpecial = true;
+        }
+        
+        return hasLower && hasUpper && hasDigit && hasSpecial;
+    }
+
+    @Transactional
+    public String uploadPhoto(String email, MultipartFile file) throws IOException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        
+        // Converter arquivo para Base64
+        byte[] fileBytes = file.getBytes();
+        String base64Photo = "data:" + file.getContentType() + ";base64," + Base64.getEncoder().encodeToString(fileBytes);
+        
+        // Salvar no banco de dados
+        user.setPhoto(base64Photo);
+        userRepository.save(user);
+        
+        return base64Photo;
     }
 }

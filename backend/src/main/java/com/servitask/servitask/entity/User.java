@@ -38,6 +38,9 @@ public class User implements UserDetails {
     @Column(name = "updated_at")  
     private LocalDateTime updatedAt;  
 
+    @Column(name = "photo", columnDefinition = "LONGTEXT")
+    private String photo;
+
     public User() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -145,6 +148,15 @@ public class User implements UserDetails {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public enum Role {
