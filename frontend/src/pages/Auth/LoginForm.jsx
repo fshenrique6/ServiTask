@@ -19,11 +19,33 @@ export default function LoginForm({ onLogin, onToggleMode }) {
     if (error) setError('');
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.email.trim() || !formData.password.trim()) {
-      setError('Por favor, preencha todos os campos obrigatórios.');
+    // Validação de email
+    if (!formData.email.trim()) {
+      setError('Por favor, digite seu email.');
+      return;
+    }
+    
+    if (!validateEmail(formData.email)) {
+      setError('Por favor, digite um email válido.');
+      return;
+    }
+    
+    // Validação de senha
+    if (!formData.password.trim()) {
+      setError('Por favor, digite sua senha.');
+      return;
+    }
+    
+    if (formData.password.length < 6) {
+      setError('Senha deve ter pelo menos 6 caracteres.');
       return;
     }
 
@@ -31,12 +53,20 @@ export default function LoginForm({ onLogin, onToggleMode }) {
     setError('');
 
     try {
-      const response = await apiService.login(formData.email, formData.password);
+      const response = await apiService.login(formData.email.trim().toLowerCase(), formData.password);
       console.log('Login bem-sucedido:', response);
       onLogin();
     } catch (error) {
       console.error('Erro no login:', error);
-      setError(error.message || 'Erro ao fazer login. Verifique suas credenciais.');
+      
+      // Tratamento específico de erros
+      if (error.message.includes('Credenciais inválidas') || error.message.includes('incorret')) {
+        setError('Email ou senha incorretos. Verifique suas credenciais e tente novamente.');
+      } else if (error.message.includes('não encontrado')) {
+        setError('Usuário não encontrado. Verifique seu email ou crie uma conta.');
+      } else {
+        setError(error.message || 'Erro ao fazer login. Tente novamente em alguns instantes.');
+      }
     } finally {
       setLoading(false);
     }

@@ -32,6 +32,15 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
     return Object.values(validation).every(Boolean);
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateName = (name) => {
+    return name && name.trim().length >= 2 && name.trim().length <= 100;
+  };
+
   const getPasswordValidationMessage = () => {
     const requirements = [];
     if (!passwordValidation.minLength) requirements.push('mínimo 8 caracteres');
@@ -63,18 +72,37 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.name.trim()) {
-      setError('Por favor, digite seu nome.');
+    // Validação de nome
+    if (!validateName(formData.name)) {
+      setError('Nome deve ter entre 2 e 100 caracteres.');
       return;
     }
     
-    if (!formData.email.trim() || !formData.password.trim()) {
-      setError('Por favor, preencha todos os campos obrigatórios.');
+    // Validação de email
+    if (!formData.email.trim()) {
+      setError('Por favor, digite seu email.');
+      return;
+    }
+    
+    if (!validateEmail(formData.email)) {
+      setError('Por favor, digite um email válido.');
+      return;
+    }
+    
+    // Validação de senha
+    if (!formData.password.trim()) {
+      setError('Por favor, digite sua senha.');
       return;
     }
 
     if (!validatePassword(formData.password)) {
       setError(getPasswordValidationMessage());
+      return;
+    }
+    
+    // Validação de confirmação de senha
+    if (!formData.confirmPassword.trim()) {
+      setError('Por favor, confirme sua senha.');
       return;
     }
     
@@ -88,8 +116,8 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
 
     try {
       const response = await apiService.register(
-        formData.name,
-        formData.email,
+        formData.name.trim(),
+        formData.email.trim().toLowerCase(),
         formData.password,
         formData.confirmPassword
       );
@@ -97,7 +125,15 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
       onSignUp();
     } catch (error) {
       console.error('Erro no cadastro:', error);
-      setError(error.message || 'Erro ao criar conta. Tente novamente.');
+      
+      // Tratamento específico de erros
+      if (error.message.includes('email já está em uso')) {
+        setError('Este email já está cadastrado. Tente fazer login ou use outro email.');
+      } else if (error.message.includes('senha')) {
+        setError('Erro na senha: ' + error.message);
+      } else {
+        setError(error.message || 'Erro ao criar conta. Verifique os dados e tente novamente.');
+      }
     } finally {
       setLoading(false);
     }
