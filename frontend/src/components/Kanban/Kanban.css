@@ -3494,3 +3494,106 @@
         margin-bottom: 16px;
     }
 }
+
+/* ========= CONTADOR DE CARACTERES ========= */
+
+/* Contador de caracteres */
+.char-counter {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    margin-left: auto;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.char-counter.over-limit {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    animation: charCounterPulse 1s ease-in-out infinite;
+}
+
+@keyframes charCounterPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Campo com erro */
+.input-error {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+}
+
+.input-error:focus {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Mensagem de erro do campo */
+.field-error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #ef4444;
+    font-size: 0.8rem;
+    margin-top: 6px;
+    padding: 4px 8px;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 4px;
+    border-left: 3px solid #ef4444;
+    animation: fieldErrorSlideIn 0.3s ease-out;
+}
+
+@keyframes fieldErrorSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Botão desabilitado */
+.btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(107, 114, 128, 0.8) !important;
+    border-color: rgba(107, 114, 128, 0.8) !important;
+}
+
+/* ========= CONTADOR DE CARACTERES SIMPLIFICADO ========= */
+
+/* Container do textarea com contador */
+.textarea-container {
+    position: relative;
+}
+
+/* Contador no canto do campo */
+.char-counter-bottom {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2px 6px;
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+/* Erro simples */
+.simple-error {
+    color: #ef4444;
+    font-size: 0.8rem;
+    margin-top: 4px;
+}

@@ -491,6 +491,11 @@ class ApiService {
       const token = this.getAuthToken();
       if (!token) throw new Error('Token não encontrado');
 
+      // Validação local
+      if (description && description.length > 100) {
+        throw new Error('Descrição deve ter no máximo 100 caracteres');
+      }
+
       const response = await fetch(`${API_BASE_URL}/boards/${boardId}/columns/${columnId}/cards`, {
         method: 'POST',
         headers: {
@@ -501,6 +506,10 @@ class ApiService {
       });
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        if (errorData && errorData.message) {
+          throw new Error(errorData.message);
+        }
         throw new Error('Erro ao adicionar card');
       }
 
@@ -516,6 +525,11 @@ class ApiService {
       const token = this.getAuthToken();
       if (!token) throw new Error('Token não encontrado');
 
+      // Validação local
+      if (description && description.length > 100) {
+        throw new Error('Descrição deve ter no máximo 100 caracteres');
+      }
+
       const response = await fetch(`${API_BASE_URL}/boards/${boardId}/columns/${columnId}/cards/${cardId}`, {
         method: 'PUT',
         headers: {
@@ -526,6 +540,10 @@ class ApiService {
       });
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        if (errorData && errorData.message) {
+          throw new Error(errorData.message);
+        }
         throw new Error('Erro ao atualizar card');
       }
 
