@@ -70,7 +70,75 @@ public String uploadPhoto(String email, MultipartFile file) throws IOException {
   - Método `getCurrentUser()` agora busca dados atualizados do servidor
   - Métodos de login/registro recebem foto do backend
 
-#### 2. Remoção do localStorage
+#### 2. KanbanDashboard - Botão de Usuário Principal
+- **Arquivo**: `frontend/src/components/KanbanDashboard/KanbanDashboard.jsx`
+- **Mudanças**:
+  - Adicionado estado `user` para carregar dados do usuário
+  - Botão de usuário agora exibe foto quando disponível
+  - Fallback para ícone padrão quando não há foto
+
+```jsx
+<button className="user-profile-btn" onClick={toggleUserDropdown}>
+  {user?.photo ? (
+    <img 
+      src={user.photo} 
+      alt="Foto do perfil" 
+      style={{ 
+        width: '32px', 
+        height: '32px', 
+        borderRadius: '50%', 
+        objectFit: 'cover' 
+      }}
+    />
+  ) : (
+    <div style={{ fontSize: '32px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Icon emoji="👤" size={32} color="white" />
+    </div>
+  )}
+</button>
+```
+
+#### 3. BoardSidebar - Botão de Usuário no Sidebar
+- **Arquivo**: `frontend/src/components/BoardSidebar/BoardSidebar.jsx`
+- **Mudanças**:
+  - Adicionada seção completa do usuário no sidebar
+  - Botão expandido com foto, nome e email do usuário
+  - Menu dropdown com opções "Minha Conta" e "Sair"
+
+```jsx
+<div className="sidebar-user-section">
+  <div className="sidebar-user-dropdown-container">
+    <button className="sidebar-user-profile-btn" onClick={toggleUserDropdown}>
+      {user?.photo ? (
+        <img 
+          src={user.photo} 
+          alt="Foto do perfil" 
+          className="sidebar-user-avatar"
+        />
+      ) : (
+        <div className="sidebar-user-placeholder">
+          <Icon emoji="👤" size={24} color="white" />
+        </div>
+      )}
+      <div className="sidebar-user-info">
+        <span className="sidebar-user-name">{user?.name || 'Usuário'}</span>
+        <span className="sidebar-user-email">{user?.email || ''}</span>
+      </div>
+      <Icon emoji="⚙️" size={16} color="rgba(255, 255, 255, 0.6)" />
+    </button>
+  </div>
+</div>
+```
+
+#### 4. Estilos CSS
+- **Arquivo**: `frontend/src/components/Kanban/Kanban.css`
+- **Mudanças**:
+  - Adicionados estilos para `.sidebar-user-section`
+  - Estilos responsivos para diferentes tamanhos de tela
+  - Animações e transições suaves
+  - Dropdown menu estilizado
+
+#### 5. Remoção do localStorage
 Removidas as seguintes funcionalidades que causavam o problema:
 - `localStorage.setItem('userPhoto', ...)` 
 - `localStorage.getItem('userPhoto')`
@@ -84,6 +152,25 @@ Removidas as seguintes funcionalidades que causavam o problema:
 3. **Sincronização**: Fotos aparecem em qualquer dispositivo após login
 4. **Segurança**: Fotos são validadas no backend (tipo, tamanho)
 5. **Escalabilidade**: Solução funciona em ambiente multi-usuário
+6. **UX Melhorada**: Usuário vê sua foto em todos os botões de menu
+7. **Identificação Visual**: Fácil identificação do usuário logado
+
+## Locais onde a Foto Aparece
+
+### 1. Dashboard Principal
+- **Local**: Header do dashboard (`/kanban`)
+- **Formato**: Botão circular com foto ou ícone padrão
+- **Funcionalidade**: Menu dropdown com "Minha Conta" e "Sair"
+
+### 2. Sidebar dos Quadros
+- **Local**: Sidebar em qualquer quadro Kanban (`/kanban/[board-name]`)
+- **Formato**: Botão expandido com foto, nome e email
+- **Funcionalidade**: Menu dropdown com opções de usuário
+
+### 3. Página de Perfil
+- **Local**: Seção de foto na página de perfil (`/profile`)
+- **Formato**: Foto grande com opção de alterar
+- **Funcionalidade**: Upload e preview de nova foto
 
 ## Endpoints da API
 
@@ -122,12 +209,14 @@ Upload de foto de perfil:
 ## Como Testar
 
 1. Faça login com um usuário
-2. Acesse a página de perfil
+2. Acesse a página de perfil (`/profile`)
 3. Faça upload de uma foto
-4. Faça logout e login novamente - a foto deve persistir
-5. Faça login com outro usuário - ele não deve ver a foto do usuário anterior
-6. Faça upload de uma foto diferente para o segundo usuário
-7. Alterne entre os usuários - cada um deve ver apenas sua própria foto
+4. **Verifique no Dashboard**: A foto deve aparecer no botão do header
+5. **Verifique no Kanban**: Entre em qualquer quadro e veja a foto no sidebar
+6. Faça logout e login novamente - a foto deve persistir em ambos os locais
+7. Faça login com outro usuário - ele não deve ver a foto do usuário anterior
+8. Faça upload de uma foto diferente para o segundo usuário
+9. Alterne entre os usuários - cada um deve ver apenas sua própria foto
 
 ## Arquivos Modificados
 
@@ -139,6 +228,9 @@ Upload de foto de perfil:
 
 ### Frontend
 - `src/services/api.js`
+- `src/components/KanbanDashboard/KanbanDashboard.jsx`
+- `src/components/BoardSidebar/BoardSidebar.jsx`
+- `src/components/Kanban/Kanban.css`
 
 ### Banco de Dados
 - `mysql-init/init.sql`
@@ -149,4 +241,7 @@ Upload de foto de perfil:
 - Campo `photo` usa `LONGTEXT` para suportar imagens grandes
 - Validação de tamanho limitada a 5MB no backend
 - Frontend remove fallback para localStorage
-- Endpoint de perfil sempre retorna dados atualizados do banco 
+- Endpoint de perfil sempre retorna dados atualizados do banco
+- Botões de usuário têm fallback gracioso para ícone padrão
+- Interface responsiva para diferentes tamanhos de tela
+- Animações suaves para melhor experiência do usuário 
