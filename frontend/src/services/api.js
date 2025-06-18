@@ -621,37 +621,21 @@ class ApiService {
       const token = this.getAuthToken();
       if (!token) throw new Error('Token não encontrado');
 
-      try {
-        const response = await fetch(`${API_BASE_URL}/auth/update-password`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ currentPassword, newPassword }),
-        });
+      const response = await fetch(`${API_BASE_URL}/auth/update-password`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
 
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || 'Erro ao atualizar senha');
-        }
-
-        return await response.json();
-      } catch (fetchError) {
-        // Fallback: simular sucesso se o endpoint não existir
-        console.warn('Endpoint não disponível, simulando atualização de senha:', fetchError);
-        
-        // Validação básica local
-        if (!currentPassword || !newPassword) {
-          throw new Error('Senhas são obrigatórias');
-        }
-        
-        if (newPassword.length < 6) {
-          throw new Error('A nova senha deve ter pelo menos 6 caracteres');
-        }
-        
-        return { success: true, message: 'Senha atualizada localmente' };
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Erro ao atualizar senha');
       }
+
+      return await response.json();
     } catch (error) {
       console.error('Erro ao atualizar senha:', error);
       throw error;

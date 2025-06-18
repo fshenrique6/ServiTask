@@ -208,6 +208,33 @@ export default function Profile() {
     }
   };
 
+  // Função para validar a força da senha
+  const validatePassword = (password) => {
+    const errors = [];
+    
+    if (password.length < 8) {
+      errors.push('pelo menos 8 caracteres');
+    }
+    
+    if (!/[a-z]/.test(password)) {
+      errors.push('pelo menos 1 letra minúscula');
+    }
+    
+    if (!/[A-Z]/.test(password)) {
+      errors.push('pelo menos 1 letra maiúscula');
+    }
+    
+    if (!/\d/.test(password)) {
+      errors.push('pelo menos 1 número');
+    }
+    
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(password)) {
+      errors.push('pelo menos 1 caractere especial (!@#$%^&*()_+-=[]{}|;:,.<>?)');
+    }
+    
+    return errors;
+  };
+
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
     
@@ -221,8 +248,16 @@ export default function Profile() {
       return;
     }
     
-    if (formData.newPassword.length < 6) {
-      setError('A nova senha deve ter pelo menos 6 caracteres.');
+    // Validação robusta da nova senha
+    const passwordErrors = validatePassword(formData.newPassword);
+    if (passwordErrors.length > 0) {
+      setError(`A nova senha deve conter: ${passwordErrors.join(', ')}.`);
+      return;
+    }
+    
+    // Verificar se a nova senha é diferente da atual
+    if (formData.currentPassword === formData.newPassword) {
+      setError('A nova senha deve ser diferente da senha atual.');
       return;
     }
 
@@ -455,6 +490,36 @@ export default function Profile() {
                   placeholder="Digite a nova senha"
                   className="form-input"
                 />
+                {formData.newPassword && (
+                  <div className="password-requirements">
+                    <div className="requirements-title">
+                      <Icon emoji="🔐" size={14} />
+                      <span>Requisitos da senha:</span>
+                    </div>
+                    <div className="requirements-list">
+                      <div className={`requirement ${formData.newPassword.length >= 8 ? 'valid' : 'invalid'}`}>
+                        <Icon emoji={formData.newPassword.length >= 8 ? "✅" : "❌"} size={12} />
+                        <span>Pelo menos 8 caracteres</span>
+                      </div>
+                      <div className={`requirement ${/[a-z]/.test(formData.newPassword) ? 'valid' : 'invalid'}`}>
+                        <Icon emoji={/[a-z]/.test(formData.newPassword) ? "✅" : "❌"} size={12} />
+                        <span>Pelo menos 1 letra minúscula</span>
+                      </div>
+                      <div className={`requirement ${/[A-Z]/.test(formData.newPassword) ? 'valid' : 'invalid'}`}>
+                        <Icon emoji={/[A-Z]/.test(formData.newPassword) ? "✅" : "❌"} size={12} />
+                        <span>Pelo menos 1 letra maiúscula</span>
+                      </div>
+                      <div className={`requirement ${/\d/.test(formData.newPassword) ? 'valid' : 'invalid'}`}>
+                        <Icon emoji={/\d/.test(formData.newPassword) ? "✅" : "❌"} size={12} />
+                        <span>Pelo menos 1 número</span>
+                      </div>
+                      <div className={`requirement ${/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(formData.newPassword) ? 'valid' : 'invalid'}`}>
+                        <Icon emoji={/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(formData.newPassword) ? "✅" : "❌"} size={12} />
+                        <span>Pelo menos 1 caractere especial</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="form-group">
                 <label>Confirmar Nova Senha</label>

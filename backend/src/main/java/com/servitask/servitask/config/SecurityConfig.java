@@ -43,7 +43,15 @@ public class SecurityConfig {
                 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("OPTIONS", "/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // Permitir apenas endpoints públicos específicos
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/check-email").permitAll()
+                        .requestMatchers("/api/auth/test").permitAll()
+                        // Proteger endpoints que requerem autenticação
+                        .requestMatchers("/api/auth/update-password").authenticated()
+                        .requestMatchers("/api/auth/update-profile").authenticated()
+                        .requestMatchers("/api/auth/me").authenticated()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/error").permitAll()
