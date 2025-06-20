@@ -57,6 +57,10 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
+.sidebar-logo-img{
+    width: 100%;
+    height: auto;
+}
 
 .sidebar-title {
     font-size: 2rem;

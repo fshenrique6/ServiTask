@@ -65,7 +65,9 @@ export default function BoardSidebar({ boards, activeBoardId, selectBoard, openD
   return (
     <div className="kanban-sidebar">
       <div className="sidebar-header">
-         <img src={Logo} alt="" />
+        <div className="sidebar-logo-img">
+         <img src={Logo} alt="" style="width = 100%"/>
+        </div>
       </div>
       
       <div className="boards-section">
