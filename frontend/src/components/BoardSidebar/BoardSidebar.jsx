@@ -4,6 +4,7 @@ import Icon from '../../utils/iconMapping.jsx';
 import BoardListItem from '../BoardListItem/BoardListItem';
 import AddBoardButton from '../AddBoardButton/AddBoardButton';
 import apiService from '../../services/api';
+import Logo from '../../assets/logodegrade.png';
 
 export default function BoardSidebar({ boards, activeBoardId, selectBoard, openDeleteBoardModal, setIsBoardModalOpen }) {
   const navigate = useNavigate();
@@ -64,8 +65,7 @@ export default function BoardSidebar({ boards, activeBoardId, selectBoard, openD
   return (
     <div className="kanban-sidebar">
       <div className="sidebar-header">
-        <span className="sidebar-logo">✔</span>
-        <span className="sidebar-title">ServiTask</span>
+         <img src={Logo} alt="" />
       </div>
       
       <div className="boards-section">
