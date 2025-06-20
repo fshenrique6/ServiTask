@@ -66,10 +66,9 @@ export default function BoardSidebar({ boards, activeBoardId, selectBoard, openD
     <div className="kanban-sidebar">
       <div className="sidebar-header">
         <div className="sidebar-logo-img">
-         <img src={Logo} alt="" style="width = 100%"/>
-        </div>
-      </div>
-      
+         <img src={Logo} alt="" style={{ width: '100%' }} />
+        </div>     
+
       <div className="boards-section">
         <p className="section-title">Meus quadros:</p>
         {boards.length === 0 ? (
