@@ -1023,6 +1023,9 @@
     overflow: hidden;
     width: 100%;
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     word-wrap: break-word;
 }
