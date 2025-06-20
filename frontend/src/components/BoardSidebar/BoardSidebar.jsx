@@ -130,5 +130,6 @@ export default function BoardSidebar({ boards, activeBoardId, selectBoard, openD
         </div>
       </div>
     </div>
+    </div>
   );
 } 
