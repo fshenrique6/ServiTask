@@ -3,7 +3,7 @@
 ## 📋 VISÃO GERAL
 API REST para gerenciamento de tarefas no estilo Kanban.
 
-**Base URL:** `http://localhost:8083/api`  
+**Base URL:** `http://localhost:8080/api`  
 **Autenticação:** JWT Bearer Token  
 **Content-Type:** `application/json`
 
@@ -643,7 +643,7 @@ Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
 
 ### 📝 **Teste de Cadastro (cURL)**
 ```bash
-curl -X POST http://localhost:8083/api/auth/register \
+curl -X POST http://localhost:8080/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Teste User",
@@ -655,7 +655,7 @@ curl -X POST http://localhost:8083/api/auth/register \
 
 ### 🚪 **Teste de Login (cURL)**
 ```bash
-curl -X POST http://localhost:8083/api/auth/login \
+curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "teste@exemplo.com",
@@ -665,7 +665,7 @@ curl -X POST http://localhost:8083/api/auth/login \
 
 ### 📋 **Teste de Criação de Quadro (cURL)**
 ```bash
-curl -X POST http://localhost:8083/api/boards \
+curl -X POST http://localhost:8080/api/boards \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -d '{
@@ -675,7 +675,7 @@ curl -X POST http://localhost:8083/api/boards \
 
 ### 🎫 **Teste de Criação de Cartão (cURL)**
 ```bash
-curl -X POST http://localhost:8083/api/boards/1/columns/1/cards \
+curl -X POST http://localhost:8080/api/boards/1/columns/1/cards \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -d '{
