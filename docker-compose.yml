@@ -10,7 +10,7 @@ services:
       MYSQL_USER: servitask_user
       MYSQL_PASSWORD: servitask_password
     ports:
-      - "3309:3306"
+      - "4306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
@@ -36,7 +36,7 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.MySQL8Dialect
     ports:
-      - "8083:8080"
+      - "8080:8080"
     depends_on:
       mysql:
         condition: service_healthy
@@ -50,9 +50,9 @@ services:
       dockerfile: Dockerfile
     container_name: servitask-frontend
     environment:
-      - VITE_API_URL=http://localhost:8083
+      - VITE_API_URL=http://localhost:8080
     ports:
-      - "3310:3310"
+      - "3000:3000"
     depends_on:
       - backend
     networks:

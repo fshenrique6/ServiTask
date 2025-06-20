@@ -32,12 +32,12 @@ docker-compose up -d --build
 ```
 
 ### 2. **Acessar a Aplicação**
-- **🌐 Frontend**: http://localhost:3310
-- **⚡ Backend API**: http://localhost:8083
+- **🌐 Frontend**: http://localhost:3000
+- **⚡ Backend API**: http://localhost:8080
 - **🗄️ MySQL**: localhost:3309
 
 ### 3. **Primeiro Acesso**
-1. Acesse http://localhost:3310
+1. Acesse http://localhost:3000
 2. Clique em **"Criar conta"**
 3. Preencha seus dados com senha segura
 4. Faça login automaticamente
@@ -154,9 +154,9 @@ ServiTask/
 ## 🔧 Configuração Avançada
 
 ### **Portas Utilizadas**
-- **3310** - Frontend (React)
-- **8083** - Backend (Spring Boot)
-- **3309** - MySQL Database
+- **4306** - MySQL
+- **3000** - Frontend (React)
+- **8080** - Backend (Spring Boot)
 
 ### **Variáveis de Ambiente**
 ```bash
