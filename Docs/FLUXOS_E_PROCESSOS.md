@@ -298,7 +298,7 @@ Bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55)
 
 ---
 
-**📝 Documento criado em:** $(date)  
-**🔄 Última atualização:** $(date)  
+**📝 Documento criado em:** 19/06/2025
+**🔄 Última atualização:** 21/06/2025
 **👨‍💻 Responsável:** Equipe ServiTask  
-**📋 Versão:** 1.0 
+**📋 Versão:** 1.3
