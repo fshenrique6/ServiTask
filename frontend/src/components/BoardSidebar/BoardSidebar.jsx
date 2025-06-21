@@ -68,6 +68,7 @@ export default function BoardSidebar({ boards, activeBoardId, selectBoard, openD
         <div className="sidebar-logo-img">
          <img src={Logo} alt="" style={{ width: '100%' }} />
         </div>     
+      </div>
 
       <div className="boards-section">
         <p className="section-title">Meus quadros:</p>
@@ -129,7 +130,6 @@ export default function BoardSidebar({ boards, activeBoardId, selectBoard, openD
           )}
         </div>
       </div>
-    </div>
     </div>
   );
 } 
