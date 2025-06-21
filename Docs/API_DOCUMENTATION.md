@@ -687,7 +687,7 @@ curl -X POST http://localhost:8080/api/boards/1/columns/1/cards \
 
 ---
 
-**📝 Documento criado em:** $(date)  
-**🔄 Última atualização:** $(date)  
+**📝 Documento criado em:** 19/06/2025
+**🔄 Última atualização:** 21/06/2025
 **👨‍💻 Responsável:** Equipe ServiTask  
-**📋 Versão:** 1.0 
+**📋 Versão:** 1.3
