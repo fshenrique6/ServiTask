@@ -697,7 +697,7 @@ export default function Profile() {
         showCloseButton={false}
       >
         <p>
-          Tem certeza de que deseja excluir sua conta? Esta ação é <strong>irreversível</strong> 
+          Tem certeza de que deseja excluir sua conta? Esta ação é <strong>irreversível </strong> 
           e todos os seus dados serão permanentemente perdidos.
         </p>
         <div className="warning-text">
