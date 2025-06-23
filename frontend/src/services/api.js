@@ -678,6 +678,40 @@ class ApiService {
       throw error;
     }
   }
+
+  async removePhoto() {
+    try {
+      const token = this.getAuthToken();
+      if (!token) throw new Error('Token não encontrado');
+
+      const response = await fetch(`${API_BASE_URL}/users/remove-photo`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Erro ao remover foto');
+      }
+
+      const result = await response.json();
+      
+      // Atualizar dados do usuário no localStorage
+      const currentUser = this.getUser();
+      if (currentUser) {
+        const updatedUser = { ...currentUser, photo: null };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Erro ao remover foto:', error);
+      throw error;
+    }
+  }
 }
 
 const apiService = new ApiService();

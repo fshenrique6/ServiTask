@@ -17,6 +17,7 @@ export default function Profile() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isRemovingPhoto, setIsRemovingPhoto] = useState(false);
   
   // Dados do formulário
   const [formData, setFormData] = useState({
@@ -181,6 +182,31 @@ export default function Profile() {
       setPhotoPreview(null);
     } finally {
       setIsUploadingPhoto(false);
+    }
+  };
+
+  const handleRemovePhoto = async () => {
+    try {
+      setIsRemovingPhoto(true);
+      setError(null);
+      
+      // Usar o método do apiService
+      await apiService.removePhoto();
+      
+      // Atualizar o estado do usuário removendo a foto
+      setUser(prev => ({ ...prev, photo: null }));
+      
+      // Limpar o preview temporário se existir
+      setPhotoPreview(null);
+      
+      setSuccess('Foto removida com sucesso!');
+      setTimeout(() => setSuccess(null), 3000);
+      
+    } catch (err) {
+      console.error('Erro ao remover foto:', err);
+      setError('Erro ao remover foto. Tente novamente.');
+    } finally {
+      setIsRemovingPhoto(false);
     }
   };
 
@@ -367,7 +393,7 @@ export default function Profile() {
           <h2><Icon emoji="📸" /> Foto do Perfil</h2>
           <div className="photo-section">
             <div className="photo-container" onClick={handlePhotoClick}>
-              {isUploadingPhoto ? (
+              {isUploadingPhoto || isRemovingPhoto ? (
                 <div className="photo-loading">
                   <Icon emoji="⏳" size={32} />
                 </div>
@@ -398,9 +424,21 @@ export default function Profile() {
               onChange={handlePhotoChange}
               style={{ display: 'none' }}
             />
-            <p className="photo-hint">
-              Clique na foto para alterar. Formatos aceitos: JPG, PNG, GIF (máx. 5MB)
-            </p>
+            <div className="photo-actions">
+              <p className="photo-hint">
+                Clique na foto para alterar. Formatos aceitos: JPG, PNG, GIF (máx. 5MB)
+              </p>
+              {(user?.photo || photoPreview) && (
+                <button 
+                  className="btn-remove-photo"
+                  onClick={handleRemovePhoto}
+                  disabled={isUploadingPhoto || isRemovingPhoto}
+                >
+                  <Icon emoji="🗑️" size={16} />
+                  {isRemovingPhoto ? 'Removendo...' : 'Remover Foto'}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 

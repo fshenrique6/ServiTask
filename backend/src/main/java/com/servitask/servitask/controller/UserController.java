@@ -90,6 +90,26 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/remove-photo")
+    public ResponseEntity<?> removePhoto(Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            
+            userService.removePhoto(email);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Foto removida com sucesso");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Erro ao remover foto");
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
     @PutMapping("/profile")
     public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> updates, Authentication authentication) {
         try {

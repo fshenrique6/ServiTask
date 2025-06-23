@@ -232,4 +232,14 @@ public class UserService implements UserDetailsService {
         
         return base64Photo;
     }
+
+    @Transactional
+    public void removePhoto(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        
+        // Remover a foto (definir como null)
+        user.setPhoto(null);
+        userRepository.save(user);
+    }
 }
