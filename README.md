@@ -25,10 +25,11 @@ cd frontend
 
 # Faça download das dependências
 npm i
-cd..
+cd .
 
 # Inicie todos os containers
 docker-compose up -d --build
+(necessário possuir o docker desktop instalado e rodando na sua máquina)
 ```
 
 ### 2. **Acessar a Aplicação**
