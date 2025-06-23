@@ -18,10 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.servitask.servitask.exception.UserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
+import com.servitask.repository.BoardRepository;
 
 import java.util.Optional;
 import java.util.Base64;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Random;
+import java.util.HashMap;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -34,6 +38,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     @Lazy
     private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    private BoardRepository boardRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -241,5 +248,57 @@ public class UserService implements UserDetailsService {
         // Remover a foto (definir como null)
         user.setPhoto(null);
         userRepository.save(user);
+    }
+
+    // Armazenar mensagens de confirmação temporariamente (em produção, usar Redis ou cache distribuído)
+    private final Map<String, String> deleteConfirmationMessages = new HashMap<>();
+    
+    public String generateDeleteConfirmationMessage(String email) {
+        // Lista de mensagens aleatórias para confirmação
+        String[] messages = {
+            "EXCLUIR MINHA CONTA PERMANENTEMENTE",
+            "DELETAR TODOS OS MEUS DADOS",
+            "REMOVER CONTA DEFINITIVAMENTE",
+            "APAGAR PERFIL COMPLETO",
+            "ELIMINAR CONTA PARA SEMPRE",
+            "DESTRUIR DADOS PESSOAIS",
+            "CANCELAR CONTA DEFINITIVO",
+            "EXCLUIR PERFIL TOTAL"
+        };
+        
+        // Selecionar mensagem aleatória
+        Random random = new Random();
+        String selectedMessage = messages[random.nextInt(messages.length)];
+        
+        // Armazenar a mensagem para este usuário (válida apenas para esta sessão)
+        deleteConfirmationMessages.put(email, selectedMessage);
+        
+        return selectedMessage;
+    }
+    
+    @Transactional
+    public void deleteAccount(String email, String confirmationMessage) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        
+        // Verificar se a mensagem de confirmação está correta
+        String expectedMessage = deleteConfirmationMessages.get(email);
+        
+        if (expectedMessage == null) {
+            throw new UserException("Sessão de confirmação expirada. Gere uma nova mensagem de confirmação.", HttpStatus.BAD_REQUEST);
+        }
+        
+        if (!expectedMessage.equals(confirmationMessage)) {
+            throw new UserException("Mensagem de confirmação incorreta. Digite exatamente como mostrado.", HttpStatus.BAD_REQUEST);
+        }
+        
+        // Remover a mensagem de confirmação (uso único)
+        deleteConfirmationMessages.remove(email);
+        
+        // Primeiro, excluir todos os boards do usuário (isso irá excluir em cascata as colunas e cards)
+        boardRepository.deleteAll(boardRepository.findByUserOrderByCreatedAtDesc(user));
+        
+        // Agora excluir o usuário
+        userRepository.delete(user);
     }
 }

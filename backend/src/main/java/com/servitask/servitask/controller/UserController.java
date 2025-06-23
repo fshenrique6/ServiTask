@@ -110,6 +110,52 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/delete-account")
+    public ResponseEntity<?> deleteAccount(@RequestBody Map<String, String> request, Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            String confirmationMessage = request.get("confirmationMessage");
+            
+            if (confirmationMessage == null || confirmationMessage.trim().isEmpty()) {
+                Map<String, String> error = new HashMap<>();
+                error.put("message", "Mensagem de confirmação é obrigatória");
+                return ResponseEntity.badRequest().body(error);
+            }
+            
+            userService.deleteAccount(email, confirmationMessage.trim());
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Conta excluída com sucesso");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Erro ao excluir conta");
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/generate-delete-confirmation")
+    public ResponseEntity<?> generateDeleteConfirmation(Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            String confirmationMessage = userService.generateDeleteConfirmationMessage(email);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("confirmationMessage", confirmationMessage);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Erro ao gerar mensagem de confirmação");
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
     @PutMapping("/profile")
     public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> updates, Authentication authentication) {
         try {

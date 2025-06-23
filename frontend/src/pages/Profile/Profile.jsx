@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../utils/iconMapping.jsx';
 import apiService from '../../services/api';
+import Modal from '../../components/Modal.jsx';
 import './Profile.css';
 
 export default function Profile() {
@@ -18,6 +19,13 @@ export default function Profile() {
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isRemovingPhoto, setIsRemovingPhoto] = useState(false);
+  
+  // Estados para exclusão de conta
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [showDeleteInputModal, setShowDeleteInputModal] = useState(false);
+  const [deleteConfirmationMessage, setDeleteConfirmationMessage] = useState('');
+  const [deleteInputValue, setDeleteInputValue] = useState('');
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   
   // Dados do formulário
   const [formData, setFormData] = useState({
@@ -210,6 +218,64 @@ export default function Profile() {
     }
   };
 
+  // Funções para exclusão de conta
+  const handleDeleteAccountClick = () => {
+    setShowDeleteConfirmModal(true);
+  };
+
+  const handleDeleteConfirmNo = () => {
+    setShowDeleteConfirmModal(false);
+  };
+
+  const handleDeleteConfirmYes = async () => {
+    try {
+      setShowDeleteConfirmModal(false);
+      setError(null);
+      
+      // Gerar mensagem de confirmação
+      const response = await apiService.generateDeleteConfirmation();
+      
+      setDeleteConfirmationMessage(response.confirmationMessage);
+      setDeleteInputValue('');
+      setShowDeleteInputModal(true);
+      
+    } catch (err) {
+      console.error('Erro ao gerar mensagem de confirmação:', err);
+      setError('Erro ao gerar mensagem de confirmação. Tente novamente.');
+    }
+  };
+
+  const handleDeleteInputCancel = () => {
+    setShowDeleteInputModal(false);
+    setDeleteConfirmationMessage('');
+    setDeleteInputValue('');
+  };
+
+  const handleDeleteInputConfirm = async () => {
+    try {
+      setIsDeletingAccount(true);
+      setError(null);
+      
+      // Verificar se a mensagem está correta
+      if (deleteInputValue.trim() !== deleteConfirmationMessage) {
+        setError('Mensagem de confirmação incorreta. Digite exatamente como mostrado.');
+        return;
+      }
+      
+      // Excluir conta
+      await apiService.deleteAccount(deleteInputValue.trim());
+      
+      // Redirecionar para página inicial
+      navigate('/auth');
+      
+    } catch (err) {
+      console.error('Erro ao excluir conta:', err);
+      setError(err.message || 'Erro ao excluir conta. Tente novamente.');
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  };
+
   const handleUpdateName = async (e) => {
     e.preventDefault();
     
@@ -312,8 +378,6 @@ export default function Profile() {
   const handleBack = () => {
     navigate('/dashboard');
   };
-
-
 
   if (loading) {
     return (
@@ -601,7 +665,100 @@ export default function Profile() {
             </div>
           )}
         </div>
+
+        {/* Seção de exclusão de conta */}
+        <div className="profile-section danger-section">
+          <h2><Icon emoji="⚠️" /> Zona de Perigo</h2>
+          <div className="danger-content">
+            <div className="danger-info">
+              <h3>Excluir Conta</h3>
+              <p>
+                Esta ação é <strong>irreversível</strong>. Todos os seus dados, incluindo perfil, 
+                boards, colunas e cards serão permanentemente excluídos e não poderão ser recuperados.
+              </p>
+            </div>
+            <button 
+              className="btn-delete-account"
+              onClick={handleDeleteAccountClick}
+              disabled={isDeletingAccount}
+            >
+              <Icon emoji="🗑️" size={16} />
+              {isDeletingAccount ? 'Excluindo...' : 'Excluir Conta'}
+            </button>
+          </div>
+        </div>
       </div>
+
+      {/* Modal de confirmação inicial */}
+      <Modal
+        isOpen={showDeleteConfirmModal}
+        onClose={handleDeleteConfirmNo}
+        title={<><Icon emoji="⚠️" size={24} /> Confirmar Exclusão</>}
+        showCloseButton={false}
+      >
+        <p>
+          Tem certeza de que deseja excluir sua conta? Esta ação é <strong>irreversível</strong> 
+          e todos os seus dados serão permanentemente perdidos.
+        </p>
+        <div className="warning-text">
+          <strong>ATENÇÃO:</strong> Todos os seus boards, colunas, cards e dados pessoais 
+          serão excluídos permanentemente e não poderão ser recuperados.
+        </div>
+        <div className="modal-actions">
+          <button 
+            className="modal-btn modal-btn-secondary"
+            onClick={handleDeleteConfirmNo}
+          >
+            <Icon emoji="✕" size={16} /> Não, Cancelar
+          </button>
+          <button 
+            className="modal-btn modal-btn-danger"
+            onClick={handleDeleteConfirmYes}
+          >
+            <Icon emoji="⚠️" size={16} /> Sim, Continuar
+          </button>
+        </div>
+      </Modal>
+
+      {/* Modal de confirmação com input */}
+      <Modal
+        isOpen={showDeleteInputModal}
+        onClose={handleDeleteInputCancel}
+        title={<><Icon emoji="🔒" size={24} /> Confirmação Final</>}
+        showCloseButton={false}
+      >
+        <p>
+          Para deletar a sua conta, escreva a seguinte mensagem no campo abaixo:
+        </p>
+        <div className="delete-confirmation-message">
+          {deleteConfirmationMessage}
+        </div>
+        <input
+          type="text"
+          className="modal-input"
+          value={deleteInputValue}
+          onChange={(e) => setDeleteInputValue(e.target.value)}
+          placeholder="Digite a mensagem exatamente como mostrado acima"
+          disabled={isDeletingAccount}
+        />
+        <div className="modal-actions">
+          <button 
+            className="modal-btn modal-btn-secondary"
+            onClick={handleDeleteInputCancel}
+            disabled={isDeletingAccount}
+          >
+            <Icon emoji="✕" size={16} /> Cancelar
+          </button>
+          <button 
+            className="modal-btn modal-btn-danger"
+            onClick={handleDeleteInputConfirm}
+            disabled={isDeletingAccount || deleteInputValue.trim() !== deleteConfirmationMessage}
+          >
+            <Icon emoji="🗑️" size={16} />
+            {isDeletingAccount ? 'Excluindo...' : 'Excluir Conta'}
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 } 
