@@ -678,6 +678,96 @@ class ApiService {
       throw error;
     }
   }
+
+  async removePhoto() {
+    try {
+      const token = this.getAuthToken();
+      if (!token) throw new Error('Token não encontrado');
+
+      const response = await fetch(`${API_BASE_URL}/users/remove-photo`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Erro ao remover foto');
+      }
+
+      const result = await response.json();
+      
+      // Atualizar dados do usuário no localStorage
+      const currentUser = this.getUser();
+      if (currentUser) {
+        const updatedUser = { ...currentUser, photo: null };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Erro ao remover foto:', error);
+      throw error;
+    }
+  }
+
+  async generateDeleteConfirmation() {
+    try {
+      const token = this.getAuthToken();
+      if (!token) throw new Error('Token não encontrado');
+
+      const response = await fetch(`${API_BASE_URL}/users/generate-delete-confirmation`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Erro ao gerar mensagem de confirmação');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao gerar mensagem de confirmação:', error);
+      throw error;
+    }
+  }
+
+  async deleteAccount(confirmationMessage) {
+    try {
+      const token = this.getAuthToken();
+      if (!token) throw new Error('Token não encontrado');
+
+      const response = await fetch(`${API_BASE_URL}/users/delete-account`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ confirmationMessage }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Erro ao excluir conta');
+      }
+
+      const result = await response.json();
+      
+      // Limpar todos os dados locais após exclusão bem-sucedida
+      this.logout();
+      
+      return result;
+    } catch (error) {
+      console.error('Erro ao excluir conta:', error);
+      throw error;
+    }
+  }
 }
 
 const apiService = new ApiService();
