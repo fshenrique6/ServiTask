@@ -296,6 +296,6 @@ Sistema de gerenciamento de tarefas no estilo Kanban, permitindo organização d
 ---
 
 **📝 Documento criado em:** 19/06/2025  
-**🔄 Última atualização:** 21/06/2025
+**🔄 Última atualização:** 21/06/2025  
 **👨‍💻 Responsável:** Equipe ServiTask  
 **📋 Versão:** 1.2

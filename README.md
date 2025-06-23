@@ -16,27 +16,38 @@
 
 ## 🚀 Início Rápido
 
-### 1. **Iniciar o Sistema**
+### 1. **Configurar Variáveis de Ambiente**
 ```bash
 # Clone o repositório (se necessário)
 git clone https://github.com/w1ze55/ServiTask.git
 cd ServiTask
+
+# Copie o arquivo de exemplo e configure suas credenciais
+cp .env.example .env
+
+# Edite o arquivo .env com suas credenciais seguras
+# IMPORTANTE: Altere as senhas padrão por questões de segurança!
+```
+
+### 2. **Iniciar o Sistema**
+```bash
 cd frontend
 
 # Faça download das dependências
 npm i
-cd..
+cd ..
 
 # Inicie todos os containers
 docker-compose up -d --build
+(necessário possuir o docker desktop instalado e rodando na sua máquina)
 ```
 
-### 2. **Acessar a Aplicação**
+### 3. **Acessar a Aplicação**
 - **🌐 Frontend**: http://localhost:3000
 - **⚡ Backend API**: http://localhost:8080
 - **🗄️ MySQL**: localhost:3309
 
-### 3. **Primeiro Acesso**
+### 4. **Primeiro Acesso**
 1. Acesse http://localhost:3000
 2. Clique em **"Criar conta"**
 3. Preencha seus dados com senha segura
@@ -159,17 +170,26 @@ ServiTask/
 - **8080** - Backend (Spring Boot)
 
 ### **Variáveis de Ambiente**
-```bash
-# MySQL
-MYSQL_ROOT_PASSWORD=root123
-MYSQL_DATABASE=servitask
-MYSQL_USER=servitask
-MYSQL_PASSWORD=servitask123
+O projeto agora usa arquivo `.env` para configurações sensíveis:
 
-# JWT
-JWT_SECRET=sua-chave-secreta-aqui
+```bash
+# Copie o arquivo de exemplo
+cp .env.example .env
+
+# Edite o .env com suas credenciais:
+MYSQL_ROOT_PASSWORD=sua_senha_root_segura
+MYSQL_DATABASE=servitask
+MYSQL_USER=seu_usuario_mysql
+MYSQL_PASSWORD=sua_senha_mysql_segura
+JWT_SECRET=sua-chave-jwt-muito-segura-de-pelo-menos-32-caracteres
 JWT_EXPIRATION=86400000
+SPRING_PROFILES_ACTIVE=docker
 ```
+
+**⚠️ IMPORTANTE**: 
+- Nunca commite o arquivo `.env` no Git
+- Use senhas fortes e diferentes para cada ambiente
+- O arquivo `.env.example` mostra quais variáveis são necessárias
 
 ### **Comandos Úteis**
 ```bash
