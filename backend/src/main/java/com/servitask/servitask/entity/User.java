@@ -38,7 +38,8 @@ public class User implements UserDetails {
     @Column(name = "updated_at")  
     private LocalDateTime updatedAt;  
 
-    @Column(name = "photo", columnDefinition = "LONGTEXT")
+    @Lob
+    @Column(name = "photo")
     private String photo;
 
     public User() {
