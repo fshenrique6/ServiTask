@@ -22,7 +22,8 @@ public class Card {
     @Column(nullable = false)  
     private String title;  
     
-    @Column(columnDefinition = "TEXT")  
+    @Lob
+    @Column(name = "description")  
     private String description;  
     
     @Enumerated(EnumType.STRING)  
