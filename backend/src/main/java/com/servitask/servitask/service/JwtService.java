@@ -3,6 +3,7 @@ package com.servitask.servitask.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +16,11 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+    @Value("${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}")
+    private String SECRET;
 
-    private static final int JWT_EXPIRATION = 86400000;
+    @Value("${JWT_EXPIRATION:86400000}")
+    private int JWT_EXPIRATION;
 
     public String extractUsername(String token) {
         
