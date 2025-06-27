@@ -1332,71 +1332,81 @@
 
 
 
-/* Delete Confirmation Modal */
+/* Delete Confirmation Modal - Padrão do Sistema */
 .delete-modal-content {
-    background: white;
-    border-radius: 12px;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
     width: 90%;
-    max-width: 450px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: modalFadeIn 0.3s ease-out;
-    border-top: 4px solid #ef4444;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.4s ease-out;
+    border-top: 3px solid #ef4444;
 }
 
 .delete-modal-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    padding: 24px 24px 16px 24px;
-    border-bottom: 1px solid #fee2e2;
-    background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
-    border-radius: 12px 12px 0 0;
+    padding: 28px 28px 20px 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .delete-icon {
     width: 48px;
     height: 48px;
-    background: #fee2e2;
+    background: rgba(239, 68, 68, 0.15);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    border: 2px solid #fecaca;
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    margin-right: 16px;
 }
 
 .delete-modal-header h2 {
-    color: #dc2626;
-    font-size: 1.4rem;
-    font-weight: 700;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.6rem;
+    font-weight: 800;
     margin: 0;
+    letter-spacing: -0.02em;
+    flex: 1;
 }
 
 .delete-modal-body {
-    padding: 24px;
+    padding: 24px 28px;
     text-align: center;
 }
 
 .delete-modal-body p {
-    color: #374151;
+    color: rgba(255, 255, 255, 0.8);
     margin: 0 0 16px 0;
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .card-to-delete {
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     padding: 16px;
     margin: 16px 0;
-    color: #1e293b;
+    color: rgba(255, 255, 255, 0.9);
     font-size: 1.1rem;
     word-break: break-word;
+    backdrop-filter: blur(10px);
 }
 
 .warning-text {
-    color: #dc2626 !important;
+    color: #ef4444 !important;
     font-weight: 600;
     font-size: 0.9rem !important;
     margin-top: 16px !important;
@@ -1406,48 +1416,51 @@
     display: flex;
     gap: 12px;
     justify-content: center;
-    padding: 0 24px 24px 24px;
+    padding: 0 28px 28px 28px;
 }
 
 .btn-cancel-delete,
 .btn-confirm-delete {
     padding: 12px 24px;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 1rem;
     min-width: 120px;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-cancel-delete {
-    background: #f8f9fa;
-    color: #6c757d;
-    border: 1px solid #dee2e6;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .btn-cancel-delete:hover {
-    background: #e9ecef;
-    color: #495057;
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .btn-confirm-delete {
-    background: #dc2626;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
-    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
 }
 
 .btn-confirm-delete:hover {
-    background: #b91c1c;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4);
 }
 
 .btn-confirm-delete:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
 }
 
 /* Responsive Delete Modal */
@@ -1650,28 +1663,37 @@
 }
 
 .modal-form-container {
-    background: white;
-    border-radius: 12px;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
     width: 90%;
     max-width: 500px;
-    padding: 24px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: modalFadeIn 0.3s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.4s ease-out;
 }
 
 .modal-form-container h2 {
-    color: #142557;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0 0 20px 0;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #e9ecef;
+    background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0 0 28px 0;
+    text-align: center;
+    letter-spacing: -0.02em;
+    padding: 28px 28px 20px 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
+    padding: 0 28px 28px 28px;
 }
 
 .card-form .form-group {
@@ -1680,54 +1702,75 @@
 
 .card-form .modal-input {
     width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     font-size: 1rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
 }
 
 .card-form .modal-input:focus {
     outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.card-form .modal-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .modal-actions {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+    justify-content: center;
+    gap: 16px;
     margin-top: 8px;
+    padding: 0 28px 28px 28px;
 }
 
 .btn-primary {
-    background: #2563eb;
+    background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 12px 24px;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(167, 139, 250, 0.3);
 }
 
 .btn-primary:hover {
-    background: #1d4ed8;
+    background: linear-gradient(135deg, #9333ea 0%, #0891b2 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.4);
 }
 
 .btn-secondary {
-    background: #f3f4f6;
-    color: #374151;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 12px 24px;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-secondary:hover {
-    background: #e5e7eb;
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 600px) {
@@ -1751,64 +1794,70 @@
     }
 }
 
-/* Card Modal Styles */
+/* Card Modal Styles - Padrão do Sistema */
 .modal-card-form {
-    background: white;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     width: 90%;
     max-width: 650px;
-    padding: 32px;
-    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
-    animation: modalFadeIn 0.3s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.4s ease-out;
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .modal-card-form.spaced {
-    padding: 40px;
+    padding: 0;
 }
 
 .modal-header-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #f1f5f9;
+    margin-bottom: 0;
+    padding: 28px 28px 20px 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header-row h2 {
-    color: #1e293b;
+    background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: 1.6rem;
-    font-weight: 700;
+    font-weight: 800;
     margin: 0;
     display: flex;
     align-items: center;
     gap: 12px;
+    letter-spacing: -0.02em;
 }
 
 .modal-close-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
-    padding: 8px;
-    width: 40px;
-    height: 40px;
+    padding: 0;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    transition: all 0.2s ease;
-    font-size: 16px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    font-size: 1.8rem;
     backdrop-filter: blur(10px);
 }
 
 .modal-close-btn:hover {
     background: rgba(239, 68, 68, 0.2);
-    border-color: rgba(239, 68, 68, 0.4);
+    border-color: rgba(239, 68, 68, 0.3);
     color: #ef4444;
-    transform: scale(1.05);
+    transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
@@ -1816,6 +1865,7 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+    padding: 0 28px 28px 28px;
 }
 
 .styled-form .form-group {
@@ -1826,7 +1876,7 @@
 
 .styled-form label {
     font-size: 1rem;
-    color: #1e293b;
+    color: rgba(255, 255, 255, 0.9);
     font-weight: 600;
     margin: 0;
     display: flex;
@@ -1837,26 +1887,37 @@
 .styled-input {
     width: 100%;
     padding: 14px 18px;
-    border: 2px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: inherit;
-    transition: all 0.2s ease;
-    background: #fafbfc;
-    color: #1e293b;
+    backdrop-filter: blur(10px);
     box-sizing: border-box;
 }
 
 .styled-input:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-    background: white;
-    transform: translateY(-1px);
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .styled-input::placeholder {
-    color: #94a3b8;
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Específico para inputs de texto no modal de card */
+.modal-card-form .styled-input[type="text"] {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.modal-card-form .styled-input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
 }
 
 .styled-input[name="description"] {
@@ -1913,59 +1974,66 @@
 
 .modal-actions-row {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 16px;
     margin-top: 12px;
+    padding: 0 28px 28px 28px;
 }
 
 .modal-actions-row.spaced {
     margin-top: 32px;
-    padding-top: 24px;
-    border-top: 2px solid #f1f5f9;
+    padding: 24px 28px 28px 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-blue {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
     color: white;
     border: none;
-    padding: 14px 28px;
+    padding: 12px 24px;
     border-radius: 12px;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(167, 139, 250, 0.3);
 }
 
 .btn-blue:hover {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: linear-gradient(135deg, #9333ea 0%, #0891b2 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.4);
 }
 
 .btn-cancel {
-    background: #f8fafc;
-    color: #64748b;
-    border: 2px solid #e2e8f0;
-    padding: 14px 28px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 12px 24px;
     border-radius: 12px;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-cancel:hover {
-    background: #fee2e2;
-    border-color: #fecaca;
-    color: #dc2626;
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive Card Modal */
@@ -2050,26 +2118,28 @@
 
 .modal-input {
     width: 100%;
-    padding: 14px 16px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: inherit;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    background: white;
-    color: #374151;
+    backdrop-filter: blur(10px);
     box-sizing: border-box;
     margin-bottom: 24px;
 }
 
 .modal-input:focus {
     outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .modal-input::placeholder {
-    color: #9ca3af;
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .modal .modal-actions {
@@ -2219,17 +2289,19 @@
 }
 
 .board-title-input {
-    background: white;
-    border: 2px solid #2563eb;
-    border-radius: 8px;
-    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
     font-size: 1.6rem;
     font-weight: 700;
-    color: #142557;
+    color: rgba(255, 255, 255, 0.95);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
     min-width: 200px;
     font-family: inherit;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .edit-actions {
