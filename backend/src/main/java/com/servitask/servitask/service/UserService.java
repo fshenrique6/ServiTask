@@ -17,12 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.servitask.servitask.exception.UserException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.multipart.MultipartFile;
 import com.servitask.repository.BoardRepository;
 
 import java.util.Optional;
-import java.util.Base64;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 import java.util.HashMap;
@@ -225,50 +222,6 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public String uploadPhoto(String email, MultipartFile file) throws IOException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException("Usuário não encontrado", HttpStatus.NOT_FOUND));
-        
-        System.out.println("=== DEBUG UPLOAD FOTO ===");
-        System.out.println("Arquivo original: " + file.getOriginalFilename());
-        System.out.println("Tamanho: " + file.getSize() + " bytes");
-        System.out.println("Tipo: " + file.getContentType());
-        
-        // Converter arquivo para Base64, mas com redução MUITO agressiva
-        byte[] fileBytes = file.getBytes();
-        
-        // Reduzir drasticamente o tamanho para garantir que caiba no banco
-        int maxSize = 50000; // Máximo 50KB para o arquivo original
-        
-        if (fileBytes.length > maxSize) {
-            System.out.println("Arquivo muito grande (" + fileBytes.length + " bytes), reduzindo para " + maxSize + " bytes...");
-            // Pegar apenas os primeiros bytes da imagem
-            byte[] reducedBytes = new byte[maxSize];
-            System.arraycopy(fileBytes, 0, reducedBytes, 0, maxSize);
-            fileBytes = reducedBytes;
-        }
-        
-        String base64Photo = "data:" + file.getContentType() + ";base64," + Base64.getEncoder().encodeToString(fileBytes);
-        
-        // Verificar se o Base64 final ainda é muito grande
-        if (base64Photo.length() > 100000) { // Se Base64 > 100KB
-            System.out.println("Base64 muito grande (" + base64Photo.length() + " chars), usando placeholder...");
-            // Usar um placeholder pequeno
-            base64Photo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
-        }
-        
-        System.out.println("Salvando foto. Tamanho final: " + base64Photo.length() + " caracteres");
-        
-        // Salvar no banco de dados
-        user.setPhoto(base64Photo);
-        userRepository.save(user);
-        
-        System.out.println("Upload concluído com sucesso!");
-        
-        return base64Photo;
-    }
-
-    @Transactional
     public void removePhoto(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException("Usuário não encontrado", HttpStatus.NOT_FOUND));
@@ -335,35 +288,22 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException("Usuário não encontrado", HttpStatus.NOT_FOUND));
         
-        System.out.println("=== DEBUG UPLOAD FOTO FROM BASE64 ===");
-        System.out.println("Arquivo: " + filename);
-        System.out.println("Tipo: " + contentType);
-        System.out.println("Tamanho Base64 original: " + base64Photo.length() + " caracteres");
-        
         // Processar a imagem Base64
         String processedPhoto = processBase64Image(base64Photo);
-        
-        System.out.println("Tamanho Base64 processado: " + processedPhoto.length() + " caracteres");
         
         // Salvar no banco de dados
         user.setPhoto(processedPhoto);
         userRepository.save(user);
         
-        System.out.println("Upload concluído com sucesso!");
-        
         return processedPhoto;
     }
     
     private String processBase64Image(String base64Photo) {
-        System.out.println("Processando imagem Base64. Tamanho: " + base64Photo.length() + " caracteres");
-        
         // Com LONGTEXT, podemos ser mais generosos com o tamanho
         // Máximo de 1MB para Base64 (aproximadamente 700KB de imagem original)
         int maxBase64Length = 1024 * 1024; // 1MB
         
         if (base64Photo.length() > maxBase64Length) {
-            System.out.println("Base64 muito grande (" + base64Photo.length() + " chars), aplicando redução...");
-            
             try {
                 // Extrair apenas o tipo e dados
                 String[] parts = base64Photo.split(",");
@@ -375,21 +315,17 @@ public class UserService implements UserDetailsService {
                     int maxDataLength = maxBase64Length - header.length() - 1; // -1 para a vírgula
                     if (data.length() > maxDataLength) {
                         data = data.substring(0, maxDataLength);
-                        System.out.println("Dados Base64 reduzidos para " + data.length() + " caracteres");
                     }
                     
                     String result = header + "," + data;
-                    System.out.println("Imagem processada. Tamanho final: " + result.length() + " caracteres");
                     return result;
                 }
             } catch (Exception e) {
-                System.out.println("Erro ao processar Base64, usando placeholder: " + e.getMessage());
                 return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
             }
         }
         
         // Se o tamanho estiver OK, retornar como está
-        System.out.println("Imagem dentro do limite. Tamanho: " + base64Photo.length() + " caracteres");
         return base64Photo;
     }
 }

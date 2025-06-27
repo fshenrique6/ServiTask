@@ -55,29 +55,8 @@ public class UserController {
 
     @PostMapping("/upload-photo")
     public ResponseEntity<?> uploadPhoto(@RequestBody Map<String, Object> photoData, Authentication authentication) {
-        System.out.println("=== INÍCIO UPLOAD FOTO (JSON) ===");
-        
         try {
-            // Verificar autenticação
-            if (authentication == null) {
-                System.out.println("ERRO: Authentication é null");
-                Map<String, String> error = new HashMap<>();
-                error.put("message", "Usuário não autenticado");
-                return ResponseEntity.status(401).body(error);
-            }
-            
             String email = authentication.getName();
-            System.out.println("Email do usuário autenticado: " + email);
-            
-            // Verificar se photoData não é null
-            if (photoData == null) {
-                System.out.println("ERRO: photoData é null");
-                Map<String, String> error = new HashMap<>();
-                error.put("message", "Dados da foto não recebidos");
-                return ResponseEntity.badRequest().body(error);
-            }
-            
-            System.out.println("Dados recebidos: " + photoData.keySet());
             
             // Extrair dados do JSON
             String base64Photo = (String) photoData.get("photo");
@@ -85,15 +64,8 @@ public class UserController {
             String contentType = (String) photoData.get("contentType");
             Integer size = (Integer) photoData.get("size");
             
-            System.out.println("Nome do arquivo: " + filename);
-            System.out.println("Tamanho original: " + size + " bytes");
-            System.out.println("Tipo de conteúdo: " + contentType);
-            System.out.println("Base64 não é null: " + (base64Photo != null));
-            System.out.println("Tamanho Base64: " + (base64Photo != null ? base64Photo.length() : 0) + " caracteres");
-            
             // Validar dados
             if (base64Photo == null || base64Photo.trim().isEmpty()) {
-                System.out.println("ERRO: Base64 está vazio");
                 Map<String, String> error = new HashMap<>();
                 error.put("message", "Dados da imagem não podem estar vazios");
                 return ResponseEntity.badRequest().body(error);
@@ -101,7 +73,6 @@ public class UserController {
             
             // Validar tipo de arquivo
             if (contentType == null || !contentType.startsWith("image/")) {
-                System.out.println("ERRO: Tipo de arquivo inválido - " + contentType);
                 Map<String, String> error = new HashMap<>();
                 error.put("message", "Apenas arquivos de imagem são permitidos");
                 return ResponseEntity.badRequest().body(error);
@@ -109,36 +80,25 @@ public class UserController {
             
             // Validar tamanho original (máximo 5MB)
             if (size != null && size > 5 * 1024 * 1024) {
-                System.out.println("ERRO: Arquivo muito grande - " + size + " bytes");
                 Map<String, String> error = new HashMap<>();
                 error.put("message", "Arquivo deve ter no máximo 5MB");
                 return ResponseEntity.badRequest().body(error);
             }
             
-            System.out.println("Todas as validações passaram, chamando service...");
             String photoUrl = userService.uploadPhotoFromBase64(email, base64Photo, contentType, filename);
-            System.out.println("Service retornou: " + (photoUrl != null ? "OK" : "NULL"));
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Foto atualizada com sucesso");
             response.put("photoUrl", photoUrl);
             
-            System.out.println("=== UPLOAD CONCLUÍDO COM SUCESSO ===");
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
-            System.out.println("=== ERRO DURANTE UPLOAD ===");
-            System.out.println("Tipo do erro: " + e.getClass().getSimpleName());
-            System.out.println("Mensagem: " + e.getMessage());
-            System.out.println("Stack trace:");
-            e.printStackTrace();
-            
             Map<String, String> error = new HashMap<>();
-            error.put("message", "Erro interno do servidor ao fazer upload da foto");
+            error.put("message", "Erro ao fazer upload da foto");
             error.put("error", e.getMessage());
-            error.put("type", e.getClass().getSimpleName());
-            return ResponseEntity.status(500).body(error);
+            return ResponseEntity.badRequest().body(error);
         }
     }
 
