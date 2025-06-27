@@ -9,6 +9,29 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
+/* Configurações de scrollbar específicas para o container kanban */
+.kanban-container::-webkit-scrollbar {
+    width: 10px;
+    -webkit-appearance: none;
+}
+
+.kanban-container::-webkit-scrollbar-track {
+    background: rgba(15, 15, 35, 0.6);
+    border-radius: 6px;
+    margin: 0;
+}
+
+.kanban-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.5) 0%, rgba(6, 182, 212, 0.5) 100%);
+    border-radius: 6px;
+    transition: background 0.3s ease;
+    border: 1px solid rgba(15, 15, 35, 0.6);
+}
+
+.kanban-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.7) 0%, rgba(6, 182, 212, 0.7) 100%);
+}
+
 .kanban-container::before {
     content: '';
     position: fixed;
@@ -29,7 +52,7 @@
     background: rgba(15, 15, 35, 0.98);
     backdrop-filter: blur(30px);
     color: rgba(255, 255, 255, 0.95);
-    padding: 24px;
+    padding: 24px 24px 24px 32px;
     box-shadow: 
         8px 0 32px rgba(0, 0, 0, 0.4),
         inset -1px 0 0 rgba(255, 255, 255, 0.1),
@@ -41,7 +64,7 @@
     position: relative;
     height: 100vh;
     gap: 24px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .kanban-sidebar::before {
@@ -110,41 +133,42 @@
     }
 }
 
-.boards-section {
+.boards-section-sidebar {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 12px;
     min-height: 0;
-    max-height: calc(100vh - 450px);
-    overflow-y: scroll !important;
-    padding-right: 8px;
-    padding-bottom: 8px;
-    scrollbar-width: thick;
-    scrollbar-color: #a78bfa rgba(255, 255, 255, 0.3);
+    max-height: calc(100vh - 420px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 12px 8px 8px;
+    scrollbar-width: thin;
+    scrollbar-color: #a78bfa rgba(255, 255, 255, 0.1);
     background: transparent;
+    box-sizing: border-box;
 }
 
-.boards-section::-webkit-scrollbar {
-    width: 10px !important;
+.boards-section-sidebar::-webkit-scrollbar {
+    width: 8px;
     -webkit-appearance: none;
 }
 
-.boards-section::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-radius: 8px;
+.boards-section-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
     margin: 4px 0;
 }
 
-.boards-section::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%) !important;
-    border-radius: 8px;
+.boards-section-sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
+    border-radius: 6px;
     transition: background 0.3s ease;
     border: none;
 }
 
-.boards-section::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #b794f6 0%, #0891b2 100%) !important;
+.boards-section-sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #b794f6 0%, #0891b2 100%);
 }
 
 .section-title {
@@ -201,7 +225,7 @@
     backdrop-filter: blur(15px);
     position: relative;
     overflow: hidden;
-    margin-bottom: 10px;
+    margin: 0 0 10px 8px;
 }
 
 .board-btn::before {
@@ -243,7 +267,7 @@
 
 .add-board-btn {
     width: 100%;
-    padding: 25px 20px;
+    padding: 15px 20px;
     background: rgba(167, 139, 250, 0.15);
     color: #a78bfa;
     border: 2px dashed rgba(167, 139, 250, 0.5);
@@ -260,7 +284,7 @@
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(15px);
-    margin-top: 16px;
+    margin: 16px 0 0 8px;
     box-shadow: 
         0 4px 16px rgba(167, 139, 250, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -643,7 +667,7 @@
         max-width: 120px;
     }
     
-    .boards-section {
+    .boards-section-sidebar {
         display: flex;
         flex-direction: row;
         gap: 10px;
@@ -2319,12 +2343,44 @@
 .dashboard-container {
     min-height: 100vh;
     width: 100%;
+    max-width: 100%;
     background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 100%);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     color: #ffffff;
     position: relative;
+    overflow-x: hidden;
     overflow-y: auto;
     background-attachment: fixed;
+    box-sizing: border-box;
+}
+
+/* Configurações de scrollbar específicas para o dashboard */
+.dashboard-container::-webkit-scrollbar {
+    width: 12px;
+    -webkit-appearance: none;
+}
+
+.dashboard-container::-webkit-scrollbar-track {
+    background: rgba(15, 15, 35, 0.8);
+    border-radius: 8px;
+    margin: 0;
+}
+
+.dashboard-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.6) 0%, rgba(6, 182, 212, 0.6) 100%);
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    border: 2px solid rgba(15, 15, 35, 0.8);
+}
+
+.dashboard-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.8) 0%, rgba(6, 182, 212, 0.8) 100%);
+}
+
+/* Configurações de scrollbar para Firefox no dashboard */
+.dashboard-container {
+    scrollbar-width: auto;
+    scrollbar-color: rgba(167, 139, 250, 0.6) rgba(15, 15, 35, 0.8);
 }
 
 .dashboard-container::before {
@@ -2427,11 +2483,13 @@
 
 .dashboard-main {
     width: 100%;
-    max-width: none;
+    max-width: 100%;
     margin: 0;
     padding: 50px 40px 100px 40px;
     position: relative;
     z-index: 2;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .stats-section {
@@ -2549,8 +2607,13 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: visible;
-    min-height: auto;
-    height: auto;
+    min-height: fit-content;
+    height: fit-content;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .boards-section::before {
@@ -2726,15 +2789,18 @@
 
 .boards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
     position: relative;
     z-index: 1;
     width: 100%;
     justify-items: stretch;
     align-items: start;
-    min-height: auto;
-    height: auto;
+    min-height: fit-content;
+    height: fit-content;
+    max-width: 100%;
+    overflow: visible;
+    flex: 1;
 }
 
 
@@ -2875,6 +2941,28 @@
     transform: scale(1.05);
 }
 
+/* Dashboard responsive styles for large screens */
+@media (min-width: 1400px) {
+    .boards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 28px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .boards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 26px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+    .boards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+    }
+}
+
 /* Dashboard responsive styles */
 @media (max-width: 768px) {
     .dashboard-main {
@@ -2904,8 +2992,8 @@
     }
     
     .boards-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
     }
     
     .form-actions {
@@ -2918,6 +3006,8 @@
     
     .boards-section {
         padding: 32px;
+        height: fit-content;
+        min-height: fit-content;
     }
 }
 
@@ -2956,6 +3046,8 @@
     
     .boards-section {
         padding: 24px;
+        height: fit-content;
+        min-height: fit-content;
     }
     
     .board-card {
@@ -2968,7 +3060,7 @@
     
     .boards-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 16px;
     }
     
     .create-board-form {

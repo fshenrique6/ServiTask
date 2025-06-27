@@ -70,7 +70,7 @@ export default function BoardSidebar({ boards, activeBoardId, selectBoard, openD
         </div>     
       </div>
 
-      <div className="boards-section">
+      <div className="boards-section-sidebar">
         <p className="section-title">Meus quadros:</p>
         {boards.length === 0 ? (
           <p className="no-boards">Nenhum quadro criado</p>
