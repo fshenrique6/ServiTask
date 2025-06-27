@@ -647,15 +647,27 @@ class ApiService {
       const token = this.getAuthToken();
       if (!token) throw new Error('Token não encontrado');
 
-      const formData = new FormData();
-      formData.append('photo', file);
+      // Converter arquivo para Base64
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 
+      // Enviar como JSON ao invés de FormData
       const response = await fetch(`${API_BASE_URL}/users/upload-photo`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: formData,
+        body: JSON.stringify({
+          photo: base64,
+          filename: file.name,
+          contentType: file.type,
+          size: file.size
+        }),
       });
 
       if (!response.ok) {
