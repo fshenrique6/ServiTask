@@ -164,13 +164,8 @@ ServiTask/
 
 ## 🔧 Configuração Avançada
 
-### **Portas Utilizadas**
-- **4306** - MySQL
-- **3000** - Frontend (React)
-- **8080** - Backend (Spring Boot)
-
 ### **Variáveis de Ambiente**
-O projeto agora usa arquivo `.env` para configurações sensíveis:
+O projeto usa arquivo `.env` para configurações sensíveis:
 
 ```bash
 # Copie o arquivo de exemplo
@@ -205,28 +200,6 @@ docker logs servitask-backend -f
 # Acessar banco de dados
 docker exec -it servitask-mysql mysql -u servitask -p
 ```
-
----
-
-## 🎯 Status do Projeto
-
-- ✅ **Autenticação completa** - Login, cadastro, JWT
-- ✅ **Perfil de usuário** - Foto, dados, alteração de senha
-- ✅ **Sistema Kanban** - Quadros, colunas, cards
-- ✅ **Interface moderna** - Design responsivo e intuitivo
-- ✅ **Segurança robusta** - Validações e criptografia
-- ✅ **Documentação completa** - Guias e especificações
-
----
-
-## 📞 Suporte
-
-Para dúvidas sobre funcionalidades específicas, consulte a documentação detalhada em [`Docs/`](./Docs/).
-
-Para questões técnicas, verifique:
-1. 📋 **Regras de Negócio**: [`Docs/REGRAS_DE_NEGOCIO.md`](./Docs/REGRAS_DE_NEGOCIO.md)
-2. 🚀 **API**: [`Docs/API_DOCUMENTATION.md`](./Docs/API_DOCUMENTATION.md)
-3. 🔄 **Fluxos**: [`Docs/FLUXOS_E_PROCESSOS.md`](./Docs/FLUXOS_E_PROCESSOS.md)
 
 ---
 
