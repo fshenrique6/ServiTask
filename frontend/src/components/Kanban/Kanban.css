@@ -1703,7 +1703,7 @@
 .card-form .modal-input {
     width: 100%;
     padding: 14px 18px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(15, 15, 35, 0.95);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     font-size: 1rem;
@@ -1716,11 +1716,11 @@
     outline: none;
     border-color: #a78bfa;
     box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(15, 15, 35, 0.98);
 }
 
 .card-form .modal-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(156, 163, 175, 0.8);
 }
 
 .modal-actions {
@@ -4277,4 +4277,71 @@
 .card-description {
     position: relative;
     z-index: 1;
+}
+
+/* Específicos para modal-card-form spaced - garantir textos brancos */
+.modal-card-form.spaced .styled-form label {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600;
+    padding-top: 25px !important;
+}
+
+.modal-card-form.spaced .styled-input {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.modal-card-form.spaced .styled-input:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #a78bfa !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.modal-card-form.spaced .styled-input::placeholder {
+    color: rgba(156, 163, 175, 0.8) !important;
+}
+
+/* Select de prioridade específico */
+.modal-card-form.spaced .priority-select-wrapper select {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-card-form.spaced .priority-select-wrapper select:focus {
+    outline: none;
+    border-color: #a78bfa !important;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.modal-card-form.spaced .priority-select-wrapper select option {
+    background: rgba(15, 15, 35, 0.95) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    padding: 8px 12px;
+}
+
+/* Textarea específico */
+.modal-card-form.spaced .styled-input[name="description"] {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    line-height: 1.5;
+}
+
+.modal-card-form.spaced .styled-input[name="description"]:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #a78bfa !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.priority-select-wrapper select {
+    flex: 1;
 }
