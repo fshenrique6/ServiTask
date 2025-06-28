@@ -925,16 +925,35 @@
 }
 
 .kanban-column.drag-over {
-    background: #e3f2fd;
-    border: 2px dashed #2196f3;
-    transform: scale(1.02);
+    background: rgba(167, 139, 250, 0.08);
+    border: 2px dashed rgba(167, 139, 250, 0.3);
+    transform: scale(1.01);
+    transition: all 0.3s ease;
 }
 
 .kanban-column.drag-over .column-header {
-    background: rgba(33, 150, 243, 0.1);
+    background: rgba(167, 139, 250, 0.05);
     border-radius: 8px;
 }
 
+@keyframes dropZonePulse {
+    0% { 
+        background: rgba(167, 139, 250, 0.08);
+        border-color: rgba(167, 139, 250, 0.3);
+    }
+    50% { 
+        background: rgba(167, 139, 250, 0.12);
+        border-color: rgba(167, 139, 250, 0.4);
+    }
+    100% { 
+        background: rgba(167, 139, 250, 0.08);
+        border-color: rgba(167, 139, 250, 0.3);
+    }
+}
+
+.kanban-column.drag-over {
+    animation: dropZonePulse 2s ease-in-out infinite;
+}
 
 .kanban-card:not(.dragging):hover {
     transform: translateY(-2px);
