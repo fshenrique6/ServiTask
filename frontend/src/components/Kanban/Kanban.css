@@ -7,7 +7,29 @@
     bottom: 0;
     background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 100%);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-    overflow: hidden;
+}
+
+/* Configurações de scrollbar específicas para o container kanban */
+.kanban-container::-webkit-scrollbar {
+    width: 10px;
+    -webkit-appearance: none;
+}
+
+.kanban-container::-webkit-scrollbar-track {
+    background: rgba(15, 15, 35, 0.6);
+    border-radius: 6px;
+    margin: 0;
+}
+
+.kanban-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.5) 0%, rgba(6, 182, 212, 0.5) 100%);
+    border-radius: 6px;
+    transition: background 0.3s ease;
+    border: 1px solid rgba(15, 15, 35, 0.6);
+}
+
+.kanban-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.7) 0%, rgba(6, 182, 212, 0.7) 100%);
 }
 
 .kanban-container::before {
@@ -26,28 +48,48 @@
 }
 
 .kanban-sidebar {
-    width: 280px;
-    background: rgba(15, 15, 35, 0.95);
-    backdrop-filter: blur(20px);
+    width: 300px;
+    background: rgba(15, 15, 35, 0.98);
+    backdrop-filter: blur(30px);
     color: rgba(255, 255, 255, 0.95);
-    padding: 20px;
-    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.3);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 24px 24px 24px 32px;
+    box-shadow: 
+        8px 0 32px rgba(0, 0, 0, 0.4),
+        inset -1px 0 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 60px rgba(167, 139, 250, 0.05);
+    border-right: 2px solid rgba(167, 139, 250, 0.2);
     display: flex;
     flex-direction: column;
     z-index: 2;
-    overflow-y: auto;
     position: relative;
-    min-height: 100vh;
-    gap: 20px;
+    height: 100vh;
+    gap: 24px;
+    overflow: visible;
+}
+
+.kanban-sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(167, 139, 250, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
 }
 
 .sidebar-header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 24px 0 28px 0;
+    border-bottom: 2px solid transparent;
+    background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.3), transparent) bottom/100% 2px no-repeat;
+    position: relative;
+    margin-bottom: 8px;
 }
 
 .sidebar-logo {
@@ -71,30 +113,86 @@
 }
 
 .sidebar-title {
-    font-size: 2rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+    font-size: 2.2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffffff 0%, #a78bfa 50%, #06b6d4 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+    text-shadow: 0 4px 20px rgba(167, 139, 250, 0.3);
+    animation: titleGlow 3s ease-in-out infinite alternate;
 }
 
-.boards-section {
+@keyframes titleGlow {
+    0% {
+        filter: drop-shadow(0 0 10px rgba(167, 139, 250, 0.4));
+    }
+    100% {
+        filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.4));
+    }
+}
+
+.boards-section-sidebar {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 12px;
     min-height: 0;
+    max-height: calc(100vh - 420px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 12px 8px 8px;
+    scrollbar-width: thin;
+    scrollbar-color: #a78bfa rgba(255, 255, 255, 0.1);
+    background: transparent;
+    box-sizing: border-box;
+}
+
+.boards-section-sidebar::-webkit-scrollbar {
+    width: 8px;
+    -webkit-appearance: none;
+}
+
+.boards-section-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    margin: 4px 0;
+}
+
+.boards-section-sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
+    border-radius: 6px;
+    transition: background 0.3s ease;
+    border: none;
+}
+
+.boards-section-sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #b794f6 0%, #0891b2 100%);
 }
 
 .section-title {
-    margin: 0 0 16px 0;
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 700;
+    margin: 0 0 20px 0;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+    position: relative;
+    padding-left: 16px;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
 }
 
 .no-boards {
@@ -107,24 +205,27 @@
 
 .board-btn {
     width: 100%;
-    padding: 14px 18px;
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.9);
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
+    justify-content: flex-start;
+    gap: 12px;
     font-weight: 600;
-    box-shadow: none;
-    backdrop-filter: blur(10px);
+    font-size: 0.95rem;
+    box-shadow: 
+        0 2px 6px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
     position: relative;
     overflow: hidden;
-    margin-bottom: 8px;
+    margin: 0 0 10px 8px;
 }
 
 .board-btn::before {
@@ -145,36 +246,48 @@
 .board-btn.active {
     background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.3);
-    transform: translateY(-2px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 8px 32px rgba(167, 139, 250, 0.4),
+        0 4px 16px rgba(6, 182, 212, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px) scale(1.02);
+    font-weight: 700;
 }
 
 .board-btn:hover:not(.active) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(167, 139, 250, 0.4);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.15),
+        0 2px 8px rgba(167, 139, 250, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .add-board-btn {
     width: 100%;
-    padding: 14px 18px;
-    background: rgba(167, 139, 250, 0.1);
+    padding: 15px 20px;
+    background: rgba(167, 139, 250, 0.15);
     color: #a78bfa;
-    border: 1px solid rgba(167, 139, 250, 0.3);
-    border-radius: 12px;
+    border: 2px dashed rgba(167, 139, 250, 0.5);
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 700;
+    font-size: 1rem;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
+    margin: 16px 0 0 8px;
+    box-shadow: 
+        0 4px 16px rgba(167, 139, 250, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .add-board-btn::before {
@@ -195,9 +308,12 @@
 .add-board-btn:hover {
     background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
     color: white;
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+        0 12px 40px rgba(167, 139, 250, 0.5),
+        0 6px 20px rgba(6, 182, 212, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .add-board-btn:active {
@@ -206,22 +322,27 @@
 
 .back-dashboard-btn {
     width: 100%;
-    padding: 14px 18px;
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 600;
-    text-align: center;
+    font-size: 0.95rem;
+    text-align: left;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
+    justify-content: flex-start;
+    gap: 12px;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
+    margin-bottom: 20px;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .back-dashboard-btn::before {
@@ -240,10 +361,13 @@
 }
 
 .back-dashboard-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.15),
+        0 2px 8px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .back-dashboard-btn:active {
@@ -258,8 +382,10 @@
 
 .sidebar-user-section {
     margin-top: auto;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 24px;
+    border-top: 2px solid transparent;
+    background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.3), transparent) top/100% 2px no-repeat;
+    position: relative;
 }
 
 .sidebar-user-dropdown-container {
@@ -268,17 +394,20 @@
 
 .sidebar-user-profile-btn {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
-    gap: 12px;
-    color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
+    gap: 14px;
+    color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-user-profile-btn.has-photo {
@@ -287,28 +416,41 @@
 }
 
 .sidebar-user-profile-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(167, 139, 250, 0.4);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.15),
+        0 2px 8px rgba(167, 139, 250, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .sidebar-user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(167, 139, 250, 0.4);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-user-placeholder {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 4px 12px rgba(167, 139, 250, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    font-weight: 700;
+    font-size: 1.1rem;
 }
 
 .sidebar-user-info {
@@ -320,20 +462,22 @@
 }
 
 .sidebar-user-name {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.98);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: 0.01em;
 }
 
 .sidebar-user-email {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: 500;
 }
 
 .sidebar-user-dropdown-menu {
@@ -523,7 +667,7 @@
         max-width: 120px;
     }
     
-    .boards-section {
+    .boards-section-sidebar {
         display: flex;
         flex-direction: row;
         gap: 10px;
@@ -781,16 +925,35 @@
 }
 
 .kanban-column.drag-over {
-    background: #e3f2fd;
-    border: 2px dashed #2196f3;
-    transform: scale(1.02);
+    background: rgba(167, 139, 250, 0.08);
+    border: 2px dashed rgba(167, 139, 250, 0.3);
+    transform: scale(1.01);
+    transition: all 0.3s ease;
 }
 
 .kanban-column.drag-over .column-header {
-    background: rgba(33, 150, 243, 0.1);
+    background: rgba(167, 139, 250, 0.05);
     border-radius: 8px;
 }
 
+@keyframes dropZonePulse {
+    0% { 
+        background: rgba(167, 139, 250, 0.08);
+        border-color: rgba(167, 139, 250, 0.3);
+    }
+    50% { 
+        background: rgba(167, 139, 250, 0.12);
+        border-color: rgba(167, 139, 250, 0.4);
+    }
+    100% { 
+        background: rgba(167, 139, 250, 0.08);
+        border-color: rgba(167, 139, 250, 0.3);
+    }
+}
+
+.kanban-column.drag-over {
+    animation: dropZonePulse 2s ease-in-out infinite;
+}
 
 .kanban-card:not(.dragging):hover {
     transform: translateY(-2px);
@@ -904,7 +1067,7 @@
     line-height: 1.5;
     margin: 0 0 16px 0;
     position: relative;
-    z-index: 3;
+    z-index: 1;
     word-wrap: break-word;
     word-break: break-word;
     overflow-wrap: break-word;
@@ -1188,71 +1351,81 @@
 
 
 
-/* Delete Confirmation Modal */
+/* Delete Confirmation Modal - Padrão do Sistema */
 .delete-modal-content {
-    background: white;
-    border-radius: 12px;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
     width: 90%;
-    max-width: 450px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: modalFadeIn 0.3s ease-out;
-    border-top: 4px solid #ef4444;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.4s ease-out;
+    border-top: 3px solid #ef4444;
 }
 
 .delete-modal-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    padding: 24px 24px 16px 24px;
-    border-bottom: 1px solid #fee2e2;
-    background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
-    border-radius: 12px 12px 0 0;
+    padding: 28px 28px 20px 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .delete-icon {
     width: 48px;
     height: 48px;
-    background: #fee2e2;
+    background: rgba(239, 68, 68, 0.15);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    border: 2px solid #fecaca;
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    margin-right: 16px;
 }
 
 .delete-modal-header h2 {
-    color: #dc2626;
-    font-size: 1.4rem;
-    font-weight: 700;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.6rem;
+    font-weight: 800;
     margin: 0;
+    letter-spacing: -0.02em;
+    flex: 1;
 }
 
 .delete-modal-body {
-    padding: 24px;
+    padding: 24px 28px;
     text-align: center;
 }
 
 .delete-modal-body p {
-    color: #374151;
+    color: rgba(255, 255, 255, 0.8);
     margin: 0 0 16px 0;
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .card-to-delete {
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     padding: 16px;
     margin: 16px 0;
-    color: #1e293b;
+    color: rgba(255, 255, 255, 0.9);
     font-size: 1.1rem;
     word-break: break-word;
+    backdrop-filter: blur(10px);
 }
 
 .warning-text {
-    color: #dc2626 !important;
+    color: #ef4444 !important;
     font-weight: 600;
     font-size: 0.9rem !important;
     margin-top: 16px !important;
@@ -1262,48 +1435,51 @@
     display: flex;
     gap: 12px;
     justify-content: center;
-    padding: 0 24px 24px 24px;
+    padding: 0 28px 28px 28px;
 }
 
 .btn-cancel-delete,
 .btn-confirm-delete {
     padding: 12px 24px;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 1rem;
     min-width: 120px;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-cancel-delete {
-    background: #f8f9fa;
-    color: #6c757d;
-    border: 1px solid #dee2e6;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .btn-cancel-delete:hover {
-    background: #e9ecef;
-    color: #495057;
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .btn-confirm-delete {
-    background: #dc2626;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
-    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
 }
 
 .btn-confirm-delete:hover {
-    background: #b91c1c;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4);
 }
 
 .btn-confirm-delete:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
 }
 
 /* Responsive Delete Modal */
@@ -1506,28 +1682,37 @@
 }
 
 .modal-form-container {
-    background: white;
-    border-radius: 12px;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
     width: 90%;
     max-width: 500px;
-    padding: 24px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: modalFadeIn 0.3s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.4s ease-out;
 }
 
 .modal-form-container h2 {
-    color: #142557;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0 0 20px 0;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #e9ecef;
+    background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0 0 28px 0;
+    text-align: center;
+    letter-spacing: -0.02em;
+    padding: 28px 28px 20px 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
+    padding: 0 28px 28px 28px;
 }
 
 .card-form .form-group {
@@ -1535,55 +1720,78 @@
 }
 
 .card-form .modal-input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
+    width: calc(100% - 56px);
+    padding: 14px 18px;
+    background: rgba(15, 15, 35, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     font-size: 1rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    margin: 0 auto;
+    display: block;
 }
 
 .card-form .modal-input:focus {
     outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+    background: rgba(15, 15, 35, 0.98);
+}
+
+.card-form .modal-input::placeholder {
+    color: rgba(156, 163, 175, 0.8);
 }
 
 .modal-actions {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+    justify-content: center;
+    gap: 16px;
     margin-top: 8px;
+    padding: 0 28px 28px 28px;
 }
 
 .btn-primary {
-    background: #2563eb;
+    background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 12px 24px;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(167, 139, 250, 0.3);
 }
 
 .btn-primary:hover {
-    background: #1d4ed8;
+    background: linear-gradient(135deg, #9333ea 0%, #0891b2 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.4);
 }
 
 .btn-secondary {
-    background: #f3f4f6;
-    color: #374151;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 12px 24px;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-secondary:hover {
-    background: #e5e7eb;
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 600px) {
@@ -1607,69 +1815,78 @@
     }
 }
 
-/* Card Modal Styles */
+/* Card Modal Styles - Padrão do Sistema */
 .modal-card-form {
-    background: white;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     width: 90%;
     max-width: 650px;
-    padding: 32px;
-    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
-    animation: modalFadeIn 0.3s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.4s ease-out;
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .modal-card-form.spaced {
-    padding: 40px;
+    padding: 0;
 }
 
 .modal-header-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #f1f5f9;
+    margin-bottom: 0;
+    padding: 28px 28px 20px 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header-row h2 {
-    color: #1e293b;
+    background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: 1.6rem;
-    font-weight: 700;
+    font-weight: 800;
     margin: 0;
     display: flex;
     align-items: center;
     gap: 12px;
+    letter-spacing: -0.02em;
 }
 
 .modal-close-btn {
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    color: #64748b;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
-    padding: 8px;
-    width: 40px;
-    height: 40px;
+    padding: 0;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    transition: all 0.2s ease;
-    font-size: 0;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    font-size: 1.8rem;
+    backdrop-filter: blur(10px);
 }
 
 .modal-close-btn:hover {
-    background: #fee2e2;
-    border-color: #fecaca;
-    color: #dc2626;
-    transform: scale(1.05);
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .styled-form {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    padding: 0 28px 28px 28px;
 }
 
 .styled-form .form-group {
@@ -1680,7 +1897,7 @@
 
 .styled-form label {
     font-size: 1rem;
-    color: #1e293b;
+    color: rgba(255, 255, 255, 0.9);
     font-weight: 600;
     margin: 0;
     display: flex;
@@ -1689,28 +1906,41 @@
 }
 
 .styled-input {
-    width: 100%;
+    width: calc(100% - 56px);
     padding: 14px 18px;
-    border: 2px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: inherit;
-    transition: all 0.2s ease;
-    background: #fafbfc;
-    color: #1e293b;
+    backdrop-filter: blur(10px);
     box-sizing: border-box;
+    margin: 0 auto;
+    display: block;
 }
 
 .styled-input:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-    background: white;
-    transform: translateY(-1px);
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .styled-input::placeholder {
-    color: #94a3b8;
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Específico para inputs de texto no modal de card */
+.modal-card-form .styled-input[type="text"] {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.modal-card-form .styled-input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
 }
 
 .styled-input[name="description"] {
@@ -1767,59 +1997,66 @@
 
 .modal-actions-row {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 16px;
     margin-top: 12px;
+    padding: 0 28px 28px 28px;
 }
 
 .modal-actions-row.spaced {
     margin-top: 32px;
-    padding-top: 24px;
-    border-top: 2px solid #f1f5f9;
+    padding: 24px 28px 28px 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-blue {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
     color: white;
     border: none;
-    padding: 14px 28px;
+    padding: 12px 24px;
     border-radius: 12px;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(167, 139, 250, 0.3);
 }
 
 .btn-blue:hover {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: linear-gradient(135deg, #9333ea 0%, #0891b2 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.4);
 }
 
 .btn-cancel {
-    background: #f8fafc;
-    color: #64748b;
-    border: 2px solid #e2e8f0;
-    padding: 14px 28px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 12px 24px;
     border-radius: 12px;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-cancel:hover {
-    background: #fee2e2;
-    border-color: #fecaca;
-    color: #dc2626;
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive Card Modal */
@@ -1880,143 +2117,194 @@
     }
 }
 
-/* Edit Column Modal Styles */
+/* Edit Column Modal Styles - Padrão do Sistema */
 .modal {
-    background: white;
-    border-radius: 12px;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
     width: 90%;
-    max-width: 450px;
-    padding: 32px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: modalFadeIn 0.3s ease-out;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.4s ease-out;
     position: relative;
+    padding: 0;
 }
 
 .modal h2 {
-    color: #142557;
+    background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0 0 24px 0;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #e9ecef;
+    font-weight: 800;
+    margin: 0 0 20px 0;
     text-align: center;
+    letter-spacing: -0.02em;
+    padding: 24px 24px 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-input {
-    width: 100%;
-    padding: 14px 16px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
+    width: calc(100% - 48px);
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: inherit;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    background: white;
-    color: #374151;
+    backdrop-filter: blur(10px);
     box-sizing: border-box;
-    margin-bottom: 24px;
+    margin: 0 auto 20px auto;
+    display: block;
 }
 
 .modal-input:focus {
     outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .modal-input::placeholder {
-    color: #9ca3af;
+    color: rgba(156, 163, 175, 0.8);
 }
 
 .modal .modal-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 12px;
     margin-top: 8px;
+    padding: 0 24px 24px 24px;
 }
 
 .modal .btn-primary {
-    background: #2563eb;
+    background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
+    padding: 10px 20px;
+    border-radius: 12px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 100px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(167, 139, 250, 0.3);
 }
 
 .modal .btn-primary:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    background: linear-gradient(135deg, #9333ea 0%, #0891b2 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.4);
 }
 
 .modal .btn-secondary {
-    background: #f3f4f6;
-    color: #374151;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 10px 20px;
+    border-radius: 12px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 100px;
+    position: relative;
+    overflow: hidden;
 }
 
 .modal .btn-secondary:hover {
-    background: #e5e7eb;
-    color: #1f2937;
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .modal .btn-primary:active,
 .modal .btn-secondary:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
 }
 
 /* Responsive Edit Column Modal */
 @media (max-width: 768px) {
     .modal {
         width: 95%;
-        padding: 24px;
         margin: 20px;
+        max-width: 350px;
     }
     
     .modal h2 {
-        font-size: 1.3rem;
-        margin-bottom: 20px;
+        font-size: 1.2rem;
+        padding: 20px 20px 12px 20px;
+        margin-bottom: 16px;
     }
     
     .modal-input {
-        padding: 12px 14px;
-        margin-bottom: 20px;
+        width: calc(100% - 40px);
+        padding: 10px 14px;
+        margin: 0 auto 16px auto;
+    }
+    
+    .card-form .modal-input {
+        width: calc(100% - 40px);
+        margin: 0 auto;
+    }
+    
+    .styled-input {
+        width: calc(100% - 40px);
+        margin: 0 auto;
     }
     
     .modal .modal-actions {
         flex-direction: column;
+        padding: 0 20px 20px 20px;
+        gap: 10px;
     }
     
     .modal .btn-primary,
     .modal .btn-secondary {
         width: 100%;
-        padding: 14px;
+        padding: 12px;
     }
 }
 
 @media (max-width: 480px) {
     .modal {
         width: 98%;
-        padding: 20px;
         margin: 10px;
+        max-width: 320px;
     }
     
     .modal h2 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        padding: 16px 16px 8px 16px;
     }
     
     .modal-input {
+        width: calc(100% - 32px);
         padding: 10px 12px;
         font-size: 0.95rem;
+        margin: 0 auto 16px auto;
+    }
+    
+    .card-form .modal-input {
+        width: calc(100% - 32px);
+        margin: 0 auto;
+    }
+    
+    .styled-input {
+        width: calc(100% - 32px);
+        margin: 0 auto;
+    }
+    
+    .modal .modal-actions {
+        padding: 0 16px 16px 16px;
     }
 }
 
@@ -2073,17 +2361,19 @@
 }
 
 .board-title-input {
-    background: white;
-    border: 2px solid #2563eb;
-    border-radius: 8px;
-    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
     font-size: 1.6rem;
     font-weight: 700;
-    color: #142557;
+    color: rgba(255, 255, 255, 0.95);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
     min-width: 200px;
     font-family: inherit;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .edit-actions {
@@ -2197,16 +2487,44 @@
 .dashboard-container {
     min-height: 100vh;
     width: 100%;
+    max-width: 100%;
     background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 100%);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     color: #ffffff;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: relative;
+    overflow-x: hidden;
     overflow-y: auto;
     background-attachment: fixed;
+    box-sizing: border-box;
+}
+
+/* Configurações de scrollbar específicas para o dashboard */
+.dashboard-container::-webkit-scrollbar {
+    width: 12px;
+    -webkit-appearance: none;
+}
+
+.dashboard-container::-webkit-scrollbar-track {
+    background: rgba(15, 15, 35, 0.8);
+    border-radius: 8px;
+    margin: 0;
+}
+
+.dashboard-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.6) 0%, rgba(6, 182, 212, 0.6) 100%);
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    border: 2px solid rgba(15, 15, 35, 0.8);
+}
+
+.dashboard-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.8) 0%, rgba(6, 182, 212, 0.8) 100%);
+}
+
+/* Configurações de scrollbar para Firefox no dashboard */
+.dashboard-container {
+    scrollbar-width: auto;
+    scrollbar-color: rgba(167, 139, 250, 0.6) rgba(15, 15, 35, 0.8);
 }
 
 .dashboard-container::before {
@@ -2229,8 +2547,7 @@
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 24px 0;
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 100;
     width: 100%;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -2310,11 +2627,13 @@
 
 .dashboard-main {
     width: 100%;
-    max-width: none;
+    max-width: 100%;
     margin: 0;
-    padding: 50px 40px;
+    padding: 50px 40px 100px 40px;
     position: relative;
     z-index: 2;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .stats-section {
@@ -2431,7 +2750,14 @@
     padding: 40px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    min-height: fit-content;
+    height: fit-content;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .boards-section::before {
@@ -2607,11 +2933,21 @@
 
 .boards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
     position: relative;
     z-index: 1;
+    width: 100%;
+    justify-items: stretch;
+    align-items: start;
+    min-height: fit-content;
+    height: fit-content;
+    max-width: 100%;
+    overflow: visible;
+    flex: 1;
 }
+
+
 
 .board-card {
     background: rgba(255, 255, 255, 0.08);
@@ -2749,6 +3085,28 @@
     transform: scale(1.05);
 }
 
+/* Dashboard responsive styles for large screens */
+@media (min-width: 1400px) {
+    .boards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 28px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .boards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 26px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+    .boards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+    }
+}
+
 /* Dashboard responsive styles */
 @media (max-width: 768px) {
     .dashboard-main {
@@ -2778,8 +3136,8 @@
     }
     
     .boards-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
     }
     
     .form-actions {
@@ -2792,6 +3150,8 @@
     
     .boards-section {
         padding: 32px;
+        height: fit-content;
+        min-height: fit-content;
     }
 }
 
@@ -2830,6 +3190,8 @@
     
     .boards-section {
         padding: 24px;
+        height: fit-content;
+        min-height: fit-content;
     }
     
     .board-card {
@@ -2842,7 +3204,7 @@
     
     .boards-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 16px;
     }
     
     .create-board-form {
@@ -3987,4 +4349,192 @@
 .card-description {
     position: relative;
     z-index: 1;
+}
+
+/* Específicos para modal-card-form spaced - garantir textos brancos */
+.modal-card-form.spaced .styled-form label {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600;
+    padding-top: 25px !important;
+}
+
+.modal-card-form.spaced .styled-input {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.modal-card-form.spaced .styled-input:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #a78bfa !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.modal-card-form.spaced .styled-input::placeholder {
+    color: rgba(156, 163, 175, 0.8) !important;
+}
+
+/* Select de prioridade específico */
+.modal-card-form.spaced .priority-select-wrapper select {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.modal-card-form.spaced .priority-select-wrapper select:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: none !important;
+}
+
+.modal-card-form.spaced .priority-select-wrapper select:focus {
+    outline: none;
+    border-color: #a78bfa !important;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.modal-card-form.spaced .priority-select-wrapper select option {
+    background: rgba(15, 15, 35, 0.95) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    padding: 8px 12px;
+}
+
+/* Textarea específico */
+.modal-card-form.spaced .styled-input[name="description"] {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    line-height: 1.5;
+}
+
+.modal-card-form.spaced .styled-input[name="description"]:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #a78bfa !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.priority-select-wrapper select {
+    flex: 1;
+}
+
+/* Específicos para modal-card-form spaced - garantir textos brancos e centralização */
+.modal-card-form.spaced .styled-form label {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600;
+    padding-top: 25px !important;
+}
+
+.modal-card-form.spaced .styled-input {
+    width: calc(100% - 56px) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+.modal-card-form.spaced .styled-input:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #a78bfa !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.modal-card-form.spaced .styled-input::placeholder {
+    color: rgba(156, 163, 175, 0.8) !important;
+}
+
+/* Select de prioridade específico */
+.modal-card-form.spaced .priority-select-wrapper select {
+    width: calc(100% - 56px) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+.modal-card-form.spaced .priority-select-wrapper select:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: none !important;
+}
+
+.modal-card-form.spaced .priority-select-wrapper select:focus {
+    outline: none;
+    border-color: #a78bfa !important;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.modal-card-form.spaced .priority-select-wrapper select option {
+    background: rgba(15, 15, 35, 0.95) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    padding: 8px 12px;
+}
+
+/* Textarea específico */
+.modal-card-form.spaced .styled-input[name="description"] {
+    width: calc(100% - 56px) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    line-height: 1.5;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+.modal-card-form.spaced .styled-input[name="description"]:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #a78bfa !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+/* Responsividade para inputs centralizados */
+@media (max-width: 768px) {
+    .modal-card-form.spaced .styled-input {
+        width: calc(100% - 40px) !important;
+    }
+    
+    .modal-card-form.spaced .priority-select-wrapper select {
+        width: calc(100% - 40px) !important;
+    }
+    
+    .modal-card-form.spaced .styled-input[name="description"] {
+        width: calc(100% - 40px) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-card-form.spaced .styled-input {
+        width: calc(100% - 32px) !important;
+    }
+    
+    .modal-card-form.spaced .priority-select-wrapper select {
+        width: calc(100% - 32px) !important;
+    }
+    
+    .modal-card-form.spaced .styled-input[name="description"] {
+        width: calc(100% - 32px) !important;
+    }
 }

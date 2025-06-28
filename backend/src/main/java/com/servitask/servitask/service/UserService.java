@@ -17,12 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.servitask.servitask.exception.UserException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.multipart.MultipartFile;
 import com.servitask.repository.BoardRepository;
 
 import java.util.Optional;
-import java.util.Base64;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 import java.util.HashMap;
@@ -225,22 +222,6 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public String uploadPhoto(String email, MultipartFile file) throws IOException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException("Usuário não encontrado", HttpStatus.NOT_FOUND));
-        
-        // Converter arquivo para Base64
-        byte[] fileBytes = file.getBytes();
-        String base64Photo = "data:" + file.getContentType() + ";base64," + Base64.getEncoder().encodeToString(fileBytes);
-        
-        // Salvar no banco de dados
-        user.setPhoto(base64Photo);
-        userRepository.save(user);
-        
-        return base64Photo;
-    }
-
-    @Transactional
     public void removePhoto(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException("Usuário não encontrado", HttpStatus.NOT_FOUND));
@@ -300,5 +281,51 @@ public class UserService implements UserDetailsService {
         
         // Agora excluir o usuário
         userRepository.delete(user);
+    }
+
+    @Transactional
+    public String uploadPhotoFromBase64(String email, String base64Photo, String contentType, String filename) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+        
+        // Processar a imagem Base64
+        String processedPhoto = processBase64Image(base64Photo);
+        
+        // Salvar no banco de dados
+        user.setPhoto(processedPhoto);
+        userRepository.save(user);
+        
+        return processedPhoto;
+    }
+    
+    private String processBase64Image(String base64Photo) {
+        // Com LONGTEXT, podemos ser mais generosos com o tamanho
+        // Máximo de 1MB para Base64 (aproximadamente 700KB de imagem original)
+        int maxBase64Length = 1024 * 1024; // 1MB
+        
+        if (base64Photo.length() > maxBase64Length) {
+            try {
+                // Extrair apenas o tipo e dados
+                String[] parts = base64Photo.split(",");
+                if (parts.length == 2) {
+                    String header = parts[0]; // data:image/jpeg;base64
+                    String data = parts[1];   // dados base64
+                    
+                    // Reduzir os dados para caber no limite
+                    int maxDataLength = maxBase64Length - header.length() - 1; // -1 para a vírgula
+                    if (data.length() > maxDataLength) {
+                        data = data.substring(0, maxDataLength);
+                    }
+                    
+                    String result = header + "," + data;
+                    return result;
+                }
+            } catch (Exception e) {
+                return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
+            }
+        }
+        
+        // Se o tamanho estiver OK, retornar como está
+        return base64Photo;
     }
 }

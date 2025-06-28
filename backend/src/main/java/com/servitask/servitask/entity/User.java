@@ -16,39 +16,49 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  
+    @Column(name = "id")
     private Long id;  
     
-    @Column(nullable = false)  
+    @Column(name = "name", nullable = false, length = 255)  
     private String name;  
     
-    @Column(unique = true, nullable = false)  
+    @Column(name = "email", unique = true, nullable = false, length = 255)  
     private String email;  
     
     @JsonIgnore  
-    @Column(nullable = false)  
+    @Column(name = "password", nullable = false, length = 255)  
     private String password;  
     
     @Enumerated(EnumType.STRING)  
-    @Column(nullable = false)     
+    @Column(name = "role", nullable = false, length = 50)     
     private Role role = Role.USER;  
     
-    @Column(name = "created_at")  
+    @Column(name = "created_at", nullable = false)  
     private LocalDateTime createdAt;  
     
-    @Column(name = "updated_at")  
+    @Column(name = "updated_at", nullable = false)  
     private LocalDateTime updatedAt;  
 
     @Lob
-    @Column(name = "photo")
+    @Column(name = "photo", length = 16777215)
     private String photo;
 
-    public User() {
+    @PrePersist
+    protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public User() {
+        // Construtor padrão necessário para JPA
+    }
+
     public User(String name, String email, String password) {
-        this();  
         this.name = name;
         this.email = email;
         this.password = password;

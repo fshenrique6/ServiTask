@@ -3,10 +3,10 @@ package com.servitask.servitask.controller;
 import com.servitask.servitask.entity.User;
 import com.servitask.servitask.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +18,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Value("${spring.servlet.multipart.max-file-size:1MB}")
+    private String maxFileSize;
+
+    @Value("${spring.servlet.multipart.max-request-size:10MB}")
+    private String maxRequestSize;
 
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(Authentication authentication) {
@@ -48,33 +54,38 @@ public class UserController {
     }
 
     @PostMapping("/upload-photo")
-    public ResponseEntity<?> uploadPhoto(@RequestParam("photo") MultipartFile file, Authentication authentication) {
+    public ResponseEntity<?> uploadPhoto(@RequestBody Map<String, Object> photoData, Authentication authentication) {
         try {
             String email = authentication.getName();
             
-            // Validar arquivo
-            if (file.isEmpty()) {
+            // Extrair dados do JSON
+            String base64Photo = (String) photoData.get("photo");
+            String filename = (String) photoData.get("filename");
+            String contentType = (String) photoData.get("contentType");
+            Integer size = (Integer) photoData.get("size");
+            
+            // Validar dados
+            if (base64Photo == null || base64Photo.trim().isEmpty()) {
                 Map<String, String> error = new HashMap<>();
-                error.put("message", "Arquivo não pode estar vazio");
+                error.put("message", "Dados da imagem não podem estar vazios");
                 return ResponseEntity.badRequest().body(error);
             }
             
             // Validar tipo de arquivo
-            String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 Map<String, String> error = new HashMap<>();
                 error.put("message", "Apenas arquivos de imagem são permitidos");
                 return ResponseEntity.badRequest().body(error);
             }
             
-            // Validar tamanho (máximo 5MB)
-            if (file.getSize() > 5 * 1024 * 1024) {
+            // Validar tamanho original (máximo 5MB)
+            if (size != null && size > 5 * 1024 * 1024) {
                 Map<String, String> error = new HashMap<>();
                 error.put("message", "Arquivo deve ter no máximo 5MB");
                 return ResponseEntity.badRequest().body(error);
             }
             
-            String photoUrl = userService.uploadPhoto(email, file);
+            String photoUrl = userService.uploadPhotoFromBase64(email, base64Photo, contentType, filename);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -82,6 +93,7 @@ public class UserController {
             response.put("photoUrl", photoUrl);
             
             return ResponseEntity.ok(response);
+            
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
             error.put("message", "Erro ao fazer upload da foto");
