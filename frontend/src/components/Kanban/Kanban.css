@@ -1067,7 +1067,7 @@
     line-height: 1.5;
     margin: 0 0 16px 0;
     position: relative;
-    z-index: 3;
+    z-index: 1;
     word-wrap: break-word;
     word-break: break-word;
     overflow-wrap: break-word;
@@ -1720,7 +1720,7 @@
 }
 
 .card-form .modal-input {
-    width: 100%;
+    width: calc(100% - 56px);
     padding: 14px 18px;
     background: rgba(15, 15, 35, 0.95);
     border: 2px solid rgba(255, 255, 255, 0.1);
@@ -1729,6 +1729,8 @@
     color: rgba(255, 255, 255, 0.9);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(10px);
+    margin: 0 auto;
+    display: block;
 }
 
 .card-form .modal-input:focus {
@@ -1904,7 +1906,7 @@
 }
 
 .styled-input {
-    width: 100%;
+    width: calc(100% - 56px);
     padding: 14px 18px;
     background: rgba(255, 255, 255, 0.05) !important;
     border: 2px solid rgba(255, 255, 255, 0.1);
@@ -1915,6 +1917,8 @@
     font-family: inherit;
     backdrop-filter: blur(10px);
     box-sizing: border-box;
+    margin: 0 auto;
+    display: block;
 }
 
 .styled-input:focus {
@@ -2113,31 +2117,39 @@
     }
 }
 
-/* Edit Column Modal Styles */
+/* Edit Column Modal Styles - Padrão do Sistema */
 .modal {
-    background: white;
-    border-radius: 12px;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
     width: 90%;
-    max-width: 450px;
-    padding: 32px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: modalFadeIn 0.3s ease-out;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.4s ease-out;
     position: relative;
+    padding: 0;
 }
 
 .modal h2 {
-    color: #142557;
+    background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0 0 24px 0;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #e9ecef;
+    font-weight: 800;
+    margin: 0 0 20px 0;
     text-align: center;
+    letter-spacing: -0.02em;
+    padding: 24px 24px 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-input {
-    width: 100%;
-    padding: 14px 18px;
+    width: calc(100% - 48px);
+    padding: 12px 16px;
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -2147,7 +2159,8 @@
     font-family: inherit;
     backdrop-filter: blur(10px);
     box-sizing: border-box;
-    margin-bottom: 24px;
+    margin: 0 auto 20px auto;
+    display: block;
 }
 
 .modal-input:focus {
@@ -2158,100 +2171,140 @@
 }
 
 .modal-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(156, 163, 175, 0.8);
 }
 
 .modal .modal-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 12px;
     margin-top: 8px;
+    padding: 0 24px 24px 24px;
 }
 
 .modal .btn-primary {
-    background: #2563eb;
+    background: linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%);
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
+    padding: 10px 20px;
+    border-radius: 12px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 100px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(167, 139, 250, 0.3);
 }
 
 .modal .btn-primary:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    background: linear-gradient(135deg, #9333ea 0%, #0891b2 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.4);
 }
 
 .modal .btn-secondary {
-    background: #f3f4f6;
-    color: #374151;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 10px 20px;
+    border-radius: 12px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 100px;
+    position: relative;
+    overflow: hidden;
 }
 
 .modal .btn-secondary:hover {
-    background: #e5e7eb;
-    color: #1f2937;
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .modal .btn-primary:active,
 .modal .btn-secondary:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
 }
 
 /* Responsive Edit Column Modal */
 @media (max-width: 768px) {
     .modal {
         width: 95%;
-        padding: 24px;
         margin: 20px;
+        max-width: 350px;
     }
     
     .modal h2 {
-        font-size: 1.3rem;
-        margin-bottom: 20px;
+        font-size: 1.2rem;
+        padding: 20px 20px 12px 20px;
+        margin-bottom: 16px;
     }
     
     .modal-input {
-        padding: 12px 14px;
-        margin-bottom: 20px;
+        width: calc(100% - 40px);
+        padding: 10px 14px;
+        margin: 0 auto 16px auto;
+    }
+    
+    .card-form .modal-input {
+        width: calc(100% - 40px);
+        margin: 0 auto;
+    }
+    
+    .styled-input {
+        width: calc(100% - 40px);
+        margin: 0 auto;
     }
     
     .modal .modal-actions {
         flex-direction: column;
+        padding: 0 20px 20px 20px;
+        gap: 10px;
     }
     
     .modal .btn-primary,
     .modal .btn-secondary {
         width: 100%;
-        padding: 14px;
+        padding: 12px;
     }
 }
 
 @media (max-width: 480px) {
     .modal {
         width: 98%;
-        padding: 20px;
         margin: 10px;
+        max-width: 320px;
     }
     
     .modal h2 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        padding: 16px 16px 8px 16px;
     }
     
     .modal-input {
+        width: calc(100% - 32px);
         padding: 10px 12px;
         font-size: 0.95rem;
+        margin: 0 auto 16px auto;
+    }
+    
+    .card-form .modal-input {
+        width: calc(100% - 32px);
+        margin: 0 auto;
+    }
+    
+    .styled-input {
+        width: calc(100% - 32px);
+        margin: 0 auto;
+    }
+    
+    .modal .modal-actions {
+        padding: 0 16px 16px 16px;
     }
 }
 
@@ -4373,4 +4426,115 @@
 
 .priority-select-wrapper select {
     flex: 1;
+}
+
+/* Específicos para modal-card-form spaced - garantir textos brancos e centralização */
+.modal-card-form.spaced .styled-form label {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600;
+    padding-top: 25px !important;
+}
+
+.modal-card-form.spaced .styled-input {
+    width: calc(100% - 56px) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+.modal-card-form.spaced .styled-input:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #a78bfa !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.modal-card-form.spaced .styled-input::placeholder {
+    color: rgba(156, 163, 175, 0.8) !important;
+}
+
+/* Select de prioridade específico */
+.modal-card-form.spaced .priority-select-wrapper select {
+    width: calc(100% - 56px) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+.modal-card-form.spaced .priority-select-wrapper select:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: none !important;
+}
+
+.modal-card-form.spaced .priority-select-wrapper select:focus {
+    outline: none;
+    border-color: #a78bfa !important;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.modal-card-form.spaced .priority-select-wrapper select option {
+    background: rgba(15, 15, 35, 0.95) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    padding: 8px 12px;
+}
+
+/* Textarea específico */
+.modal-card-form.spaced .styled-input[name="description"] {
+    width: calc(100% - 56px) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    line-height: 1.5;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+.modal-card-form.spaced .styled-input[name="description"]:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #a78bfa !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+/* Responsividade para inputs centralizados */
+@media (max-width: 768px) {
+    .modal-card-form.spaced .styled-input {
+        width: calc(100% - 40px) !important;
+    }
+    
+    .modal-card-form.spaced .priority-select-wrapper select {
+        width: calc(100% - 40px) !important;
+    }
+    
+    .modal-card-form.spaced .styled-input[name="description"] {
+        width: calc(100% - 40px) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-card-form.spaced .styled-input {
+        width: calc(100% - 32px) !important;
+    }
+    
+    .modal-card-form.spaced .priority-select-wrapper select {
+        width: calc(100% - 32px) !important;
+    }
+    
+    .modal-card-form.spaced .styled-input[name="description"] {
+        width: calc(100% - 32px) !important;
+    }
 }
