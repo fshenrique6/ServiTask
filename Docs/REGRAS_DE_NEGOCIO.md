@@ -25,7 +25,7 @@ Sistema de gerenciamento de tarefas no estilo Kanban, permitindo organização d
 ### 🔐 **Autenticação**
 - **RN010**: Login requer email e senha válidos
 - **RN011**: Email deve ter formato válido no login
-- **RN012**: Senha deve ter no mínimo 6 caracteres no login
+- **RN012**: Senha deve ter no mínimo 8 caracteres no login
 - **RN013**: Credenciais inválidas retornam erro 401 Unauthorized
 - **RN014**: Login bem-sucedido gera token JWT
 - **RN015**: Token JWT é válido por tempo determinado
