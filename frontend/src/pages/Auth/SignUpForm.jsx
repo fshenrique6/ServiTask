@@ -130,21 +130,33 @@ export default function SignUpForm({ onSignUp, onToggleMode }) {
       const errorMessage = error.message || '';
       
       if (errorMessage.includes('Este email já está em uso')) {
-        setError(<><Icon emoji="📧" /> Este email já está cadastrado. Tente fazer login ou use outro email.</>);
+        setError('📧 Este email já está cadastrado. Tente fazer login ou use outro email.');
       } else if (errorMessage.includes('As senhas não coincidem')) {
-        setError(<><Icon emoji="🔒" /> As senhas não coincidem. Verifique e tente novamente.</>);
-      } else if (errorMessage.includes('Nome deve ter pelo menos')) {
-        setError(<><Icon emoji="👤" /> Nome deve ter pelo menos 2 caracteres.</>);
-      } else if (errorMessage.includes('Senha deve conter pelo menos')) {
-        setError(<><Icon emoji="🔒" /> {errorMessage}</>);
+        setError('🔒 As senhas não coincidem. Verifique e tente novamente.');
+      } else if (errorMessage.includes('Nome deve ter entre 2 e 100 caracteres')) {
+        setError('👤 Nome deve ter entre 2 e 100 caracteres.');
+      } else if (errorMessage.includes('Nome deve ter pelo menos 2 caracteres')) {
+        setError('👤 Nome deve ter pelo menos 2 caracteres.');
+      } else if (errorMessage.includes('Senha deve ter pelo menos 8 caracteres')) {
+        setError('🔒 Senha deve ter pelo menos 8 caracteres.');
+      } else if (errorMessage.includes('letra minúscula')) {
+        setError('🔒 Senha deve conter pelo menos uma letra minúscula (a-z).');
+      } else if (errorMessage.includes('letra maiúscula')) {
+        setError('🔒 Senha deve conter pelo menos uma letra maiúscula (A-Z).');
+      } else if (errorMessage.includes('um número')) {
+        setError('🔒 Senha deve conter pelo menos um número (0-9).');
+      } else if (errorMessage.includes('caractere especial')) {
+        setError('🔒 Senha deve conter pelo menos um caractere especial (!@#$%^&*).');
+      } else if (errorMessage.includes('Email deve ter um formato válido')) {
+        setError('📧 Por favor, digite um email válido.');
       } else if (errorMessage.includes('Dados inválidos')) {
-        setError(<><Icon emoji="⚠️" /> Verifique se todos os campos estão preenchidos corretamente.</>);
+        setError('⚠️ Verifique se todos os campos estão preenchidos corretamente.');
       } else if (errorMessage.includes('senha')) {
-        setError(<><Icon emoji="🔒" /> Erro na senha: {errorMessage}</>);
+        setError('🔒 Erro na senha: ' + errorMessage);
       } else if (errorMessage.includes('email')) {
-        setError(<><Icon emoji="📧" /> Erro no email: {errorMessage}</>);
+        setError('📧 Erro no email: ' + errorMessage);
       } else {
-        setError(<><Icon emoji="❌" /> {errorMessage || 'Erro ao criar conta. Verifique os dados e tente novamente.'}</>);
+        setError('❌ ' + (errorMessage || 'Erro ao criar conta. Verifique os dados e tente novamente.'));
       }
     } finally {
       setLoading(false);

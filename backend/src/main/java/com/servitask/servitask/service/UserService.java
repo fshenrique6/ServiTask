@@ -77,8 +77,9 @@ public class UserService implements UserDetailsService {
         }
 
         // Validação adicional de senha
-        if (!isValidPassword(registerRequest.getPassword())) {
-            throw new UserException("Senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial", HttpStatus.BAD_REQUEST);
+        String passwordValidationError = getPasswordValidationErrorForRegister(registerRequest.getPassword());
+        if (passwordValidationError != null) {
+            throw new UserException(passwordValidationError, HttpStatus.BAD_REQUEST);
         }
 
         User user = new User(
@@ -176,6 +177,49 @@ public class UserService implements UserDetailsService {
         }
         
         return hasLower && hasUpper && hasDigit && hasSpecial;
+    }
+    
+    /**
+     * Retorna uma mensagem específica sobre o que está faltando na senha (para registro)
+     */
+    private String getPasswordValidationErrorForRegister(String password) {
+        if (password == null) {
+            return "Senha é obrigatória.";
+        }
+        
+        if (password.length() < 8) {
+            return "Senha deve ter pelo menos 8 caracteres.";
+        }
+        
+        boolean hasLower = false;
+        boolean hasUpper = false;
+        boolean hasDigit = false;
+        boolean hasSpecial = false;
+        
+        for (char c : password.toCharArray()) {
+            if (Character.isLowerCase(c)) hasLower = true;
+            else if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isDigit(c)) hasDigit = true;
+            else if (!Character.isLetterOrDigit(c)) hasSpecial = true;
+        }
+        
+        if (!hasLower) {
+            return "Senha deve conter pelo menos uma letra minúscula (a-z).";
+        }
+        
+        if (!hasUpper) {
+            return "Senha deve conter pelo menos uma letra maiúscula (A-Z).";
+        }
+        
+        if (!hasDigit) {
+            return "Senha deve conter pelo menos um número (0-9).";
+        }
+        
+        if (!hasSpecial) {
+            return "Senha deve conter pelo menos um caractere especial (!@#$%^&*).";
+        }
+        
+        return null; // Senha válida
     }
     
     /**
