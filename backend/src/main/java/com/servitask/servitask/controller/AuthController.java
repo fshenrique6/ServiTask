@@ -134,7 +134,6 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
-            // Usar a mensagem específica da exceção em vez de uma mensagem genérica
             error.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(error);
         }
@@ -154,7 +153,6 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
-            // Usar a mensagem específica da exceção em vez de uma mensagem genérica
             error.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(error);
         }

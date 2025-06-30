@@ -55,7 +55,6 @@ public class User implements UserDetails {
     }
 
     public User() {
-        // Construtor padrão necessário para JPA
     }
 
     public User(String name, String email, String password) {
