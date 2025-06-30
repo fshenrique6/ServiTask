@@ -4,7 +4,7 @@
 
 ![ServiTask](https://img.shields.io/badge/ServiTask-Sistema%20de%20Kanban-blue?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Ativo-green?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-2.3-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.5-orange?style=for-the-badge)
 
 **Sistema completo de gerenciamento de tarefas com Kanban, autenticação robusta e perfil de usuário**
 
@@ -25,6 +25,7 @@ cd ServiTask
 # Copie o arquivo de exemplo e configure suas credenciais
 cp .env.example .env
 
+# É importante sempre deixar um token JWT para não haver conflito no sistema
 # Edite o arquivo .env com suas credenciais seguras
 # IMPORTANTE: Altere as senhas padrão por questões de segurança!
 ```
@@ -39,7 +40,7 @@ cd ..
 
 # Inicie todos os containers
 docker-compose up -d --build
-(necessário possuir o docker desktop instalado e rodando na sua máquina)
+# (necessário possuir o docker desktop instalado e rodando na sua máquina)
 ```
 
 ### 3. **Acessar a Aplicação**
@@ -48,7 +49,7 @@ docker-compose up -d --build
 - **🗄️ MySQL**: localhost:3309
 
 ### 4. **Primeiro Acesso**
-1. Acesse http://localhost:3000
+1. Acesse http://localhost:3000/auth
 2. Clique em **"Criar conta"**
 3. Preencha seus dados com senha segura
 4. Faça login automaticamente
@@ -143,21 +144,46 @@ Para informações detalhadas sobre o sistema, consulte a documentação complet
 
 ```
 ServiTask/
-├── 📁 backend/          # API Spring Boot
-│   ├── 🔧 config/       # Configurações (Security, JWT, CORS)
-│   ├── 🎮 controller/   # Endpoints REST
-│   ├── 📦 service/      # Lógica de negócio
-│   ├── 🗃️ repository/   # Acesso aos dados
-│   ├── 🏗️ entity/       # Modelos de dados
-│   └── 📋 dto/          # Objetos de transferência
-├── 📁 frontend/         # Interface React
-│   ├── 🎨 components/   # Componentes reutilizáveis
-│   ├── 📄 pages/        # Páginas da aplicação
-│   ├── 🔧 services/     # Comunicação com API
-│   └── 🎭 assets/       # Recursos estáticos
-├── 📁 mysql-init/       # Scripts de inicialização do DB
-├── 📁 Docs/             # Documentação completa
-└── 🐳 docker-compose.yml # Orquestração dos containers
+├── 📁 backend/                    # API Spring Boot
+│   ├── 📄 pom.xml                # Configurações Maven
+│   ├── 📄 Dockerfile             # Container do backend
+│   ├── 🔧 mvnw / mvnw.cmd        # Maven Wrapper
+│   └── 📁 src/
+│       ├── 📁 main/
+│       │   ├── 📁 java/com/servitask/
+│       │   │   ├── 🎮 controller/     # Endpoints REST
+│       │   │   ├── 📦 service/        # Lógica de negócio
+│       │   │   ├── 🗃️ repository/     # Acesso aos dados
+│       │   │   ├── 🏗️ entity/         # Modelos JPA
+│       │   │   ├── 📋 dto/            # Objetos de transferência
+│       │   │   ├── 🔧 config/         # Configurações (Security, JWT, CORS)
+│       │   │   ├── 🛠️ util/           # Utilitários
+│       │   │   ├── ⚠️ exception/       # Tratamento de exceções
+│       │   │   └── 🚀 ServitaskApplication.java
+│       │   └── 📁 resources/          # Configurações e recursos
+│       └── 📁 test/                   # Testes unitários
+├── 📁 frontend/                   # Interface React
+│   ├── 📄 package.json           # Dependências Node.js
+│   ├── 📄 vite.config.js         # Configurações Vite
+│   ├── 📄 nginx.conf             # Configurações Nginx
+│   ├── 📄 Dockerfile             # Container do frontend
+│   └── 📁 src/
+│       ├── 🎨 components/        # Componentes reutilizáveis
+│       ├── 📄 pages/             # Páginas da aplicação
+│       ├── 🔧 services/          # Comunicação com API
+│       ├── 🎭 assets/            # Recursos estáticos
+│       ├── 🛠️ utils/             # Funções utilitárias
+│       ├── 📱 App.jsx            # Componente principal
+│       └── 🎯 main.jsx           # Ponto de entrada
+├── 📁 Docs/                      # Documentação completa
+│   ├── 📋 REGRAS_DE_NEGOCIO.md   # Especificações das funcionalidades
+│   ├── 🚀 API_DOCUMENTATION.md   # Documentação da API
+│   ├── 🔄 FLUXOS_E_PROCESSOS.md  # Diagramas e fluxos
+│   └── 🔐 VALIDACAO_SENHA.md     # Sistema de validação
+├── 🐳 docker-compose.yml         # Orquestração dos containers
+├── 📋 README.md                  # Documentação principal
+├── ⚙️ .env                       # Configuração do MySql e JWT
+└── 🔒 .gitignore                 # Arquivos ignorados pelo Git
 ```
 
 ---
@@ -191,14 +217,14 @@ SPRING_PROFILES_ACTIVE=docker
 # Parar todos os containers
 docker-compose down
 
-# Reconstruir apenas o backend
-docker-compose up --build backend -d
+# Reconstruir o sistema no Docker
+docker-compose up --build -d
 
 # Ver logs do backend
 docker logs servitask-backend -f
 
 # Acessar banco de dados
-docker exec -it servitask-mysql mysql -u servitask -p
+docker exec -it servitask-mysql mysql -u servitask -p # Senha utilizada no .env (MYSQL_PASSWORD=sua_senha)
 ```
 
 ---
