@@ -44,8 +44,8 @@ export default function LoginForm({ onLogin, onToggleMode }) {
       return;
     }
     
-    if (formData.password.length < 6) {
-      setError('Senha deve ter pelo menos 6 caracteres.');
+    if (formData.password.length < 8) {
+      setError('Senha deve ter pelo menos 8 caracteres.');
       return;
     }
 
