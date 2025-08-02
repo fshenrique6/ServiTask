@@ -25,6 +25,11 @@ export default function KanbanDashboard() {
     baixa: { count: 0, percentage: 0 }
   });
 
+  // Estados para filtros
+  const [selectedBoardId, setSelectedBoardId] = useState('all');
+  const [priorityFilter, setPriorityFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+
   const [isCreatingBoard, setIsCreatingBoard] = useState(false);
   const [newBoardName, setNewBoardName] = useState('');
 
@@ -114,7 +119,74 @@ export default function KanbanDashboard() {
     });
 
     setPriorityStats(priorityStatsData);
+    calculateFilteredStats(boardsData);
   };
+
+  // Nova função para calcular estatísticas filtradas
+  const calculateFilteredStats = (boardsData) => {
+    let filteredBoards = boardsData;
+    
+    // Filtrar por quadro
+    if (selectedBoardId !== 'all') {
+      filteredBoards = boardsData.filter(board => board.id.toString() === selectedBoardId);
+    }
+    
+    let totalFilteredTasks = 0;
+    let filteredPriorityCounts = { alta: 0, media: 0, baixa: 0 };
+    
+    filteredBoards.forEach(board => {
+      if (board.columns) {
+        board.columns.forEach(column => {
+          if (column.cards) {
+            column.cards.forEach(card => {
+              const priority = card.priority?.toLowerCase() || 'media';
+              
+              // Aplicar filtros
+              const matchesPriority = priorityFilter === 'all' || priority === priorityFilter;
+              const matchesStatus = statusFilter === 'all' || 
+                (statusFilter === 'completed' && 
+                 (column.name.toLowerCase().includes('concluído') || 
+                  column.name.toLowerCase().includes('concluido') ||
+                  column.name.toLowerCase().includes('done') ||
+                  column.name.toLowerCase().includes('finalizado'))) ||
+                (statusFilter === 'pending' && 
+                 !(column.name.toLowerCase().includes('concluído') || 
+                   column.name.toLowerCase().includes('concluido') ||
+                   column.name.toLowerCase().includes('done') ||
+                   column.name.toLowerCase().includes('finalizado')));
+              
+              if (matchesPriority && matchesStatus) {
+                totalFilteredTasks++;
+                if (filteredPriorityCounts.hasOwnProperty(priority)) {
+                  filteredPriorityCounts[priority]++;
+                } else {
+                  filteredPriorityCounts.media++;
+                }
+              }
+            });
+          }
+        });
+      }
+    });
+    
+    // Calcular percentuais das prioridades filtradas
+    const filteredPriorityStatsData = {};
+    Object.keys(filteredPriorityCounts).forEach(priority => {
+      filteredPriorityStatsData[priority] = {
+        count: filteredPriorityCounts[priority],
+        percentage: totalFilteredTasks > 0 ? Math.round((filteredPriorityCounts[priority] / totalFilteredTasks) * 100) : 0
+      };
+    });
+    
+    setPriorityStats(filteredPriorityStatsData);
+  };
+
+  // Recalcular quando os filtros mudarem
+  useEffect(() => {
+    if (boards.length > 0) {
+      calculateFilteredStats(boards);
+    }
+  }, [selectedBoardId, priorityFilter, statusFilter, boards]);
 
   const goToBoard = (board) => {
     const slug = nameToSlug(board.name);
@@ -296,7 +368,66 @@ export default function KanbanDashboard() {
 
         {stats.totalTasks > 0 && (
           <section className="priority-section">
-            <h2><Icon emoji="🎯" /> Prioridades das Tarefas</h2>
+            <div className="priority-header">
+              <h2><Icon emoji="🎯" /> Prioridades das Tarefas</h2>
+              
+              <div className="priority-filters">
+                <div className="filter-group">
+                  <label><Icon emoji="📋" /> Quadro:</label>
+                  <select 
+                    value={selectedBoardId} 
+                    onChange={(e) => setSelectedBoardId(e.target.value)}
+                    className="filter-select"
+                  >
+                    <option value="all">Todos os Quadros</option>
+                    {boards.map(board => (
+                      <option key={board.id} value={board.id.toString()}>
+                        {board.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="filter-group">
+                  <label><Icon emoji="⭐" /> Prioridade:</label>
+                  <select 
+                    value={priorityFilter} 
+                    onChange={(e) => setPriorityFilter(e.target.value)}
+                    className="filter-select"
+                  >
+                    <option value="all">Todas</option>
+                    <option value="alta">Alta</option>
+                    <option value="media">Média</option>
+                    <option value="baixa">Baixa</option>
+                  </select>
+                </div>
+                
+                <div className="filter-group">
+                  <label><Icon emoji="📊" /> Status:</label>
+                  <select 
+                    value={statusFilter} 
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="filter-select"
+                  >
+                    <option value="all">Todos</option>
+                    <option value="pending">Pendentes</option>
+                    <option value="completed">Concluídas</option>
+                  </select>
+                </div>
+                
+                <button 
+                  className="filter-reset-btn"
+                  onClick={() => {
+                    setSelectedBoardId('all');
+                    setPriorityFilter('all');
+                    setStatusFilter('all');
+                  }}
+                  title="Limpar filtros"
+                >
+                  <Icon emoji="🔄" /> Limpar
+                </button>
+              </div>
+            </div>
             
             <div className="priority-content">
               <div className="priority-stats-grid">

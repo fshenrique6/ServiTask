@@ -127,6 +127,61 @@ public class BoardService {
         return false;
     }
 
+    public boolean reorderColumns(Long boardId, Long columnId, Integer newPosition, User user) {
+        Optional<Board> boardOpt = boardRepository.findByIdAndUser(boardId, user);
+        if (boardOpt.isPresent()) {
+            Board board = boardOpt.get();
+            Optional<BoardColumn> columnOpt = columnRepository.findByIdAndBoard(columnId, board);
+            
+            if (columnOpt.isPresent()) {
+                BoardColumn columnToMove = columnOpt.get();
+                Integer oldPosition = columnToMove.getPosition();
+                
+                // Validar se a nova posição é válida
+                List<BoardColumn> allColumns = columnRepository.findByBoardOrderByPosition(board);
+                if (newPosition < 0 || newPosition >= allColumns.size()) {
+                    return false;
+                }
+                
+                // Se a posição não mudou, não fazer nada
+                if (oldPosition.equals(newPosition)) {
+                    return true;
+                }
+                
+                // Atualizar posições das outras colunas
+                if (oldPosition < newPosition) {
+                    // Movendo para a direita - diminuir posição das colunas entre oldPosition e newPosition
+                    List<BoardColumn> columnsToUpdate = columnRepository
+                        .findByBoardAndPositionGreaterThanOrderByPosition(board, oldPosition);
+                    
+                    for (BoardColumn col : columnsToUpdate) {
+                        if (col.getPosition() <= newPosition) {
+                            col.setPosition(col.getPosition() - 1);
+                        }
+                    }
+                    columnRepository.saveAll(columnsToUpdate);
+                } else {
+                    // Movendo para a esquerda - aumentar posição das colunas entre newPosition e oldPosition
+                    List<BoardColumn> allColumnsForUpdate = columnRepository.findByBoardOrderByPosition(board);
+                    
+                    for (BoardColumn col : allColumnsForUpdate) {
+                        if (col.getPosition() >= newPosition && col.getPosition() < oldPosition) {
+                            col.setPosition(col.getPosition() + 1);
+                        }
+                    }
+                    columnRepository.saveAll(allColumnsForUpdate);
+                }
+                
+                // Atualizar a posição da coluna movida
+                columnToMove.setPosition(newPosition);
+                columnRepository.save(columnToMove);
+                
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Optional<Card> addCard(Long boardId, Long columnId, String title, String description, 
                                  String priority, User user) {
         Optional<Board> boardOpt = boardRepository.findByIdAndUser(boardId, user);
