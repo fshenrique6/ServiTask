@@ -190,6 +190,31 @@ public class BoardController {
         }
     }
 
+    @PutMapping("/{boardId}/columns/{columnId}/reorder")
+    public ResponseEntity<Void> reorderColumn(@PathVariable Long boardId,
+            @PathVariable Long columnId,
+            @RequestBody Map<String, Integer> request,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            User user = userService.getUserFromToken(authHeader);
+            Integer newPosition = request.get("position");
+
+            if (newPosition == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            boolean reordered = boardService.reorderColumns(boardId, columnId, newPosition, user);
+
+            if (reordered) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
     @PostMapping("/{boardId}/columns/{columnId}/cards")
     public ResponseEntity<?> addCard(@PathVariable Long boardId,
             @PathVariable Long columnId,

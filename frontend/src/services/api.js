@@ -454,6 +454,27 @@ class ApiService {
     }
   }
 
+  async reorderColumn(boardId, columnId, newPosition) {
+    try {
+      const token = this.getAuthToken();
+      if (!token) throw new Error('Token não encontrado');
+
+      const response = await fetch(`${API_BASE_URL}/boards/${boardId}/columns/${columnId}/reorder`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ position: newPosition }),
+      });
+
+      return response.ok;
+    } catch (error) {
+      console.error('Erro ao reordenar coluna:', error);
+      throw error;
+    }
+  }
+
   async addCard(boardId, columnId, title, description = '', priority = 'media') {
     try {
       const token = this.getAuthToken();

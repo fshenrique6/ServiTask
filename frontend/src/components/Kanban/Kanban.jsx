@@ -39,6 +39,9 @@ function Kanban() {
     const [draggedFromColumn, setDraggedFromColumn] = useState(null);
     const [dragOverColumn, setDragOverColumn] = useState(null);
 
+    const [draggedColumn, setDraggedColumn] = useState(null);
+    const [dragOverColumnPosition, setDragOverColumnPosition] = useState(null);
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -342,6 +345,49 @@ function Kanban() {
         handleDragEnd();
     };
 
+    const handleColumnDragStart = (e, column) => {
+        setDraggedColumn(column.id);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', e.target.outerHTML);
+        e.dataTransfer.setData('text/plain', column.name);
+    };
+
+    const handleColumnDragEnd = () => {
+        setDraggedColumn(null);
+        setDragOverColumnPosition(null);
+    };
+
+    const handleColumnDragOver = (e, position) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (draggedColumn) {
+            setDragOverColumnPosition(position);
+        }
+    };
+
+    const handleColumnDrop = async (e, targetPosition) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (!draggedColumn || !activeBoard) return;
+
+        const draggedColumnData = activeBoard.columns.find(col => col.id === draggedColumn);
+        if (!draggedColumnData || draggedColumnData.position === targetPosition) {
+            handleColumnDragEnd();
+            return;
+        }
+
+        try {
+            await apiService.reorderColumn(activeBoard.id, draggedColumn, targetPosition);
+            await loadActiveBoard();
+        } catch (err) {
+            console.error('Erro ao reordenar coluna:', err);
+            alert('Erro ao reordenar coluna. Tente novamente.');
+        }
+        
+        handleColumnDragEnd();
+    };
+
     const addColumn = async () => {
         if (!activeBoard) return;
 
@@ -541,6 +587,12 @@ function Kanban() {
                                     getPriorityColor={getPriorityColor}
                                     handleDragStart={handleDragStart}
                                     handleDragEnd={handleDragEnd}
+                                    onColumnDragStart={handleColumnDragStart}
+                                    onColumnDragEnd={handleColumnDragEnd}
+                                    onColumnDragOver={handleColumnDragOver}
+                                    onColumnDrop={handleColumnDrop}
+                                    draggedColumn={draggedColumn}
+                                    dragOverColumnPosition={dragOverColumnPosition}
                                 />
                             ))}
                         </div>
